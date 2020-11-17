@@ -17,6 +17,6 @@
     //   "sourceType": "module",
     },
     "rules": {
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
+        "no-plusplus": ["off", { "allowForLoopAfterthoughts": true }]
       }
   }
