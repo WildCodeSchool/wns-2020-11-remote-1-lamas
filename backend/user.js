@@ -1,7 +1,7 @@
 const users = [];
 
-const addUser = async (id) => {
-  await users.push(id)
+const addUser =  (id) => {
+   users.push(id)
   return users.length
 }
 
