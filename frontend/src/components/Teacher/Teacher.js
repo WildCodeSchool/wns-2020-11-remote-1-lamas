@@ -6,6 +6,7 @@ import './Teacher.css';
 const Teacher = () => {
   const emojis = useContext(AppContext);
   const [emojisList, setEmojisList] = useState(emojis);
+  const [studentLength, setStudentLength] = useState(0);
 
   let socket;
   const ENDPOINT = 'localhost:8000';
@@ -25,6 +26,12 @@ const Teacher = () => {
       );
     });
   }, [emojisList, ENDPOINT]);
+
+  useEffect(() => {
+    socket.on('getLength', (length) => {
+      setStudentLength(length);
+    });
+  }, [studentLength]);
 
   return (
     <div className="teacher">

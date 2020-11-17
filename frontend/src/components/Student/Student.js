@@ -16,9 +16,8 @@ const Student = () => {
     socket.emit('join');
   }, [ENDPOINT]);
 
-  const handleClick = () => {
-    // eslint-disable-next-line no-console
-    console.log('clicked');
+  const handleClick = (id) => {
+    socket.emit('incrementEmoji', id);
   };
 
   return (
@@ -32,7 +31,7 @@ const Student = () => {
                 key={emoji.name}
                 className="student_emoji_button"
                 type="button"
-                onClick={handleClick}
+                onClick={handleClick(emoji.id)}
               >
                 <img
                   className="student_emoji_img"
