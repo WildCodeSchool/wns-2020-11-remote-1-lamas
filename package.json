@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
     "lint": "eslint . ",
-    "fix:lint": "eslint . --fix"
+    "fix:lint": "eslint . --fix",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
