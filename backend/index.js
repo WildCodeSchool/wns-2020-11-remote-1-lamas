@@ -2,6 +2,7 @@ const express = require("express");
 const http = require('http');
 
 const app = express();
+const path = require('path');
 const cors = require("cors");
 const socketio = require('socket.io');
 const router = require('./router');
@@ -9,10 +10,7 @@ const router = require('./router');
 const server = http.createServer(app);
 const io = socketio(server);
 
-const { addUser } = require('./user.js');
-
-const { incrementEmojiCounter } = require('./emoji.js'); 
-
+const { addUser, getIncrement, removeUser } = require('./user.js');
 
 const PORT = process.env.PORT || 8000;
 
@@ -20,26 +18,28 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(router);
 
-// const ENDPOINT = 'http://localhost:8000';
-// const socket = io(ENDPOINT, {            // !!! PENSER A METTRE PARAMETRE transports: ['websocket'] !!!
-//   transports: ['websocket'],
-// });
-
 io.on('connect', (socket) => {
-    socket.on('join', (_, callback) => {
-        const length = addUser(socket.id)
-        socket.emit('getLength', length)
-        callback();
+    socket.on('join', () =>  {
+        addUser(socket.id)
     })
    
-    socket.on('incrementEmoji', ({ idEmoji }, callback) => {
+    socket.on('changeMood', (name, category) => {
+        const emojisIncremented = getIncrement(name, socket.id, category)
+        socket.broadcast.emit('getIncrement', emojisIncremented)
+    });
 
-        const increment = incrementEmojiCounter(idEmoji)
-        
-        socket.emit('getIncrement', increment)
-
-        callback()
+    socket.on('disconnect', () => {
+        removeUser(socket.id);
     });
 });
+
+// Heroku deployment
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('./build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '/build/index.html'));
+    })
+}
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
