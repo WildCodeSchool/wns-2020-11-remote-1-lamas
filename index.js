@@ -34,6 +34,8 @@ io.on('connect', (socket) => {
 
   socket.on('disconnect', () => {
     removeUser(socket.id);
+    const userCount = getUserCount();
+    socket.broadcast.emit('sendUserCount', userCount);
   });
 });
 

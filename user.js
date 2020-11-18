@@ -9,7 +9,7 @@ const moodCounter = {
 };
 
 const addUser = (id) => {
-  users.push({ socketId: id, mood: 'default' });
+  users.push({ socketId: id, mood: 'default', action:[] });
 };
 
 const getUserCount = () => {
@@ -18,19 +18,24 @@ const getUserCount = () => {
 
 const getIncrement = (name, id, category) => {
   const currentUser = users.findIndex((user) => user.socketId === id);
-  const userCounter = users.length;
 
-  if (category === 'Emotion' && users[currentUser].mood === 'default') {
+
+  if (category === 'Emotion' && users[currentUser].mood !== name) {
+    moodCounter[users[currentUser].mood]--;
     users[currentUser].mood = name;
     moodCounter[name]++;
   } else if (category === 'Action') {
-    users[currentUser].mood = name;
-    moodCounter[name]++;
+
+    if(users[currentUser].action.indexOf(name) === -1) {
+      users[currentUser].action.push(name)
+      users[currentUser].mood = name;
+      moodCounter[name]++;
+    }
+  
   }
 
   return {
-    moodCounter,
-    userCounter,
+    moodCounter
   };
 };
 
@@ -39,8 +44,10 @@ const removeUser = (id) => {
 
   if (index !== -1) {
     // eslint-disable-next-line no-unused-expressions
+ 
     users.splice(index, 1)[0];
   }
+  return moodCounter
 };
 
 module.exports = {
