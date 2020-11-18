@@ -5,7 +5,6 @@ const app = express();
 const path = require('path');
 const cors = require('cors');
 const socketio = require('socket.io');
-const router = require('./router');
 
 const server = http.createServer(app);
 const io = socketio(server);
