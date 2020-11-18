@@ -44,7 +44,13 @@ const removeUser = (id) => {
 
   if (index !== -1) {
     // eslint-disable-next-line no-unused-expressions
- 
+    moodCounter[users[index].mood]--;
+    users[index].action.map((action) => {
+      console.log(action)
+      if(Object.keys(moodCounter).includes(action)){
+      moodCounter[action]--;
+    }})
+    console.log(moodCounter, users[index].action)
     users.splice(index, 1)[0];
   }
   return moodCounter
