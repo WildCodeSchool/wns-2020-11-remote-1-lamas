@@ -13,11 +13,11 @@ const Student = () => {
       transports: ['websocket'],
     });
 
-    socket.emit('join');
+    socket.emit('join', {});
   }, [ENDPOINT]);
 
-  const handleClick = (id) => {
-    socket.emit('incrementEmoji', id);
+  const handleClick = (category, name) => {
+    socket.emit('changeMood', { category, name });
   };
 
   return (
@@ -31,7 +31,7 @@ const Student = () => {
                 key={emoji.name}
                 className="student_emoji_button"
                 type="button"
-                onClick={handleClick(emoji.id)}
+                onClick={() => handleClick(emoji.category, emoji.name)}
               >
                 <img
                   className="student_emoji_img"

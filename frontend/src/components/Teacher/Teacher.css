@@ -1,8 +1,8 @@
-body{
-    background-color: blanchedalmond;
+body {
+  background-color: rgb(245, 240, 234);
 }
 
-.teacher{
+.teacher {
   height: inherit;
   display: flex;
 }
@@ -12,16 +12,17 @@ body{
   justify-content: flex-end;
   width: 100%;
   height: 20%;
-  background-color:rgba(78, 80, 78, 0.3) ;
+  background-color: rgba(78, 80, 78, 0.3);
+  background-color: rgba(78, 80, 78, 0.3);
 }
 
 .teacher_emojis_container {
   width: 100%;
-  height:100px;
-  background-color:rgba(158, 158, 158, 0.3) ;
+  height: 100px;
+  background-color: rgba(158, 158, 158, 0.3);
 }
 
-.teacher_emojis{
+.teacher_emojis {
   width: inherit;
   display: flex;
   justify-content: space-around;
@@ -29,10 +30,10 @@ body{
   align-items: center;
 }
 
-.teacher_emoji_headband{
-  display:flex;
+.teacher_emoji_headband {
+  display: flex;
   margin: 7px;
-  width:40px;
+  width: 40px;
   height: 40px;
   background-color: transparent;
   border: none;
@@ -41,5 +42,5 @@ body{
 .teacher_emoji_img {
   width: inherit;
   object-fit: contain;
-  margin-right: 1em
+  margin-right: 1em;
 }
