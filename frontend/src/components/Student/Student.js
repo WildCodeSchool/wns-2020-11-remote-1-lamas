@@ -5,7 +5,10 @@ import AppContext from '../../context/AppContext';
 
 const Student = () => {
   let socket;
-  const ENDPOINT = 'localhost:8000';
+  const ENDPOINT =
+    process.env.NODE_ENV === 'production'
+      ? 'https://lama-project.herokuapp.com'
+      : 'localhost:8000';
   const emojis = useContext(AppContext);
 
   useEffect(() => {
@@ -17,7 +20,7 @@ const Student = () => {
   }, [ENDPOINT]);
 
   const handleClick = (category, name) => {
-    socket.emit('changeMood', { category, name });
+    socket.emit('changeMood', category, name);
   };
 
   return (
@@ -31,7 +34,7 @@ const Student = () => {
                 key={emoji.name}
                 className="student_emoji_button"
                 type="button"
-                onClick={() => handleClick(emoji.category, emoji.name)}
+                onClick={() => handleClick(emoji.name, emoji.category)}
               >
                 <img
                   className="student_emoji_img"

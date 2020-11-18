@@ -40,9 +40,14 @@ body {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  outline: none;
 }
 
 .student_emoji_img {
   width: inherit;
   object-fit: contain;
+}
+
+.student_emoji_button:hover {
+  opacity: 0.5;
 }

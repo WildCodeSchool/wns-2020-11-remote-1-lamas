@@ -1,45 +1,51 @@
-const express = require("express");
+const express = require('express');
 const http = require('http');
 
 const app = express();
 const path = require('path');
-const cors = require("cors");
+const cors = require('cors');
 const socketio = require('socket.io');
 const router = require('./router');
 
 const server = http.createServer(app);
 const io = socketio(server);
 
-const { addUser, getIncrement, removeUser } = require('./user.js');
+const {
+  addUser,
+  getIncrement,
+  removeUser,
+  getUserCount,
+} = require('./user.js');
 
 const PORT = process.env.PORT || 8000;
-
 
 app.use(cors());
 app.use(router);
 
 io.on('connect', (socket) => {
-    socket.on('join', () =>  {
-        addUser(socket.id)
-    })
-   
-    socket.on('changeMood', (name, category) => {
-        const emojisIncremented = getIncrement(name, socket.id, category)
-        socket.broadcast.emit('getIncrement', emojisIncremented)
-    });
+  socket.on('join', () => {
+    addUser(socket.id);
+    const userCount = getUserCount();
+    socket.broadcast.emit('sendUserCount', userCount);
+  });
 
-    socket.on('disconnect', () => {
-        removeUser(socket.id);
-    });
+  socket.on('changeMood', (name, category) => {
+    const emojisIncremented = getIncrement(name, socket.id, category);
+    socket.broadcast.emit('getIncrement', emojisIncremented);
+  });
+
+  socket.on('disconnect', () => {
+    removeUser(socket.id);
+  });
 });
 
 // Heroku deployment
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('./build'));
+  app.use(express.static('./build'));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '/build/index.html'));
-    })
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/build/index.html'));
+  });
 }
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

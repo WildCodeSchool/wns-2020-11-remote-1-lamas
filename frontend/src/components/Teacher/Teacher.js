@@ -3,27 +3,38 @@ import io from 'socket.io-client';
 import AppContext from '../../context/AppContext';
 import './Teacher.css';
 
-const ENDPOINT = 'localhost:8000';
+const ENDPOINT =
+  process.env.NODE_ENV === 'production'
+    ? 'https://lama-project.herokuapp.com'
+    : 'localhost:8000';
 
 const socket = io(ENDPOINT, { transports: ['websocket'] });
 
 const Teacher = () => {
   const emojisList = useContext(AppContext);
-  const [emojisCounts, setEmojisCounts] = useState({});
+  const [emojisCounts, setEmojisCounts] = useState({
+    Happy: 0,
+    Dead: 0,
+    Thinking: 0,
+    Break: 0,
+    SlowDown: 0,
+  });
   const [totalStudents, setTotalStudents] = useState(0);
 
   const handleConnection = () => {
     socket.on('getIncrement', (emojiObject) => {
-      console.log('emoji object from the back', emojiObject);
       setEmojisCounts(emojiObject.moodCounter);
-      console.log('object emojisCounts après changement: ', emojisCounts);
-      setTotalStudents(emojiObject.userCounter);
-      console.log('check student length', totalStudents);
     });
   };
 
+  useEffect(() => {
+    socket.on('sendUserCount', (userCount) => {
+      setTotalStudents(userCount);
+    });
+  }, []);
+
   const getColor = () => {
-    const unhappys = emojisCounts.thinking + emojisCounts.dead;
+    const unhappys = emojisCounts.Thinking + emojisCounts.Dead;
     const unhappysPercentage = (unhappys / totalStudents) * 100;
 
     if (unhappysPercentage >= 20 && unhappysPercentage < 50) {
@@ -58,7 +69,7 @@ const Teacher = () => {
                   src={emoji.image}
                   alt={emoji.name}
                 />
-                <p>{emojisCounts[emoji.name.toLowerCase()]}</p>
+                <p>{emojisCounts[emoji.name]}</p>
               </div>
             ))}
           </div>
