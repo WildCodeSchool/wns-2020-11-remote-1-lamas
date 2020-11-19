@@ -22,13 +22,23 @@ const Teacher = () => {
   const [totalStudents, setTotalStudents] = useState(0);
 
   const handleConnection = () => {
-    socket.on('getIncrement', (emojiObject) => {
-      setEmojisCounts(emojiObject.moodCounter);
+    socket.on('getIncrement', (objectEmoji) => {
+      setEmojisCounts(objectEmoji.moodCounter);
     });
   };
 
   useEffect(() => {
+    socket.emit('joinTeacher', {});
+  })
+
+  useEffect(() => {
+
+    socket.on('joinTeacher', (objectEmoji) => {
+      setEmojisCounts(objectEmoji.moodCounter);
+    });
+
     socket.on('sendUserCount', (userCount) => {
+      console.log(userCount)
       setTotalStudents(userCount);
     });
   }, []);

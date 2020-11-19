@@ -16,49 +16,39 @@ const getUserCount = () => {
   return users.length;
 };
 
-const getIncrement = (name, id, category) => {
+const IncrementEmojis = (name, id, category) => {
   const currentUser = users.findIndex((user) => user.socketId === id);
-
 
   if (category === 'Emotion' && users[currentUser].mood !== name) {
     moodCounter[users[currentUser].mood]--;
     users[currentUser].mood = name;
     moodCounter[name]++;
   } else if (category === 'Action') {
-
     if(users[currentUser].action.indexOf(name) === -1) {
       users[currentUser].action.push(name)
       users[currentUser].mood = name;
       moodCounter[name]++;
     }
-  
   }
-
-  return {
-    moodCounter
-  };
 };
+
+const getMoodCounter = () => {
+  return {moodCounter}
+}
 
 const removeUser = (id) => {
   const index = users.findIndex((user) => user.socketId === id);
 
   if (index !== -1) {
     // eslint-disable-next-line no-unused-expressions
-    moodCounter[users[index].mood]--;
-    users[index].action.map((action) => {
-      console.log(action)
-      if(Object.keys(moodCounter).includes(action)){
-      moodCounter[action]--;
-    }})
-    console.log(moodCounter, users[index].action)
     users.splice(index, 1)[0];
   }
-  return moodCounter
 };
 
 module.exports = {
   addUser,
-  getIncrement,
+  IncrementEmojis,
   removeUser,
   getUserCount,
+  getMoodCounter,
 };

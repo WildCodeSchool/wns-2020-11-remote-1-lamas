@@ -11,7 +11,7 @@ process.env.NODE_ENV === 'production'
 const socket = io(ENDPOINT, { transports: ['websocket'] });
 
 const Student = () => {
-  const emojis = useContext(AppContext);
+    const emojis = useContext(AppContext);
 
   useEffect(() => {
     socket.emit('join', {});
