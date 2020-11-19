@@ -5,7 +5,7 @@ import AppContext from '../../context/AppContext';
 
 const ENDPOINT =
 process.env.NODE_ENV === 'production'
-  ? 'https://lama-project.herokuapp.com'
+  ? 'https://lamass-project.herokuapp.com'
   : 'localhost:8000';
 
 const socket = io(ENDPOINT, { transports: ['websocket'] });
