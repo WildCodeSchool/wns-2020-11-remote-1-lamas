@@ -3,21 +3,19 @@ import io from 'socket.io-client';
 import './Student.css';
 import AppContext from '../../context/AppContext';
 
+const ENDPOINT =
+process.env.NODE_ENV === 'production'
+  ? 'https://lamass-project.herokuapp.com'
+  : 'localhost:8000';
+
+const socket = io(ENDPOINT, { transports: ['websocket'] });
+
 const Student = () => {
-  let socket;
-  const ENDPOINT =
-    process.env.NODE_ENV === 'production'
-      ? 'https://lama-project.herokuapp.com'
-      : 'localhost:8000';
-  const emojis = useContext(AppContext);
+    const emojis = useContext(AppContext);
 
   useEffect(() => {
-    socket = io(ENDPOINT, {
-      transports: ['websocket'],
-    });
-
     socket.emit('join', {});
-  }, [ENDPOINT]);
+  }, []);
 
   const handleClick = (category, name) => {
     socket.emit('changeMood', category, name);
