@@ -1,16 +1,13 @@
 import express from 'express';
-import { createServer } from 'http';
-
 import { join } from 'path';
 import cors from 'cors';
-// import socketio from 'socket.io';
-import socketIO, { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import http from 'http';
 
-// import * as http from 'http';
-// import * as socket from 'socket.io';
 const app = express();
-const server = createServer(app);
-const io: socketIO.Server = socketIO(server);
+const httpServer = new http.Server(app);
+
+const io = new Server(httpServer);
 
 import {
   addUser,
@@ -58,4 +55,4 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));

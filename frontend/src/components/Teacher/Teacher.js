@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import AppContext from '../../context/AppContext';
 import './Teacher.css';
 
@@ -8,7 +8,10 @@ const ENDPOINT =
     ? 'https://lamass-project.herokuapp.com'
     : 'localhost:8000';
 
-const socket = io(ENDPOINT, { transports: ['websocket'] });
+const socket = io(ENDPOINT, {
+  withCredentials: false,
+  transports: ['websocket'],
+});
 
 const Teacher = () => {
   const emojisList = useContext(AppContext);
