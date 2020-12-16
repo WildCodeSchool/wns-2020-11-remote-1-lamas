@@ -5,7 +5,7 @@ import './Teacher.css';
 
 const ENDPOINT =
   process.env.NODE_ENV === 'production'
-    ? 'https://lama-project.herokuapp.com'
+    ? 'https://lamass-project.herokuapp.com'
     : 'localhost:8000';
 
 const socket = io(ENDPOINT, { transports: ['websocket'] });
@@ -22,13 +22,22 @@ const Teacher = () => {
   const [totalStudents, setTotalStudents] = useState(0);
 
   const handleConnection = () => {
-    socket.on('getIncrement', (emojiObject) => {
-      setEmojisCounts(emojiObject.moodCounter);
+    socket.on('getIncrement', (objectEmoji) => {
+      setEmojisCounts(objectEmoji.moodCounter);
     });
   };
 
   useEffect(() => {
+    socket.emit('joinTeacher', {});
+  });
+
+  useEffect(() => {
+    socket.on('joinTeacher', (objectEmoji) => {
+      setEmojisCounts(objectEmoji.moodCounter);
+    });
+
     socket.on('sendUserCount', (userCount) => {
+      console.log(userCount);
       setTotalStudents(userCount);
     });
   }, []);

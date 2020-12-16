@@ -1,4 +1,4 @@
-const { createContext } = require('react');
+import { createContext } from 'react';
 
 const AppContext = createContext(null);
 

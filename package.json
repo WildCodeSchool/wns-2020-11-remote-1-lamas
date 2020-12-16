@@ -1,0 +1,57 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "engines": {
+    "node": "10.15.2",
+    "npm": "6.14.1"
+  },
+  "scripts": {
+    "start": "nodemon dist/src/index.js",
+    "heroku-postbuild": "tsc & cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "lint": "eslint src/*/ frontend --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "tsc",
+    "start:watch": "tsc -w & nodemon dist/src/index.js",
+    "server": "nodemon src/index.ts",
+    "client": "npm start --prefix frontend",
+    "dev": "ts-node-dev --transpile-only --respawn  ./src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.8",
+    "socket.io": "^3.0.1",
+    "typescript": "^4.1.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.9",
+    "@types/jest": "^26.0.19",
+    "@types/mongoose": "^5.10.3",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "@typescript-eslint/parser": "^4.7.0",
+    "concurrently": "^5.3.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.3",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^26.6.0",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.1.2",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.1",
+    "@types/socket.io": "^2.1.12"
+  }
+}
