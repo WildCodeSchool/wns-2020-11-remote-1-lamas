@@ -1,6 +1,16 @@
-const users = [];
+const users: User[] = [];
 
-const moodCounter = {
+interface User {
+  socketId: string;
+  mood: string;
+  action: string[];
+}
+
+interface MoodCounter {
+  [k: string]: number;
+}
+
+const moodCounter: MoodCounter = {
   Happy: 0,
   Dead: 0,
   Thinking: 0,
@@ -8,15 +18,16 @@ const moodCounter = {
   SlowDown: 0,
 };
 
-const addUser = (id) => {
+const addUser = (id: string): void => {
+  console.log('socket id: ', id);
   users.push({ socketId: id, mood: 'default', action: [] });
 };
 
-const getUserCount = () => {
+const getUserCount = (): number => {
   return users.length;
 };
 
-const IncrementEmojis = (name, id, category) => {
+const IncrementEmojis = (name: string, id: string, category: string): void => {
   const currentUser = users.findIndex((user) => user.socketId === id);
 
   if (category === 'Emotion' && users[currentUser].mood !== name) {
@@ -32,23 +43,16 @@ const IncrementEmojis = (name, id, category) => {
   }
 };
 
-const getMoodCounter = () => {
-  return { moodCounter };
+const getMoodCounter = (): MoodCounter => {
+  return moodCounter;
 };
 
-const removeUser = (id) => {
+const removeUser = (id: string): void => {
   const index = users.findIndex((user) => user.socketId === id);
-
   if (index !== -1) {
     // eslint-disable-next-line no-unused-expressions
     users.splice(index, 1)[0];
   }
 };
 
-module.exports = {
-  addUser,
-  IncrementEmojis,
-  removeUser,
-  getUserCount,
-  getMoodCounter,
-};
+export { addUser, IncrementEmojis, removeUser, getUserCount, getMoodCounter };

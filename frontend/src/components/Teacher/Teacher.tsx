@@ -1,21 +1,25 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import AppContext from '../../context/AppContext';
 import './Teacher.css';
+import { Emoji } from '../../App';
 
 const ENDPOINT =
   process.env.NODE_ENV === 'production'
     ? 'https://lamass-project.herokuapp.com'
     : 'localhost:8000';
 
-const socket = io(ENDPOINT, {
-  withCredentials: false,
+const socket: Socket = io(ENDPOINT, {
   transports: ['websocket'],
 });
 
-const Teacher = () => {
-  const emojisList = useContext(AppContext);
-  const [emojisCounts, setEmojisCounts] = useState({
+interface MoodCounter {
+  [k: string]: number;
+}
+
+const Teacher = (): JSX.Element => {
+  const emojisList: Emoji[] | null = useContext(AppContext);
+  const [emojisCounts, setEmojisCounts] = useState<MoodCounter>({
     Happy: 0,
     Dead: 0,
     Thinking: 0,
@@ -24,9 +28,9 @@ const Teacher = () => {
   });
   const [totalStudents, setTotalStudents] = useState(0);
 
-  const handleConnection = () => {
-    socket.on('getIncrement', (objectEmoji) => {
-      setEmojisCounts(objectEmoji.moodCounter);
+  const handleConnection = (): void => {
+    socket.on('getIncrement', (moodCounter: MoodCounter) => {
+      setEmojisCounts(moodCounter);
     });
   };
 
@@ -35,19 +39,19 @@ const Teacher = () => {
   });
 
   useEffect(() => {
-    socket.on('joinTeacher', (objectEmoji) => {
-      setEmojisCounts(objectEmoji.moodCounter);
+    socket.on('joinTeacher', (moodCounter: MoodCounter) => {
+      setEmojisCounts(moodCounter);
     });
 
-    socket.on('sendUserCount', (userCount) => {
+    socket.on('sendUserCount', (userCount: number) => {
       console.log(userCount);
       setTotalStudents(userCount);
     });
   }, []);
 
-  const getColor = () => {
-    const unhappys = emojisCounts.Thinking + emojisCounts.Dead;
-    const unhappysPercentage = (unhappys / totalStudents) * 100;
+  const getColor = (): string => {
+    const unhappys: number = emojisCounts.Thinking + emojisCounts.Dead;
+    const unhappysPercentage: number = (unhappys / totalStudents) * 100;
 
     if (unhappysPercentage >= 20 && unhappysPercentage < 50) {
       return 'rgba(255, 249, 61, 0.7)';
@@ -74,16 +78,17 @@ const Teacher = () => {
       >
         <div className="teacher_emojis_container">
           <div className="teacher_emojis">
-            {emojisList.map((emoji) => (
-              <div key={emoji.name} className="teacher_emoji_headband">
-                <img
-                  className="teacher_emoji_img"
-                  src={emoji.image}
-                  alt={emoji.name}
-                />
-                <p>{emojisCounts[emoji.name]}</p>
-              </div>
-            ))}
+            {emojisList &&
+              emojisList.map((emoji: Emoji) => (
+                <div key={emoji.name} className="teacher_emoji_headband">
+                  <img
+                    className="teacher_emoji_img"
+                    src={emoji.image}
+                    alt={emoji.name}
+                  />
+                  <p>{emojisCounts[emoji.name]}</p>
+                </div>
+              ))}
           </div>
           <p>student length: {totalStudents}</p>
         </div>

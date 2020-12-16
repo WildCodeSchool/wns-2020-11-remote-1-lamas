@@ -11,7 +11,14 @@ import SlowDown from './asset/turtle.svg';
 
 import AppContext from './context/AppContext';
 
-const emojis = [
+export interface Emoji {
+  id: number;
+  name: string;
+  image: string;
+  category: string;
+}
+
+const emojis: Emoji[] = [
   {
     id: 1,
     name: 'Thinking',
@@ -44,7 +51,7 @@ const emojis = [
   },
 ];
 
-function App() {
+function App(): JSX.Element {
   return (
     <Router>
       <AppContext.Provider value={emojis}>

@@ -15,7 +15,7 @@ import {
   removeUser,
   getUserCount,
   getMoodCounter,
-} from './user.js';
+} from './user';
 
 const PORT = process.env.PORT || 8000;
 
