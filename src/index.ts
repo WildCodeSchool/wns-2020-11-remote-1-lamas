@@ -3,6 +3,16 @@ import { join } from 'path';
 import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
+import start from './database/db';
+import * as dotenv from "dotenv";
+
+import { graphqlHTTP } from 'express-graphql';
+import { buildSchema } from 'graphql';
+
+
+dotenv.config();
+
+start();
 
 const app = express();
 const httpServer = new http.Server(app);
@@ -17,9 +27,12 @@ import {
   getMoodCounter,
 } from './user';
 
+
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
+
+
 
 io.on('connect', (socket: Socket) => {
   socket.on('join', () => {
@@ -55,4 +68,6 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+httpServer.listen(PORT, () => console.log(`Apollo Server on http://localhost:${PORT}/graphql`));

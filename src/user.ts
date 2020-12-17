@@ -19,7 +19,6 @@ const moodCounter: MoodCounter = {
 };
 
 const addUser = (id: string): void => {
-  console.log('socket id: ', id);
   users.push({ socketId: id, mood: 'default', action: [] });
 };
 

@@ -11,7 +11,7 @@
     "start": "nodemon dist/src/index.js",
     "heroku-postbuild": "tsc & cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "lint": "eslint src/*/ frontend --fix",
-    "test": "jest",
+    "test": "jest --watchAll --no-cache",
     "test:watch": "jest --watch",
     "build": "tsc",
     "start:watch": "tsc -w & nodemon dist/src/index.js",
@@ -19,14 +19,34 @@
     "client": "npm start --prefix frontend",
     "dev": "ts-node-dev --transpile-only --respawn  ./src/index.ts"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/frontend"
+    ],
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ],
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    }
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server": "^2.19.0",
+    "apollo-server-express": "^2.19.0",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "graphql": "^15.4.0",
+    "graphql-iso-date": "^3.6.1",
     "jsonwebtoken": "^8.5.1",
+    "mongodb-memory-server": "^6.9.2",
     "mongoose": "^5.11.8",
     "socket.io": "^3.0.1",
     "typescript": "^4.1.3"
