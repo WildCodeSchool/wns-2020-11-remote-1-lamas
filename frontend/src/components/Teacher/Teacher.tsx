@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { io, Socket } from 'socket.io-client';
-import AppContext from '../../context/AppContext';
+import { Emoji, emojis } from '../../datas/Emojis'
+import Emojis from '../Emojis/Emojis'
 import './Teacher.css';
-import { Emoji } from '../../App';
 
 const ENDPOINT =
   process.env.NODE_ENV === 'production'
@@ -13,12 +13,11 @@ const socket: Socket = io(ENDPOINT, {
   transports: ['websocket'],
 });
 
-interface MoodCounter {
+export interface MoodCounter {
   [k: string]: number;
 }
 
 const Teacher = (): JSX.Element => {
-  const emojisList: Emoji[] | null = useContext(AppContext);
   const [emojisCounts, setEmojisCounts] = useState<MoodCounter>({
     Happy: 0,
     Dead: 0,
@@ -73,22 +72,14 @@ const Teacher = (): JSX.Element => {
     <div className="teacher">
       <div className="teacher_visio" />
       <div
+        role="heading"
+        aria-level={2}
         className="teacher_vertical_panel"
         style={{ backgroundColor: getColor() }}
       >
         <div className="teacher_emojis_container">
           <div className="teacher_emojis">
-            {emojisList &&
-              emojisList.map((emoji: Emoji) => (
-                <div key={emoji.name} className="teacher_emoji_headband">
-                  <img
-                    className="teacher_emoji_img"
-                    src={emoji.image}
-                    alt={emoji.name}
-                  />
-                  <p>{emojisCounts[emoji.name]}</p>
-                </div>
-              ))}
+            <Emojis emojisCounts={emojisCounts} /> 
           </div>
           <p>student length: {totalStudents}</p>
         </div>
