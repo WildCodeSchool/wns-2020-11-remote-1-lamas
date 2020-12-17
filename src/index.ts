@@ -6,10 +6,6 @@ import http from 'http';
 import start from './database/db';
 import * as dotenv from "dotenv";
 
-import { graphqlHTTP } from 'express-graphql';
-import { buildSchema } from 'graphql';
-
-
 dotenv.config();
 
 start();
