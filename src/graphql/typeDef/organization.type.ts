@@ -3,7 +3,7 @@ import { gql } from "apollo-server";
 const OrganizationType = gql`
 
 type Organization {
-    _id: String!,
+    _id: ID!,
     organization_name: String!
   }
 

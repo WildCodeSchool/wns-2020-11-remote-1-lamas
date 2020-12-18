@@ -24,6 +24,8 @@ const schema = makeExecutableSchema({
   resolvers:[organizationResolver],
 });
 
+
+
 dotenv.config();
 
 start();
@@ -36,10 +38,6 @@ server.applyMiddleware({ app });
 const httpServer = new http.Server(app);
 
 const io = new Server(httpServer);
-
-
-
-
 
 
 const PORT = process.env.PORT || 8000;

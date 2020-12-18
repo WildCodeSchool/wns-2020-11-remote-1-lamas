@@ -1,22 +1,26 @@
 import Organizations from '../../database/models/Organization';
 
+// type
+// id : String
+// organization_name : String
+
 export default {
     Query:{
         async getOrganization(_:any, _id:String) {
-            const organization = await Organizations.find({ _id });
-            console.log(organization)
+            const organization:any = await Organizations.findOne({ _id });
             return {
-                organization
+              id: organization._id,
+              ...organization._doc
             }
         }
     },
     Mutation: {
       async createOrganization(_:any, organization_name:String ) {
-        const organization = await new Organizations(organization_name);
-       
+        const organization:any = new Organizations(organization_name);
         organization.save()
         return {
-            organization
+          id: organization._id,
+          ...organization._doc
         };
       },
     }
@@ -25,6 +29,13 @@ export default {
 
 //   query {
 //     getOrganization(_id:"5fdbf69849792c27dcadfa75") {
+//         organization_name
+//     }
+//   }
+
+
+//   mutation {
+//     createOrganization(organization_name:"salut") {
 //         organization_name
 //     }
 //   }
