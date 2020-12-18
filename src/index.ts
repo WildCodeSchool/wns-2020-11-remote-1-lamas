@@ -24,10 +24,6 @@ const schema = makeExecutableSchema({
   resolvers:[organizationResolver],
 });
 
-
-
-import { graphqlHTTP } from 'express-graphql';
-
 dotenv.config();
 
 start();
@@ -37,6 +33,7 @@ const server = new ApolloServer({
   schema: schema
 });
 server.applyMiddleware({ app });
+export {server}
 const httpServer = new http.Server(app);
 
 const io = new Server(httpServer);
@@ -81,12 +78,5 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(join(__dirname, './frontend/build/index.html'));
   });
 }
-
-// GraphQL Test
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true
-}));
 
 httpServer.listen(PORT, () => console.log(`Apollo Server on http://localhost:${PORT}/graphql`));

@@ -14,15 +14,15 @@ beforeAll(async () => {
   });
 });
 
-beforeEach(async () => {
-  const collections = await mongoose.connection.db.collections();
+// beforeEach(async () => {
+//   const collections = await mongoose.connection.db.collections();
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const collection of collections) {
-    // eslint-disable-next-line no-await-in-loop
-    await collection.deleteMany({});
-  }
-});
+//   // eslint-disable-next-line no-restricted-syntax
+//   for (const collection of collections) {
+//     // eslint-disable-next-line no-await-in-loop
+//     await collection.deleteMany({});
+//   }
+// });
 
 afterAll(async () => {
   await mongo.stop();
