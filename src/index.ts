@@ -6,6 +6,8 @@ import http from 'http';
 import start from './database/db';
 import * as dotenv from "dotenv";
 
+import { graphqlHTTP } from 'express-graphql';
+
 dotenv.config();
 
 start();
@@ -64,6 +66,11 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-
+// GraphQL Test
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true
+}));
 
 httpServer.listen(PORT, () => console.log(`Apollo Server on http://localhost:${PORT}/graphql`));
