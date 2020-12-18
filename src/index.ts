@@ -5,17 +5,10 @@ import { Server, Socket } from 'socket.io';
 import http from 'http';
 import start from './database/db';
 import * as dotenv from "dotenv";
-
-import { graphqlHTTP } from 'express-graphql';
-
-dotenv.config();
-
-start();
-
-const app = express();
-const httpServer = new http.Server(app);
-
-const io = new Server(httpServer);
+import {ApolloServer} from 'apollo-server-express'
+import {makeExecutableSchema} from 'apollo-server'
+import {OrganizationType} from "./graphql/typeDef"
+import {organizationResolver} from './graphql/resolvers'
 
 import {
   addUser,
@@ -24,6 +17,29 @@ import {
   getUserCount,
   getMoodCounter,
 } from './user';
+
+
+const schema = makeExecutableSchema({
+  typeDefs:[OrganizationType],
+  resolvers:[organizationResolver],
+});
+
+
+
+import { graphqlHTTP } from 'express-graphql';
+
+dotenv.config();
+
+start();
+
+const app = express();
+const server = new ApolloServer({
+  schema: schema
+});
+server.applyMiddleware({ app });
+const httpServer = new http.Server(app);
+
+const io = new Server(httpServer);
 
 
 const PORT = process.env.PORT || 8000;
