@@ -21,7 +21,7 @@ mutation($organization_name:String) {
 
 let id = ''
 
-test("create organization", async () => {
+it("create organization", async (done) => {
     const { query, mutate } = createTestClient(serverApollo);
 
     const res = await mutate({ mutation: CREATE_ORGANIZATION, variables: {organization_name: "testing" }})
@@ -35,6 +35,7 @@ test("create organization", async () => {
     // });
   
   console.log('RES DATA CREATION', res.data.createOrganization._id)
+  done()
   });
 
   

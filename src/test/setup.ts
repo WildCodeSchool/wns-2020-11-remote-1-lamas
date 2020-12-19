@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import MongoDB_start from '../database/db'
 
+async function removeAllCollections () {
+  const collections = Object.keys(mongoose.connection.collections)
+  for (const collectionName of collections) {
+    const collection = mongoose.connection.collections[collectionName]
+    await collection.deleteMany({})
+  }
+}
+
 async function dropAllCollections () {
   const collections = Object.keys(mongoose.connection.collections)
   for (const collectionName of collections) {
@@ -22,7 +30,11 @@ async function dropAllCollections () {
     await MongoDB_start()
   });
 
+  afterEach(async () => {
+    await removeAllCollections()
+  })
+
   afterAll(async () => {
-  await dropAllCollections()
-  await mongoose.connection.close();
+    await dropAllCollections()
+    await mongoose.connection.close();
 });
