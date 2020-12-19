@@ -8,9 +8,8 @@ import Organizations from '../../database/models/Organization';
 
 export default {
     Query:{
-        async getOrganization(_:any,  _id ) {
+        async getOrganization(_:any,  _id:String ) {
             const organization = await Organizations.findOne({ _id }); // find by id
-
             if (!organization) throw new Error()
             return organization
         }

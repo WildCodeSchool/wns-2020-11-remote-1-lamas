@@ -3,12 +3,11 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const dbUrl = process.env.MONGODB_URI;
+const dbUrl = process.env.NODE_ENV !=='test' ? process.env.MONGODB_URI : process.env.MONGODB_URI_TESTING;
 
-const start = async () => {
+const MongoDB_start = async () => {
   try {
     // Database
-
     await mongoose.connect(`${dbUrl}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -16,11 +15,11 @@ const start = async () => {
       autoIndex: true,
     });
     // eslint-disable-next-line no-console
-    console.log('Connected to database');
+    console.log(`Connected to database`);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(err);
   }
 };
 
-export default start
+export default MongoDB_start

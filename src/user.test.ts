@@ -1,17 +1,6 @@
-import { addUser, getUserCount, IncrementEmojis, getMoodCounter, removeUser } from './user';
-import Organizations from './database/models/Organization'
 import { createTestClient } from 'apollo-server-testing';
-import { ApolloServer, gql, makeExecutableSchema } from 'apollo-server';
-import { OrganizationType } from "./graphql/typeDef"
-import { organizationResolver } from './graphql/resolvers'
-
-const schema = makeExecutableSchema({
-    typeDefs:[OrganizationType],
-    resolvers:[organizationResolver],
-  });
-
-const server = new ApolloServer({ schema });
-
+import { gql } from 'apollo-server';
+import serverApollo from './graphql/graphqlServer'
 
 const FIND_ORGANIZATION = gql`
 query($_id:ID!) {
@@ -21,19 +10,22 @@ query($_id:ID!) {
 }
 `;
 
-
 const CREATE_ORGANIZATION = gql`
 mutation($organization_name:String) {
-    getOrganization(organization_name: $organization_name) {
+    createOrganization(organization_name: $organization_name) {
+        _id,
         organization_name
     }
 }
 `;
 
-test("create organization", async () => {
-    const { query, mutate } = createTestClient(server);
+let id = ''
 
-    const res = await mutate({ mutation: CREATE_ORGANIZATION, variables: {organization_name: "saluuuuuuut" }})
+test("create organization", async () => {
+    const { query, mutate } = createTestClient(serverApollo);
+
+    const res = await mutate({ mutation: CREATE_ORGANIZATION, variables: {organization_name: "testing" }})
+  
     // expect(res).toEqual({
     //     data: {
     //         getOrganization: {
@@ -42,23 +34,29 @@ test("create organization", async () => {
     //     }
     // });
   
-  console.log('RES DATA CREATION', res.data)
+  console.log('RES DATA CREATION', res.data.createOrganization._id)
   });
 
-test("get organization", async () => {
-    const { query, mutate } = createTestClient(server);
-
-    const res = await query({ query: FIND_ORGANIZATION, variables: {_id: "5fdbf69849792c27dcadfa75" }})
-    expect(res).toEqual({
-        data: {
-            getOrganization: {
-                organization_name: 'saluuuuuuut'
-            }
-        }
-    });
   
-  console.log('RES DATA', res.data)
-  });
+
+// test("get organization", async () => {
+//     const { query, mutate } = createTestClient(server);
+
+// const resfind = await query({ query: FIND_ORGANIZATION, variables: {_id:  "5fdca9ddd3b3ca26d625d155"}})
+
+// console.log('RES DATA GET', resfind.data.getOrganization)
+
+// //     const res = await query({ query: FIND_ORGANIZATION, variables: {_id: "5fdbf69849792c27dcadfa75" }})
+// //     expect(res).toEqual({
+// //         data: {
+// //             getOrganization: {
+// //                 organization_name: 'saluuuuuuut'
+// //             }
+// //         }
+// //     });
+  
+// //   console.log('RES DATA', res.data)
+//   });
 
 // describe('createOrganization', () => {
 //     describe('when passed an id', () => {

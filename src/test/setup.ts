@@ -1,30 +1,28 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import MongoDB_start from '../database/db'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let mongo: any;
-beforeAll(async () => {
-  mongo = new MongoMemoryServer();
-  const mongoUri = await mongo.getUri();
+async function dropAllCollections () {
+  const collections = Object.keys(mongoose.connection.collections)
+  for (const collectionName of collections) {
+    const collection = mongoose.connection.collections[collectionName]
+    try {
+      await collection.drop()
+    } catch (error) {
+      // Sometimes this error happens, but you can safely ignore it
+      if (error.message === 'ns not found') return
+      // This error occurs when you use it.todo. You can
+      // safely ignore this error too
+      if (error.message.includes('a background operation is currently running')) return
+      console.log(error.message)
+    }
+  }
+}
 
-  await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  beforeAll(async () => {
+    await MongoDB_start()
   });
-});
 
-// beforeEach(async () => {
-//   const collections = await mongoose.connection.db.collections();
-
-//   // eslint-disable-next-line no-restricted-syntax
-//   for (const collection of collections) {
-//     // eslint-disable-next-line no-await-in-loop
-//     await collection.deleteMany({});
-//   }
-// });
-
-afterAll(async () => {
-  await mongo.stop();
+  afterAll(async () => {
+  await dropAllCollections()
   await mongoose.connection.close();
 });
