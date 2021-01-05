@@ -68,5 +68,5 @@
     "jsx": "react-jsx"
   },
   "include":["frontend/src/custom.d.ts"],
-  "exclude": ["src/*/.spec.ts", "frontend","**/*.d.ts","./jest.config.js"]  
+  "exclude": ["src/*/.spec.ts", "frontend","**/*.d.ts"]  
 }

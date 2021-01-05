@@ -5,7 +5,7 @@ import Emojis from '../Emojis/Emojis';
 
 const ENDPOINT =
   process.env.NODE_ENV === 'production'
-    ? 'https://lamass-project.herokuapp.com'
+    ? 'https://lamaswild.herokuapp.com/'
     : 'localhost:8000';
 
 const socket: Socket = io(ENDPOINT, {
