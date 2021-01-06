@@ -2,6 +2,7 @@ import React from 'react';
 import Student from './Student';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
+import socket from '../../socket/socket'
 
 jest.mock('../../socket/socket');
 
@@ -10,14 +11,6 @@ describe('Student', () => {
         render(<Student />);
         expect(screen.queryByRole('heading', { level: 2 })).toBeInTheDocument();
     })
-
-    // emit join
-    // it('emit join on mounting', () => {
-        
-    //     socket.emit = jest.fn()
-    //     render(<Student />)
-    //     expect(mSocket.emit).toHaveBeenCalledWith('join', {});
-    // })
 
     describe('Student renders Emojis component', () => {
         it('renders emojis component in student component', () => {
@@ -33,8 +26,9 @@ describe('Student', () => {
                 emit: jest.fn()
             }
             render(<Student />);
-            fireEvent.click(screen.getByAltText('Happy'));      
-            expect(mSocket.emit.mock.calls.length).toBe(1)
+            fireEvent.click(screen.getByAltText('Happy'));
+            expect(socket.emit).toHaveBeenCalledTimes(2);
+            expect(socket.emit).toHaveBeenLastCalledWith("changeMood", "Happy", "Emotion");
         })
     })
 })

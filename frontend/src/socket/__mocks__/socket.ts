@@ -1,5 +1,5 @@
 const socket = {
-    emit: () => console.log("test mock")
+    emit: jest.fn()
 }
 
 export default socket;
