@@ -19,8 +19,18 @@ jobs:
       - name: Install dependencies
         run: cd backend && npm install && npm run test
 
- # tests-frontend:
-   # runs-on: ubuntu-latest
-    #steps:
-    # - uses: actions/checkout@master
-    # - run: cd frontend && npm run test
+  tests-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      # 2: Checkout repository in the CWD
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 3: install NPM dependencies
+      - name: Install dependencies
+        run: cd frontend && npm install && npm run test
