@@ -1,9 +1,14 @@
 services:
   lamas-frontend:
     build: ./frontend
-    ports: 
+    ports:
       - 3000:3000
+    volumes:
+      - ./frontend/src:/app/src
+
   lamas-backend:
     build: ./backend
-    ports: 
+    ports:
       - 8000:8000
+    volumes:
+      - ./backend/src:/app/src
