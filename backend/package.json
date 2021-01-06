@@ -8,7 +8,7 @@
     "npm": "6.14.1"
   },
   "scripts": {
-    "start": "nodemon dist/src/index.js",
+    "start": "node dist/src/index.js",
     "heroku-postbuild": "tsc & cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "lint": "eslint src/*/ frontend --fix",
     "test": "jest --watchAll --no-cache",

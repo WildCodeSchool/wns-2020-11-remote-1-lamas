@@ -4,7 +4,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY package.json package.json
 RUN npm i
-RUN npm i typescript
+COPY tsconfig.json tsconfig.json
 COPY ./src ./src
-RUN tsc
+COPY ./public ./public
 CMD npm run start

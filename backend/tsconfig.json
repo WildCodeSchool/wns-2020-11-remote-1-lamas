@@ -67,6 +67,5 @@
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     "jsx": "react-jsx"
   },
-  "include":["frontend/src/custom.d.ts"],
-  "exclude": ["src/*/.spec.ts", "frontend","**/*.d.ts"]  
+  "exclude": ["src/*/.spec.ts"]  
 }
