@@ -4,8 +4,23 @@ on: [push,pull_request]
 jobs:
   tests-backend:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
+    steps:    
+    # 1: setup node
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      # 2: Checkout repository in the CWD
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 3: install NPM dependencies
+      - name: Install dependencies
+        run: npm install
+      
+      # 4: run test command
+      - name: Run test command
       - run: cd backend && npm run test
   tests-frontend:
     runs-on: ubuntu-latest
