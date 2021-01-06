@@ -2,9 +2,8 @@ import React from 'react';
 import Student from './Student';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
-// import MockedSocket from 'socket.io-mock';
 
-// jest.mock('socket.io-client');
+jest.mock('../../socket/socket');
 
 describe('Student', () => {
     it('renders student component', () => {
