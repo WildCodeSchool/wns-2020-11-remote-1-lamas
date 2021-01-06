@@ -1,0 +1,14 @@
+name: Automated browser tests
+on: ["push","pull-request"]
+
+jobs:
+  tests-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: cd backend && npm run test
+  tests-frontend:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@master
+     - run: cd frontend && npm run test
