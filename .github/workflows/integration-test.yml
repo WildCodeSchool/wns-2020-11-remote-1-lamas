@@ -1,5 +1,5 @@
 name: Automated browser tests
-on: ["push","pull-request"]
+on: [push,pull_request]
 
 jobs:
   tests-backend:
