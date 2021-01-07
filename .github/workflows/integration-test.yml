@@ -2,7 +2,6 @@ name: Automated browser tests
 on: [push,pull_request]
 
 jobs:
-  
   tests-backend:
     runs-on: ubuntu-latest
     steps:    
@@ -39,4 +38,8 @@ jobs:
 
       # 3: install NPM dependencies
       - name: Install dependencies
-        run: cd frontend && npm install && npm run test
+        run: cd frontend && npm install
+        
+        # 3: launch test front
+      - name: launch test front
+        run: cd frontend && npm run test
