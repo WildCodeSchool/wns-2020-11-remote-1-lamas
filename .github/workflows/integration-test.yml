@@ -1,14 +1,10 @@
 name: Automated browser tests
 on: [push,pull_request]
 
-env: 
-  MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
 jobs:
   
   tests-backend:
     runs-on: ubuntu-latest
-    env: 
-      MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
     steps:    
     # 1: setup node
       - name: Setup Node.js
@@ -23,8 +19,6 @@ jobs:
       # 3: install NPM dependencies
       - name: Install dependencies
         run: cd backend && npm ci
-        env: 
-          MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
 
       - name : launch test
         run:  cd backend && npm run test
