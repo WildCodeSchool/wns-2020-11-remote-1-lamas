@@ -18,6 +18,8 @@ jobs:
       # 3: install NPM dependencies
       - name: Install dependencies
         run: cd backend && npm install && npm run test
+        env: 
+          MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
 
   tests-frontend:
     runs-on: ubuntu-latest
