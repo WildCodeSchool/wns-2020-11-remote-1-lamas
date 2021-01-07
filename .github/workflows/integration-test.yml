@@ -19,12 +19,12 @@ jobs:
       - name: Install dependencies
         run: cd backend && npm ci
         env: 
-          MONGODB_URI_TESTING: ${{ env.MONGODB_URI_TESTING }}
+          MONGODB_URI_TESTING: ${{ env.CI-test }}
 
       - name : launch test
         run:  cd backend && npm run test
         env: 
-          MONGODB_URI_TESTING: ${{ env.MONGODB_URI_TESTING }}
+          MONGODB_URI_TESTING: ${{ env.CI-test }}
 
   tests-frontend:
     runs-on: ubuntu-latest
