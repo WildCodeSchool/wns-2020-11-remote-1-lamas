@@ -5,12 +5,10 @@ dotenv.config();
 
 const dbUrl = process.env.NODE_ENV !=='test' ? process.env.MONGODB_URI : process.env.MONGODB_URI_TESTING;
 
-console.log('mongodb', process.env.MONGODB_URI_TESTING )
-
 const MongoDB_start = async () => {
   try {
     // Database
-    await mongoose.connect(`/`, {
+    await mongoose.connect(`${dbUrl}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
