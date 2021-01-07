@@ -9,10 +9,9 @@
   },
   "scripts": {
     "start": "node dist/src/index.js",
-    "heroku-postbuild": "tsc & cd frontend && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "lint": "eslint src/*/ frontend --fix",
     "test": "jest --watchAll --no-cache",
-    "test:watch": "jest --watch",
+    "test:ci": "jest --no-cache",
     "build": "tsc",
     "start:watch": "tsc -w & nodemon dist/src/index.js",
     "server": "nodemon src/index.ts",

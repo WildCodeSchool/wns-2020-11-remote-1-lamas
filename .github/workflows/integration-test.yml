@@ -9,7 +9,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 13
 
       # 2: Checkout repository in the CWD
       - name: Checkout repository
@@ -17,7 +17,10 @@ jobs:
 
       # 3: install NPM dependencies
       - name: Install dependencies
-        run: cd backend && npm install && npm run test
+        run: cd backend && npm ci
+
+      - name : launch test
+        run:  cd backend && npm run test:ci
         env: 
           MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
 
@@ -27,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 13
 
       # 2: Checkout repository in the CWD
       - name: Checkout repository
@@ -35,4 +38,8 @@ jobs:
 
       # 3: install NPM dependencies
       - name: Install dependencies
-        run: cd frontend && npm install && npm run test
+        run: cd frontend && npm install
+        
+        # 3: launch test front
+      - name: launch test front
+        run: cd frontend && npm run test
