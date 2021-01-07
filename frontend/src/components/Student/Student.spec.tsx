@@ -1,35 +1,37 @@
 import React from 'react';
 import Student from './Student';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import "@testing-library/jest-dom";
-import socket from '../../socket/socket'
+import { fireEvent, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import socket from '../../socket/socket';
 
 jest.mock('../../socket/socket');
 
 describe('Student', () => {
-    it('renders student component', () => {
-        render(<Student />);
-        expect(screen.queryByRole('heading', { level: 2 })).toBeInTheDocument();
-    })
+  it('renders student component', () => {
+    render(<Student />);
+    expect(screen.queryByRole('heading', { level: 2 })).toBeInTheDocument();
+  });
 
-    describe('Student renders Emojis component', () => {
-        it('renders emojis component in student component', () => {
-            render(<Student />);
-            expect(screen.queryAllByRole('button')).toHaveLength(5);
-        })
-    })
+  describe('Student renders Emojis component', () => {
+    it('renders emojis component in student component', () => {
+      render(<Student />);
+      expect(screen.queryAllByRole('button')).toHaveLength(5);
+    });
+  });
 
-    // test emit changeMood
-    describe('When an emoji is clicked, socket message is emitted', () => {
-        it('Socket changeMood is emitting',() => {
-            const mSocket = {
-                emit: jest.fn()
-            }
-            render(<Student />);
-            fireEvent.click(screen.getByAltText('Happy'));
-            expect(socket.emit).toHaveBeenCalledTimes(2);
-            expect(socket.emit).toHaveBeenLastCalledWith("changeMood", "Happy", "Emotion");
-        })
-    })
-})
-
+  // test emit changeMood
+  describe('When an emoji is clicked, socket message is emitted', () => {
+    it('Socket changeMood is emitting', () => {
+      render(<Student />);
+      expect(socket.emit).toHaveBeenCalledTimes(1);
+      expect(socket.emit).toHaveBeenLastCalledWith('join', {});
+      fireEvent.click(screen.getByAltText('happy'));
+      expect(socket.emit).toHaveBeenCalledTimes(2);
+      expect(socket.emit).toHaveBeenLastCalledWith(
+        'changeMood',
+        'happy',
+        'Emotion'
+      );
+    });
+  });
+});

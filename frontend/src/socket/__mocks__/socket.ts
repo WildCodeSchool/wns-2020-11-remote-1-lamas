@@ -1,5 +1,6 @@
 const socket = {
-    emit: jest.fn()
-}
+  emit: jest.fn(),
+  on: jest.fn(),
+};
 
 export default socket;
