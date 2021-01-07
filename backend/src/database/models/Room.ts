@@ -5,11 +5,12 @@ const RoomSchema = new Schema({
   name: { type: String, required: true },
   user_count: { type: Number },
   emojis_list: {
-    Happy: { type: Number },
-    Dead: { type: Number },
-    Thinking: { type: Number },
-    Break: { type: Number },
-    SlowDown: { type: Number },
+    happy: { type: Number },
+    dead: { type: Number },
+    thinking: { type: Number },
+    coffee: { type: Number },
+    slowDown: { type: Number },
+    question: { type: Number },
   },
   users_list: [
     {

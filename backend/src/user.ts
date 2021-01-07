@@ -11,11 +11,12 @@ interface MoodCounter {
 }
 
 const moodCounter: MoodCounter = {
-  Happy: 0,
-  Dead: 0,
-  Thinking: 0,
-  Break: 0,
-  SlowDown: 0,
+  happy: 0,
+  dead: 0,
+  thinking: 0,
+  coffee: 0,
+  slowDown: 0,
+  question: 0,
 };
 
 const addUser = (id: string): void => {
