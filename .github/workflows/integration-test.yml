@@ -25,6 +25,9 @@ jobs:
         run: cd backend && npm ci
         env: 
           MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
+          
+      - name: check
+        run: echo "$MONGODB_URI_TESTING"
 
       - name : launch test
         run:  cd backend && npm run test
