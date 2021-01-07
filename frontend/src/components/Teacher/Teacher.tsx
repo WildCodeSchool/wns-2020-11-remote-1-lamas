@@ -1,17 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { Emoji, emojis } from '../../datas/Emojis'
+import socket from '../../socket/socket'
 import Emojis from '../Emojis/Emojis'
 import './Teacher.css';
-
-const ENDPOINT =
-  process.env.NODE_ENV === 'production'
-    ? 'https://lamaswild.herokuapp.com/'
-    : 'localhost:8000';
-
-const socket: Socket = io(ENDPOINT, {
-  transports: ['websocket'],
-});
 
 export interface MoodCounter {
   [k: string]: number;

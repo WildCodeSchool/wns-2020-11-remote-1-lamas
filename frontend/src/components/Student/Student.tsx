@@ -1,16 +1,9 @@
 import React, { useEffect, useContext } from 'react';
-import { io, Socket } from 'socket.io-client';
 import './Student.css';
 import Emojis from '../Emojis/Emojis';
+import socket from '../../socket/socket'
 
-const ENDPOINT =
-  process.env.NODE_ENV === 'production'
-    ? 'https://lamaswild.herokuapp.com/'
-    : 'localhost:8000';
 
-const socket: Socket = io(ENDPOINT, {
-  transports: ['websocket'],
-});
 
 const Student = (): JSX.Element => {
   useEffect(() => {
