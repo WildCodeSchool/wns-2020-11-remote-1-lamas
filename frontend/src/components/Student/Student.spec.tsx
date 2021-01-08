@@ -1,6 +1,6 @@
 import React from 'react';
-import Student from './Student';
 import { fireEvent, render, screen } from '@testing-library/react';
+import Student from './Student';
 import '@testing-library/jest-dom';
 import socket from '../../socket/socket';
 

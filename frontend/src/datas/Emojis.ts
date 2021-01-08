@@ -2,7 +2,7 @@ import thinking from '../asset/thinking.svg';
 import dead from '../asset/dead.svg';
 import happy from '../asset/happy.svg';
 import coffee from '../asset/cup.svg';
-import slowDown from '../asset/turtle.svg';
+import slowDown from '../asset/slowdown.svg';
 import question from '../asset/question.svg';
 
 export interface Emoji {

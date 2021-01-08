@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import './Student.css';
 import Emojis from '../Emojis/Emojis';
 import socket from '../../socket/socket';

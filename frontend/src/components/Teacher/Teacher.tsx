@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import socket from '../../socket/socket';
 import Emojis from '../Emojis/Emojis';
 import './Teacher.css';
-import { getColorByMood } from '../Methods/getColorByMood';
+import getColorByMood from '../Methods/getColorByMood';
 import { MoodCounter } from '../../datas/Emojis';
 
 const Teacher = (): JSX.Element => {

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Emoji, emojis } from '../../datas/Emojis';
-import { MoodCounter } from '../../datas/Emojis';
+import { Emoji, emojis, MoodCounter } from '../../datas/Emojis';
 
 interface EmojisProps {
   handleClick?: (name: string, category: string) => void;
@@ -40,9 +39,7 @@ const Emojis: React.FC<EmojisProps> = ({
                   src={emoji.image}
                   alt={emoji.name}
                 />
-                <p role="emojiCount">
-                  {emojisCounts && emojisCounts[emoji.name]}
-                </p>
+                <p>{emojisCounts && emojisCounts[emoji.name]}</p>
               </div>
             )}
           </div>

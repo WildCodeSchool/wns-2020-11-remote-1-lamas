@@ -1,6 +1,6 @@
 import { MoodCounter } from '../../datas/Emojis';
 
-export const getColorByMood = (
+const getColorByMood = (
   emojisCounts: MoodCounter,
   totalStudents: number
 ): string => {
@@ -18,3 +18,5 @@ export const getColorByMood = (
   }
   return 'rgba(148, 234, 72, 0.7)';
 };
+
+export default getColorByMood;

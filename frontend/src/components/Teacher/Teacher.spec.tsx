@@ -1,6 +1,6 @@
 import React from 'react';
-import Teacher from './Teacher';
 import { render, screen } from '@testing-library/react';
+import Teacher from './Teacher';
 import '@testing-library/jest-dom';
 import socket from '../../socket/socket';
 
@@ -15,7 +15,7 @@ describe('Teacher component', () => {
     );
   });
 
-  it('Handle students connection ', () => {
+  it('Handle students connection', () => {
     // socket on getincrement => change emojiCount
   });
 
