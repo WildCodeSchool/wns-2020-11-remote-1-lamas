@@ -1,45 +1,61 @@
-import Thinking from '../asset/thinking.svg';
-import Dead from '../asset/dead.svg';
-import Happy from '../asset/happy.svg';
-import Break from '../asset/cup.svg';
-import SlowDown from '../asset/turtle.svg';
+import thinking from '../asset/thinking.svg';
+import dead from '../asset/dead.svg';
+import happy from '../asset/happy.svg';
+import coffee from '../asset/cup.svg';
+import slowDown from '../asset/slowdown.svg';
+import question from '../asset/question.svg';
 
 export interface Emoji {
   id: number;
-  name: string;
+  name: 'happy' | 'dead' | 'thinking' | 'coffee' | 'slowDown' | 'question';
   image: string;
   category: string;
+}
+
+export interface MoodCounter {
+  happy: number;
+  dead: number;
+  thinking: number;
+  coffee: number;
+  slowDown: number;
+  question: number;
 }
 
 export const emojis: Emoji[] = [
   {
     id: 1,
-    name: 'Thinking',
-    image: Thinking,
+    name: 'happy',
+    image: happy,
     category: 'Emotion',
   },
   {
     id: 2,
-    name: 'Dead',
-    image: Dead,
+    name: 'thinking',
+    image: thinking,
     category: 'Emotion',
   },
   {
     id: 3,
-    name: 'Happy',
-    image: Happy,
+    name: 'dead',
+    image: dead,
     category: 'Emotion',
   },
   {
     id: 4,
-    name: 'Break',
-    image: Break,
+    name: 'coffee',
+    image: coffee,
     category: 'Action',
   },
   {
     id: 5,
-    name: 'SlowDown',
-    image: SlowDown,
+    name: 'slowDown',
+    image: slowDown,
+    category: 'Action',
+  },
+  {
+    id: 6,
+    name: 'question',
+    image: question,
     category: 'Action',
   },
 ];

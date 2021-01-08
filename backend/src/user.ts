@@ -11,11 +11,12 @@ interface MoodCounter {
 }
 
 const moodCounter: MoodCounter = {
-  Happy: 0,
-  Dead: 0,
-  Thinking: 0,
-  Break: 0,
-  SlowDown: 0,
+  happy: 0,
+  dead: 0,
+  thinking: 0,
+  coffee: 0,
+  slowDown: 0,
+  question: 0,
 };
 
 const addUser = (id: string): void => {
@@ -34,9 +35,8 @@ const IncrementEmojis = (name: string, id: string, category: string): void => {
     users[currentUser].mood = name;
     moodCounter[name]++;
   } else if (category === 'Action') {
-    if (users[currentUser].action.indexOf(name) === -1) {
+    if (users[currentUser]?.action.indexOf(name) === -1) {
       users[currentUser].action.push(name);
-      users[currentUser].mood = name;
       moodCounter[name]++;
     }
   }
@@ -49,7 +49,16 @@ const getMoodCounter = (): MoodCounter => {
 const removeUser = (id: string): void => {
   const index = users.findIndex((user) => user.socketId === id);
   if (index !== -1) {
-    // eslint-disable-next-line no-unused-expressions
+    // remove emotion & actions from emojisCount
+    const userMood = users[index].mood;
+    const userActions = users[index].action;
+    if (userActions.length > 0) {
+      userActions.map((action) => {
+        moodCounter[action]--;
+      });
+    }
+    moodCounter[userMood]--;
+    // remove user
     users.splice(index, 1)[0];
   }
 };
