@@ -18,6 +18,9 @@ const moodCounter: MoodCounter = {
   SlowDown: 0,
 };
 
+/* eslint-disable no-plusplus */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 const addUser = (id: string): void => {
   users.push({ socketId: id, mood: 'default', action: [] });
 };
@@ -47,11 +50,11 @@ const getMoodCounter = (): MoodCounter => {
 };
 
 const removeUser = (id: string): void => {
-  const index = users.findIndex((user) => user.socketId === id);
-  if (index !== -1) {
-    // eslint-disable-next-line no-unused-expressions
-    users.splice(index, 1)[0];
-  }
+  // const index = users.findIndex((user) => user.socketId === id);
+  // if (index !== -1) {
+  //   /* "@typescript-eslint/no-unused-expressions" : "off" */
+  //   users.splice(index, 1)[0];
+  // }
 };
 
 export { addUser, IncrementEmojis, removeUser, getUserCount, getMoodCounter };

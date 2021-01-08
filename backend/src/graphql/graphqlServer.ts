@@ -1,18 +1,15 @@
-
-import {makeExecutableSchema} from 'apollo-server'
-import {OrganizationType} from "./typeDef"
-import {organizationResolver} from './resolvers'
-import {ApolloServer} from 'apollo-server-express'
+import { makeExecutableSchema } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
+import typeDefs from './typeDef';
+import resolvers from './resolvers';
 
 const schema = makeExecutableSchema({
-    typeDefs:[OrganizationType],
-    resolvers:[organizationResolver],
-  });
-
+  typeDefs,
+  resolvers,
+});
 
 const serverApollo = new ApolloServer({
-    schema: schema
-  });
+  schema,
+});
 
-
-  export default serverApollo
+export default serverApollo;

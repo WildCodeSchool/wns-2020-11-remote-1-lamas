@@ -1,11 +1,14 @@
 import mongoose from 'mongoose';
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const dbUrl = process.env.NODE_ENV !=='test' ? process.env.MONGODB_URI : process.env.MONGODB_URI_TESTING;
+const dbUrl =
+  process.env.NODE_ENV !== 'test'
+    ? process.env.MONGODB_URI
+    : process.env.MONGODB_URI_TESTING;
 
-const MongoDB_start = async () => {
+const mongodbStart = async (): Promise<void> => {
   try {
     // Database
     await mongoose.connect(`${dbUrl}`, {
@@ -22,4 +25,4 @@ const MongoDB_start = async () => {
   }
 };
 
-export default MongoDB_start
+export default mongodbStart;
