@@ -24,6 +24,9 @@ const Teacher = (): JSX.Element => {
     socket.on('getIncrement', (moodCounter: MoodCounter) => {
       setEmojisCounts(moodCounter);
     });
+    socket.on('getDecrement', (moodCounter: MoodCounter) => {
+      setEmojisCounts(moodCounter);
+    });
   }, []);
 
   return (

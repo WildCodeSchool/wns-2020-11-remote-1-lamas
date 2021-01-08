@@ -4,8 +4,8 @@ import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
 import MongoDB_start from './database/db';
-import * as dotenv from "dotenv";
-import serverApollo from './graphql/graphqlServer'
+import * as dotenv from 'dotenv';
+import serverApollo from './graphql/graphqlServer';
 import {
   addUser,
   IncrementEmojis,
@@ -25,7 +25,6 @@ serverApollo.applyMiddleware({ app });
 const httpServer = new http.Server(app);
 const io = new Server(httpServer);
 app.use(cors());
-
 
 // socket io logic TO BE MODIFIED
 
@@ -50,7 +49,9 @@ io.on('connect', (socket: Socket) => {
   socket.on('disconnect', () => {
     removeUser(socket.id);
     const userCount = getUserCount();
+    const emojisDecremented = getMoodCounter();
     socket.broadcast.emit('sendUserCount', userCount);
+    socket.broadcast.emit('getDecrement', emojisDecremented);
   });
 });
 
@@ -64,5 +65,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = process.env.PORT || 8000;
-httpServer.listen(PORT, () => console.log(`Apollo Server on http://localhost:${PORT}/graphql`));
-
+httpServer.listen(PORT, () =>
+  console.log(`Apollo Server on http://localhost:${PORT}/graphql`)
+);
