@@ -26,13 +26,13 @@ describe('Teacher component', () => {
   });
 
   describe('Teacher render emojis component', () => {
-    it('Renders 5 paragraphs for emojiCount', () => {
+    it('Renders 6 paragraphs for emojiCount', () => {
       render(<Teacher />);
-      expect(screen.getAllByRole('emojiCount')).toHaveLength(5);
+      expect(screen.getAllByRole('paragraph')).toHaveLength(6);
     });
-    it('Renders 5 emojis', () => {
+    it('Renders 6 emojis', () => {
       render(<Teacher />);
-      expect(screen.queryAllByRole('img')).toHaveLength(5);
+      expect(screen.queryAllByRole('img')).toHaveLength(6);
     });
   });
 

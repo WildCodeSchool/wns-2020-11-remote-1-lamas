@@ -1,4 +1,4 @@
-import { getColorByMood } from './getColorByMood';
+import getColorByMood from './getColorByMood';
 
 const unhappy = {
   happy: 0,

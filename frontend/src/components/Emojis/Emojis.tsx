@@ -39,7 +39,9 @@ const Emojis: React.FC<EmojisProps> = ({
                   src={emoji.image}
                   alt={emoji.name}
                 />
-                <p>{emojisCounts && emojisCounts[emoji.name]}</p>
+                <p role="paragraph">
+                  {emojisCounts && emojisCounts[emoji.name]}
+                </p>
               </div>
             )}
           </div>

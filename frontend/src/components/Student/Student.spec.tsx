@@ -15,7 +15,7 @@ describe('Student', () => {
   describe('Student renders Emojis component', () => {
     it('renders emojis component in student component', () => {
       render(<Student />);
-      expect(screen.queryAllByRole('button')).toHaveLength(5);
+      expect(screen.queryAllByRole('button')).toHaveLength(6);
     });
   });
 

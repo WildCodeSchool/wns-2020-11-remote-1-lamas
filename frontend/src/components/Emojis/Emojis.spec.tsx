@@ -5,9 +5,9 @@ import Emojis from './Emojis';
 
 describe('Emojis', () => {
   describe('Emojis for student', () => {
-    it('renders 5 emojis buttons', () => {
+    it('renders 6 emojis buttons', () => {
       render(<Emojis isStudent />);
-      expect(screen.queryAllByRole('button')).toHaveLength(5);
+      expect(screen.queryAllByRole('button')).toHaveLength(6);
     });
     describe('can click on button', () => {
       it('click event is fired', () => {
@@ -20,9 +20,9 @@ describe('Emojis', () => {
     });
   });
   describe('Emoji for teacher', () => {
-    it('renders 5 emojis images', () => {
+    it('renders 6 emojis images', () => {
       render(<Emojis />);
-      expect(screen.queryAllByRole('img')).toHaveLength(5);
+      expect(screen.queryAllByRole('img')).toHaveLength(6);
     });
     it('render count emoji', () => {
       // faire un mock
