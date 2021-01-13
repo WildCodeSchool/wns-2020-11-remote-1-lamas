@@ -1,20 +1,26 @@
-import Organizations from '../../database/models/Organization';
+import Organizations, {
+  IOrganization,
+} from '../../database/models/Organization';
 
 // typegraphQL typegoose
 
 export default {
   Query: {
-    async getOrganization(_: any, organizationId: string) {
+    async getOrganization(
+      _: void,
+      organizationId: string
+    ): Promise<IOrganization> {
       const organization = await Organizations.findById(organizationId);
-
       return organization;
     },
   },
   Mutation: {
-    async createOrganization(_: any, organizationName: string) {
-      const organization: any = new Organizations(organizationName);
+    async createOrganization(
+      _: void,
+      organizationName: string
+    ): Promise<IOrganization> {
+      const organization = new Organizations(organizationName);
       await organization.save();
-
       return organization;
     },
   },
