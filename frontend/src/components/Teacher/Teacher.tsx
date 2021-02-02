@@ -3,7 +3,7 @@ import socket from '../../socket/socket';
 import Emojis from '../Emojis/Emojis';
 import './Teacher.css';
 import getColorByMood from '../Methods/getColorByMood';
-import { MoodCounter } from '../../datas/Emojis';
+import { MoodCounter } from '../../shared/Emojis';
 
 const Teacher = (): JSX.Element => {
   const [emojisCounts, setEmojisCounts] = useState<MoodCounter>({

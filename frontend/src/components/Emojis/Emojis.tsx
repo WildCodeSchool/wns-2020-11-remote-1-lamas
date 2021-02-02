@@ -1,10 +1,12 @@
 import React from 'react';
-import { Emoji, emojis, MoodCounter } from '../../datas/Emojis';
+import { Emoji, emojis, MoodCounter } from '../../shared/Emojis';
+import { User } from '../../shared/Users';
 
 interface EmojisProps {
   handleClick?: (name: string, category: string) => void;
   isStudent?: boolean;
   emojisCounts?: MoodCounter;
+  studentInfos?: User;
 }
 
 const Emojis: React.FC<EmojisProps> = ({

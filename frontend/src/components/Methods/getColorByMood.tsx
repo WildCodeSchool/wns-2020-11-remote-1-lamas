@@ -1,4 +1,4 @@
-import { MoodCounter } from '../../datas/Emojis';
+import { MoodCounter } from '../../shared/Emojis';
 
 const getColorByMood = (
   emojisCounts: MoodCounter,

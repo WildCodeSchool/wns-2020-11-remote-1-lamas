@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import './Student.css';
 import Emojis from '../Emojis/Emojis';
 import socket from '../../socket/socket';
+import { User } from '../../shared/Users';
 
 const Student = (): JSX.Element => {
   useEffect(() => {
