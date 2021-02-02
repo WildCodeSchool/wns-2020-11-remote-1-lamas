@@ -2,8 +2,6 @@ import Organizations, {
   IOrganization,
 } from '../../database/models/Organization';
 
-// typegraphQL typegoose
-
 export default {
   Query: {
     async getOrganization(

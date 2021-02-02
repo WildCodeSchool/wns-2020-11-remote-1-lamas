@@ -1,8 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
+
+type ID = Types.ObjectId;
 
 const { Schema } = mongoose;
+
+export interface IClass extends mongoose.Document {
+  class_name: string;
+  user_id?: ID[];
+}
+
 const ClassSchema = new Schema({
-  class_name: { type: String },
+  class_name: { type: String, required: true },
   user_id: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,4 +19,4 @@ const ClassSchema = new Schema({
   ],
 });
 
-export default mongoose.model('classes', ClassSchema);
+export default mongoose.model<IClass>('classes', ClassSchema);
