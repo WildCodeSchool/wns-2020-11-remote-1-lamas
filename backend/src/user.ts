@@ -3,14 +3,14 @@ const users: User[] = [];
 interface User {
   socketId: string;
   mood: string;
-  action: string[];
+  actions: string[];
 }
 
 interface MoodCounter {
   [k: string]: number;
 }
 
-const moodCounter: MoodCounter = {
+let moodCounter: MoodCounter = {
   happy: 0,
   dead: 0,
   thinking: 0,
@@ -23,14 +23,19 @@ const moodCounter: MoodCounter = {
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 const addUser = (id: string): void => {
-  users.push({ socketId: id, mood: 'default', action: [] });
+  users.push({ socketId: id, mood: 'default', actions: [] });
 };
 
 const getUserCount = (): number => {
   return users.length;
 };
 
-const IncrementEmojis = (name: string, id: string, category: string): void => {
+const getUserInfos = (id: string): User => {
+  const currentUser = users.findIndex((user) => user.socketId === id);
+  return users[currentUser];
+};
+
+const getEmojisCount = (name: string, id: string, category: string): void => {
   const currentUser = users.findIndex((user) => user.socketId === id);
 
   if (category === 'Emotion' && users[currentUser].mood !== name) {
@@ -38,8 +43,8 @@ const IncrementEmojis = (name: string, id: string, category: string): void => {
     users[currentUser].mood = name;
     moodCounter[name]++;
   } else if (category === 'Action') {
-    if (users[currentUser]?.action.indexOf(name) === -1) {
-      users[currentUser].action.push(name);
+    if (users[currentUser]?.actions.indexOf(name) === -1) {
+      users[currentUser].actions.push(name);
       moodCounter[name]++;
     }
   }
@@ -54,11 +59,10 @@ const removeUser = (id: string): void => {
   if (index !== -1) {
     // remove emotion & actions from emojisCount
     const userMood = users[index].mood;
-    const userActions = users[index].action;
+    const userActions = users[index].actions;
     if (userActions.length > 0) {
-      // eslint-disable-next-line array-callback-return
-      userActions.map((action) => {
-        moodCounter[action]--;
+      userActions.map((actions) => {
+        moodCounter[actions]--;
       });
     }
     moodCounter[userMood]--;
@@ -68,4 +72,11 @@ const removeUser = (id: string): void => {
   }
 };
 
-export { addUser, IncrementEmojis, removeUser, getUserCount, getMoodCounter };
+export {
+  addUser,
+  getEmojisCount,
+  removeUser,
+  getUserCount,
+  getMoodCounter,
+  getUserInfos,
+};
