@@ -6,6 +6,7 @@ import getColorByMood from '../Methods/getColorByMood';
 import { MoodCounter } from '../../shared/Emojis';
 
 const Teacher = (): JSX.Element => {
+  const [totalStudents, setTotalStudents] = useState(0);
   const [emojisCounts, setEmojisCounts] = useState<MoodCounter>({
     happy: 0,
     dead: 0,
@@ -14,14 +15,13 @@ const Teacher = (): JSX.Element => {
     slowDown: 0,
     question: 0,
   });
-  const [totalStudents, setTotalStudents] = useState(0);
 
   useEffect(() => {
     socket.emit('joinTeacher', {});
     socket.on('sendUserCount', (userCount: number) => {
       setTotalStudents(userCount);
     });
-    socket.on('getIncrement', (moodCounter: MoodCounter) => {
+    socket.on('getEmojisCount', (moodCounter: MoodCounter) => {
       setEmojisCounts(moodCounter);
     });
     socket.on('getDecrement', (moodCounter: MoodCounter) => {

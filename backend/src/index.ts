@@ -8,10 +8,11 @@ import * as dotenv from 'dotenv';
 import serverApollo from './graphql/graphqlServer';
 import {
   addUser,
-  IncrementEmojis,
+  getEmojisCount,
   removeUser,
   getUserCount,
   getMoodCounter,
+  getUserInfos,
 } from './user';
 
 dotenv.config();
@@ -36,14 +37,16 @@ io.on('connect', (socket: Socket) => {
   });
 
   socket.on('joinTeacher', () => {
-    const emojisIncremented = getMoodCounter();
-    socket.emit('getIncrement', emojisIncremented);
+    const emojisCount = getMoodCounter();
+    socket.emit('getEmojisCount', emojisCount);
   });
 
   socket.on('changeMood', (name, category) => {
-    IncrementEmojis(name, socket.id, category);
-    const emojisIncremented = getMoodCounter();
-    socket.broadcast.emit('getIncrement', emojisIncremented);
+    getEmojisCount(name, socket.id, category);
+    const emojisCount = getMoodCounter();
+    socket.broadcast.emit('getEmojisCount', emojisCount);
+    const user = getUserInfos(socket.id);
+    socket.emit('userInfos', user);
   });
 
   socket.on('disconnect', () => {
