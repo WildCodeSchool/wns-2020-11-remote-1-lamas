@@ -53,6 +53,7 @@ describe('organization test', () => {
       variables: { organizationId },
     });
 
+    // console.log(res.errors[0].extensions.exception);
     expect(res.data).toHaveProperty('getOrganization');
     expect(typeof res.data.getOrganization).toBe('object');
     expect(res.data.getOrganization).toHaveProperty('_id');

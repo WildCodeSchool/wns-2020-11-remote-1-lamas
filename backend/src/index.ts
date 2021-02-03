@@ -14,6 +14,7 @@ import {
   getUserCount,
   getMoodCounter,
 } from './user';
+import NotFoundError from './errors/NotFoundError';
 
 dotenv.config();
 
@@ -26,6 +27,11 @@ serverApollo.applyMiddleware({ app });
 const httpServer = new http.Server(app);
 const io = new Server(httpServer);
 app.use(cors());
+
+app.get('*', () => {
+  const error = new NotFoundError();
+  throw error;
+});
 
 // socket io logic TO BE MODIFIED
 
