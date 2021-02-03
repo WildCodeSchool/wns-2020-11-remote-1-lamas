@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io';
 import http from 'http';
 import * as dotenv from 'dotenv';
 import mongodbStart from './database/db';
+
 import serverApollo from './graphql/graphqlServer';
 import {
   addUser,
@@ -49,7 +50,9 @@ io.on('connect', (socket: Socket) => {
   socket.on('disconnect', () => {
     removeUser(socket.id);
     const userCount = getUserCount();
+    const emojisDecremented = getMoodCounter();
     socket.broadcast.emit('sendUserCount', userCount);
+    socket.broadcast.emit('getDecrement', emojisDecremented);
   });
 });
 
