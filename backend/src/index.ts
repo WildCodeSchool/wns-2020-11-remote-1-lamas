@@ -3,8 +3,9 @@ import { join } from 'path';
 import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
-import MongoDB_start from './database/db';
 import * as dotenv from 'dotenv';
+import mongodbStart from './database/db';
+
 import serverApollo from './graphql/graphqlServer';
 import {
   addUser,
@@ -17,7 +18,7 @@ import {
 
 dotenv.config();
 
-MongoDB_start();
+mongodbStart();
 
 // initialize express server with apollo and cors
 
@@ -67,6 +68,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+/* eslint-disable no-console */
 const PORT = process.env.PORT || 8000;
 httpServer.listen(PORT, () =>
   console.log(`Apollo Server on http://localhost:${PORT}/graphql`)

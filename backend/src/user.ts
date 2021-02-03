@@ -19,6 +19,9 @@ let moodCounter: MoodCounter = {
   question: 0,
 };
 
+/* eslint-disable no-plusplus */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 const addUser = (id: string): void => {
   users.push({ socketId: id, mood: 'default', actions: [] });
 };
@@ -64,6 +67,7 @@ const removeUser = (id: string): void => {
     }
     moodCounter[userMood]--;
     // remove user
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     users.splice(index, 1)[0];
   }
 };

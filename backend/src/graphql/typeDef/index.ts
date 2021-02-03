@@ -1,4 +1,4 @@
-import OrganizationType from './organization.type'
+import { mergeTypeDefs } from '@graphql-tools/merge';
+import OrganizationType from './organization.type';
 
-
-export {OrganizationType}
+export default mergeTypeDefs([OrganizationType]);

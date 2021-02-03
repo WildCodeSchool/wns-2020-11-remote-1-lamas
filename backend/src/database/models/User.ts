@@ -1,6 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
+
+type ID = Types.ObjectId;
 
 const { Schema } = mongoose;
+
+export interface IUser extends mongoose.Document {
+  firstname: string;
+  lastname: string;
+  role: string;
+  email: string;
+  password: string;
+  room_list?: ID[];
+  todos_list?: ID[];
+  organization_id?: ID[];
+}
+
 const UserSchema = new Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
@@ -26,4 +40,4 @@ const UserSchema = new Schema({
   },
 });
 
-export default mongoose.model('users', UserSchema);
+export default mongoose.model<IUser>('users', UserSchema);
