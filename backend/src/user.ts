@@ -19,6 +19,9 @@ const moodCounter: MoodCounter = {
   question: 0,
 };
 
+/* eslint-disable no-plusplus */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 const addUser = (id: string): void => {
   users.push({ socketId: id, mood: 'default', action: [] });
 };
@@ -53,12 +56,14 @@ const removeUser = (id: string): void => {
     const userMood = users[index].mood;
     const userActions = users[index].action;
     if (userActions.length > 0) {
+      // eslint-disable-next-line array-callback-return
       userActions.map((action) => {
         moodCounter[action]--;
       });
     }
     moodCounter[userMood]--;
     // remove user
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     users.splice(index, 1)[0];
   }
 };

@@ -19,10 +19,15 @@ jobs:
       - name: Install dependencies
         run: cd backend && npm ci
 
-      - name : launch test
+      # 4: Run jest test
+      - name : Launch jest test
         run:  cd backend && npm run test:ci
         env: 
           MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
+
+      # 5: Run lint test
+      - name: Launch lint test
+        run: cd backend && npm run lint
 
   tests-frontend:
     runs-on: ubuntu-latest
@@ -43,3 +48,7 @@ jobs:
         # 3: launch test front
       - name: launch test front
         run: cd frontend && npm run test
+
+        # 4: Run lint test
+      - name: Launch lint test
+        run: cd frontend && npm run lint
