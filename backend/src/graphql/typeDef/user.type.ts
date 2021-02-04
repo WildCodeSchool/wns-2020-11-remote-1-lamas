@@ -12,6 +12,10 @@ const UserType = gql`
     todos_list: ID
   }
 
+  type Query {
+    getUser(_id: ID!): User
+  }
+
   type Mutation {
     createUser(
       firstname: String

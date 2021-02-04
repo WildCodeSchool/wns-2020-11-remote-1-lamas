@@ -1,7 +1,7 @@
 import CustomError from './CustomError';
 
 class ForbiddenError extends CustomError {
-  constructor(public errors = []) {
+  constructor(public errors: string[] = []) {
     super('Forbidden error');
   }
 

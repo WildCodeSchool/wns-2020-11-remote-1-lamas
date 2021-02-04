@@ -1,7 +1,7 @@
 import CustomError from './CustomError';
 
 class BadRequestError extends CustomError {
-  constructor(public errors = []) {
+  constructor(public errors: string[] = []) {
     super('Bad request error');
   }
 

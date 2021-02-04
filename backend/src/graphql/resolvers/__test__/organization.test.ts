@@ -1,6 +1,12 @@
 import { createTestClient } from 'apollo-server-testing';
 import { gql } from 'apollo-server';
-import serverApollo from '../../graphqlServer';
+import createApolloServer from '../../../test/graphQlServerTest';
+
+import Users, { IUser } from '../../../database/models/User';
+
+// créer user with mongoose
+// créer un appolo server avec user parameter
+// créer un client avec apolo server
 
 const FIND_ORGANIZATION = gql`
   query($organizationId: ID!) {
@@ -20,10 +26,10 @@ const CREATE_ORGANIZATION = gql`
   }
 `;
 
-const { mutate, query } = createTestClient(serverApollo);
-
 describe('organization test', () => {
   it('create organization', async (done) => {
+    const { mutate, query } = await global.signin();
+
     const res = await mutate({
       mutation: CREATE_ORGANIZATION,
       variables: { organization_name: 'testing' },
@@ -41,6 +47,8 @@ describe('organization test', () => {
   });
 
   it('get organization', async (done) => {
+    const { mutate, query } = await global.signin();
+
     const organization = await mutate({
       mutation: CREATE_ORGANIZATION,
       variables: { organization_name: 'testing' },
@@ -53,7 +61,7 @@ describe('organization test', () => {
       variables: { organizationId },
     });
 
-    // console.log(res.errors[0].extensions.exception);
+    // console.log(res?.errors[0]?.extensions?.exception);
     expect(res.data).toHaveProperty('getOrganization');
     expect(typeof res.data.getOrganization).toBe('object');
     expect(res.data.getOrganization).toHaveProperty('_id');

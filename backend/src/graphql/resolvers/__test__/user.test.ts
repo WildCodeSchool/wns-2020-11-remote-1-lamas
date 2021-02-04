@@ -1,15 +1,6 @@
 import { createTestClient } from 'apollo-server-testing';
 import { gql } from 'apollo-server';
-import serverApollo from '../../graphqlServer';
-
-// const FIND_ORGANIZATION = gql`
-//   query($organizationId: ID!) {
-//     getOrganization(_id: $organizationId) {
-//       _id
-//       organization_name
-//     }
-//   }
-// `;
+import serverApollo from '../../../test/graphQlServerTest';
 
 const CREATE_USER = gql`
   mutation(
@@ -33,20 +24,33 @@ const CREATE_USER = gql`
   }
 `;
 
-const { mutate, query } = createTestClient(serverApollo);
+const FIND_USER = gql`
+  query($userId: ID!) {
+    getUser(_id: $userId) {
+      _id
+      firstname
+      lastname
+      email
+    }
+  }
+`;
 
 describe('user test', () => {
   it('create a new user', async (done) => {
+    const { mutate, query } = await global.signin();
+
     const res = await mutate({
       mutation: CREATE_USER,
       variables: {
         firstname: 'Auguste',
         lastname: 'Patoune',
         email: 'patoune@hotmail.fr',
-        password: 'mdpsuper@72320',
+        password: 'M!dpsuper@72320',
       },
     });
 
+    // console.log(res.errors[0].extensions.exception);
+    // console.log(res);
     expect(res.data).toHaveProperty('createUser');
     expect(typeof res.data.createUser).toBe('object');
     expect(res.data.createUser).toHaveProperty('_id');
@@ -57,27 +61,33 @@ describe('user test', () => {
     done();
   });
 
-  //   it('get organization', async (done) => {
-  //     const organization = await mutate({
-  //       mutation: CREATE_ORGANIZATION,
-  //       variables: { organization_name: 'testing' },
-  //     });
+  it('get user', async (done) => {
+    const { mutate, query } = await global.signin();
 
-  //     const organizationId = organization.data.createOrganization._id;
+    const user = await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        firstname: 'Auguste',
+        lastname: 'Patoune',
+        email: 'patoune@hotmail.fr',
+        password: 'M!dpsuper@72320',
+      },
+    });
 
-  //     const res = await query({
-  //       query: FIND_ORGANIZATION,
-  //       variables: { organizationId },
-  //     });
+    const userId = user.data.createUser._id;
 
-  //     // console.log(res.errors[0].extensions.exception);
-  //     expect(res.data).toHaveProperty('getOrganization');
-  //     expect(typeof res.data.getOrganization).toBe('object');
-  //     expect(res.data.getOrganization).toHaveProperty('_id');
-  //     expect(res.data.getOrganization).toHaveProperty(
-  //       'organization_name',
-  //       'testing'
-  //     );
-  //     done();
-  //   });
+    const res = await query({
+      query: FIND_USER,
+      variables: { userId },
+    });
+
+    // console.log(res.errors[0].extensions.exception);
+    expect(res.data).toHaveProperty('getUser');
+    expect(typeof res.data.getUser).toBe('object');
+    expect(res.data.getUser).toHaveProperty('_id');
+    expect(res.data.getUser).toHaveProperty('firstname', 'Auguste');
+    expect(res.data.getUser).toHaveProperty('lastname', 'Patoune');
+    expect(res.data.getUser).toHaveProperty('email', 'patoune@hotmail.fr');
+    done();
+  });
 });

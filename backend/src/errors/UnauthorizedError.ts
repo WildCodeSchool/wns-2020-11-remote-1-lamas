@@ -1,7 +1,7 @@
 import CustomError from './CustomError';
 
 class UnauthorizedError extends CustomError {
-  constructor(public errors = []) {
+  constructor(public errors: string[] = []) {
     super('You are not authorized');
   }
 

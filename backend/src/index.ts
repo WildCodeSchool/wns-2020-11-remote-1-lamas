@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io';
 import http from 'http';
 import * as dotenv from 'dotenv';
 import mongodbStart from './database/db';
+import cookieParser from 'cookie-parser';
 
 import serverApollo from './graphql/graphqlServer';
 import {
@@ -23,10 +24,12 @@ mongodbStart();
 // initialize express server with apollo and cors
 
 const app = express();
-serverApollo.applyMiddleware({ app });
+
+serverApollo.applyMiddleware({ app, cors: false });
 const httpServer = new http.Server(app);
 const io = new Server(httpServer);
 app.use(cors());
+app.use(cookieParser());
 
 app.get('*', () => {
   const error = new NotFoundError();

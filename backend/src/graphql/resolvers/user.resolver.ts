@@ -1,14 +1,16 @@
 import validator from 'validator';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import Users, { IUser } from '../../database/models/User';
 
 import InputError from '../../errors/InputError';
 import NotFoundError from '../../errors/NotFoundError';
+import createToken from '../utils/createToken';
+import BadRequestError from '../../errors/BadRequestError';
+import UnauthorizedError from '../../errors/UnauthorizedError';
 
 type ID = Types.ObjectId;
 
-interface IUserData {
-  _id: ID;
+interface IcreateUserData {
   firstname: string;
   lastname: string;
   role?: string;
@@ -19,33 +21,84 @@ interface IUserData {
   organization_id?: ID[];
 }
 
+interface IgetUserData {
+  _id: ID;
+}
+
 export default {
-  //   Query: {
-  //     async getOrganization(
-  //       _: void,
-  //       organizationId: any
-  //     ): Promise<IOrganization> {
-  //       const errors: string[] = [];
-  //       if (validator.isEmpty(organizationId._id)) {
-  //         errors.push('missing Id input');
-  //       }
+  Query: {
+    async getUser(_: void, data: IgetUserData, context: any): Promise<IUser> {
+      if (!context.user._id) throw new UnauthorizedError();
+      const errors: string[] = [];
+      if (!mongoose.Types.ObjectId.isValid(data._id)) {
+        errors.push('missing Id input');
+      }
 
-  //       if (errors.length) {
-  //         throw new InputError(errors);
-  //       }
+      if (errors.length) {
+        throw new InputError(errors);
+      }
 
-  //       const organization = await Organizations.findById(organizationId);
+      const user = await Users.findById(data);
 
-  //       if (!organization) {
-  //         throw new NotFoundError();
-  //       }
+      if (!user) {
+        throw new NotFoundError();
+      }
 
-  //       return organization;
-  //     },
-  //   },
+      return user;
+    },
+  },
   Mutation: {
-    async createUser(_: void, data: IUserData): Promise<IUser> {
+    async createUser(
+      _: void,
+      data: IcreateUserData,
+      context: any
+    ): Promise<IUser> {
+      const errors = [];
+      const { firstname, lastname, email, password } = data;
+      if (validator.isEmpty(firstname)) {
+        errors.push('missing firstname input');
+      }
+
+      if (validator.isEmpty(lastname)) {
+        errors.push('missing firstname input');
+      }
+
+      if (validator.isEmpty(email)) {
+        errors.push('missing email input');
+      }
+
+      if (!validator.isEmail(email)) {
+        errors.push('email is not correct');
+      }
+
+      if (validator.isEmpty(password)) {
+        errors.push('missing password input');
+      }
+
+      if (!validator.isStrongPassword(password)) {
+        errors.push('Password format is not correct');
+      }
+
+      const userWithSameEmail = await Users.findOne({
+        email,
+      });
+
+      if (userWithSameEmail) {
+        throw new BadRequestError([
+          `A user with the email ${email} already exists`,
+        ]);
+      }
+
+      if (errors.length) {
+        throw new InputError(errors);
+      }
+
       const user = new Users(data);
+
+      if (user) {
+        createToken({ context, id: user._id });
+      }
+
       await user.save();
       return user;
     },

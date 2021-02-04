@@ -1,7 +1,7 @@
 import CustomError from './CustomError';
 
 class CreationError extends CustomError {
-  constructor(public errors = []) {
+  constructor(public errors: string[] = []) {
     super('Errors occured in creation');
   }
 

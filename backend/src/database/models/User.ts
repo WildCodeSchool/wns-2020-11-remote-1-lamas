@@ -1,4 +1,5 @@
-import mongoose, { Types } from 'mongoose';
+import mongoose, { HookNextFunction, Types } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 type ID = Types.ObjectId;
 
@@ -22,7 +23,7 @@ const UserSchema = new Schema({
     type: String,
     enum: ['student', 'teacher', 'adminOrganization', 'superAdmin'],
   },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   room_list: [
     {
@@ -40,6 +41,13 @@ const UserSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'organizations',
   },
+});
+
+UserSchema.pre<IUser>('save', async function (next: HookNextFunction) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+
+  next();
 });
 
 export default mongoose.model<IUser>('users', UserSchema);

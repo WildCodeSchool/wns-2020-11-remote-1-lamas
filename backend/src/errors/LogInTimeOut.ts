@@ -1,7 +1,7 @@
 import CustomError from './CustomError';
 
 class LogInTimeOut extends CustomError {
-  constructor(public errors = []) {
+  constructor(public errors: string[] = []) {
     super("Client's session has expired and must login again");
   }
 
