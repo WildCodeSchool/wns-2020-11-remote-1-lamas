@@ -7,7 +7,7 @@ const { Schema } = mongoose;
 export interface IUser extends mongoose.Document {
   firstname: string;
   lastname: string;
-  role: string;
+  role?: string;
   email: string;
   password: string;
   room_list?: ID[];
@@ -18,7 +18,10 @@ export interface IUser extends mongoose.Document {
 const UserSchema = new Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
-  role: { type: String, required: true },
+  role: {
+    type: String,
+    enum: ['student', 'teacher', 'adminOrganization', 'superAdmin'],
+  },
   email: { type: String, required: true },
   password: { type: String, required: true },
   room_list: [
@@ -36,7 +39,6 @@ const UserSchema = new Schema({
   organization_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'organizations',
-    required: true,
   },
 });
 

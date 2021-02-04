@@ -1,4 +1,5 @@
 import validator from 'validator';
+import mongoose, { Types } from 'mongoose';
 import Organizations, {
   IOrganization,
 } from '../../database/models/Organization';
@@ -6,14 +7,20 @@ import Organizations, {
 import InputError from '../../errors/InputError';
 import NotFoundError from '../../errors/NotFoundError';
 
+type ID = Types.ObjectId;
+
+interface IOrganisationData {
+  _id: ID;
+}
+
 export default {
   Query: {
     async getOrganization(
       _: void,
-      organizationId: any
+      data: IOrganisationData
     ): Promise<IOrganization> {
       const errors: string[] = [];
-      if (validator.isEmpty(organizationId._id)) {
+      if (validator.isEmpty(data._id)) {
         errors.push('missing Id input');
       }
 
@@ -21,7 +28,7 @@ export default {
         throw new InputError(errors);
       }
 
-      const organization = await Organizations.findById(organizationId);
+      const organization = await Organizations.findById(data);
 
       if (!organization) {
         throw new NotFoundError();
@@ -31,11 +38,8 @@ export default {
     },
   },
   Mutation: {
-    async createOrganization(
-      _: void,
-      organizationName: string
-    ): Promise<IOrganization> {
-      const organization = new Organizations(organizationName);
+    async createOrganization(_: void, data: string): Promise<IOrganization> {
+      const organization = new Organizations(data);
       await organization.save();
       return organization;
     },
