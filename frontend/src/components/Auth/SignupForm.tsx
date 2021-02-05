@@ -24,15 +24,19 @@ const SignupForm = (): JSX.Element => {
     setLogin({ ...login, [name]: value });
   };
 
-  const [createUser, { data }] = useMutation(CREATE_USER);
-
-  console.log('data', data);
+  const [createUser, { data, error }] = useMutation(CREATE_USER, {
+    onCompleted: (data) => {
+      const token = data?.createUser?.token;
+      if (token) {
+        localStorage.setItem('token', data.createUser.token);
+      }
+    },
+  });
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        console.log(login);
         createUser({ variables: { ...login } });
       }}
     >

@@ -12,31 +12,24 @@ import {
 
 import { setContext } from '@apollo/client/link/context';
 
-const link = createHttpLink({
+const httpLink = createHttpLink({
   uri: 'http://localhost:8000/graphql',
   credentials: 'same-origin',
 });
 
-// const authLink = setContext((_, { headers }) => {
-//   return {
-//     headers: {
-//       ...headers,
-//       // 'Access-Control-Allow-Origin': '*',
-//       // 'Access-Control-Allow-Headers': '*',
-//       // 'Access-Control-Allow-Methods': [
-//       //   'GET',
-//       //   'POST',
-//       //   'PUT',
-//       //   'DELETE',
-//       //   'OPTIONS',
-//       // ],
-//     },
-//   };
-// });
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('token');
+  console.log('token set context', token);
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
 
 const client = new ApolloClient({
-  // link: authLink.concat(link),
-  link,
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 

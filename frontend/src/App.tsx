@@ -7,10 +7,10 @@ import SignupForm from './components/Auth/SignupForm';
 function App(): JSX.Element {
   return (
     <Router>
-      <Route path="/" component={SignupForm} />
-      <Route path="/:id" component={Dashboard} />
-      <Route path="/teacher" component={Teacher} />
-      <Route path="/student" component={Student} />
+      <Route exact path="/" component={SignupForm} />
+      <Route exact path="/:id" component={Dashboard} />
+      <Route exact path="/teacher" component={Teacher} />
+      <Route exact path="/student" component={Student} />
     </Router>
   );
 }

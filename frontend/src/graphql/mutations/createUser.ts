@@ -13,11 +13,30 @@ export const CREATE_USER = gql`
       email: $email
       password: $password
     ) {
-      _id
-      firstname
-      lastname
-      email
-      password
+      token
+      user {
+        _id
+        firstname
+        lastname
+        email
+        password
+      }
     }
   }
 `;
+
+// const SIGNUP_MUTATION = gql`
+//   mutation SignupMutation(
+//     $email: String!
+//     $password: String!
+//     $name: String!
+//   ) {
+//     signup(
+//       email: $email
+//       password: $password
+//       name: $name
+//     ) {
+//       token
+//     }
+//   }
+// `;
