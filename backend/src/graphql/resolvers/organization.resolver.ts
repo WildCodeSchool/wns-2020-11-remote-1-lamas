@@ -26,7 +26,7 @@ export default {
       data: IgetOrganizationData,
       context: any
     ): Promise<IOrganization> {
-      if (!context.user._id) throw new UnauthorizedError();
+      if (!context.user.id) throw new UnauthorizedError();
       const { _id } = data;
       const errors: string[] = [];
       if (!mongoose.Types.ObjectId.isValid(_id)) {
@@ -52,7 +52,7 @@ export default {
       data: IcreateOrganizationData,
       context: any
     ): Promise<IOrganization> {
-      if (!context.user._id) throw new UnauthorizedError();
+      if (!context.user.id) throw new UnauthorizedError();
 
       const { organization_name } = data;
 

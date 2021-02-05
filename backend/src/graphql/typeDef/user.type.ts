@@ -12,8 +12,13 @@ const UserType = gql`
     todos_list: ID
   }
 
+  type UserWithToken {
+    token: String
+    user: User
+  }
+
   type Query {
-    getUser(_id: ID!): User
+    getUser(_id: String!): User
   }
 
   type Mutation {
@@ -22,7 +27,7 @@ const UserType = gql`
       lastname: String
       email: String
       password: String
-    ): User
+    ): UserWithToken
   }
 `;
 

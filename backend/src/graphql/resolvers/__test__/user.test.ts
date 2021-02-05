@@ -1,6 +1,4 @@
-import { createTestClient } from 'apollo-server-testing';
 import { gql } from 'apollo-server';
-import serverApollo from '../../../test/graphQlServerTest';
 
 const CREATE_USER = gql`
   mutation(
@@ -37,7 +35,7 @@ const FIND_USER = gql`
 
 describe('user test', () => {
   it('create a new user', async (done) => {
-    const { mutate, query } = await global.signin();
+    const { mutate } = await global.signin();
 
     const res = await mutate({
       mutation: CREATE_USER,
@@ -49,8 +47,6 @@ describe('user test', () => {
       },
     });
 
-    // console.log(res.errors[0].extensions.exception);
-    // console.log(res);
     expect(res.data).toHaveProperty('createUser');
     expect(typeof res.data.createUser).toBe('object');
     expect(res.data.createUser).toHaveProperty('_id');
@@ -81,7 +77,8 @@ describe('user test', () => {
       variables: { userId },
     });
 
-    // console.log(res.errors[0].extensions.exception);
+    console.log('user', res);
+
     expect(res.data).toHaveProperty('getUser');
     expect(typeof res.data.getUser).toBe('object');
     expect(res.data.getUser).toHaveProperty('_id');

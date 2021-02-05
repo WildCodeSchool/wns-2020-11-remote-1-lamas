@@ -45,11 +45,9 @@ beforeEach(async () => {
     const user = new Users({
       firstname: 'test firstname',
       lastname: 'test lastname',
-      email: 'pate@hmail.fr',
+      email: 'pa@hmail.fr',
       password: 'M!dpsuper@72320',
     });
-
-    //601c271c21aa07e2195fc45c
 
     const testUser = await user.save();
 

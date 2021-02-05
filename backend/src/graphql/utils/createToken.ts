@@ -18,11 +18,13 @@ const createToken = ({
     expiresIn: maxAge,
   });
 
-  context?.res?.cookie('jwt', token, {
-    httpOnly: process.env.NODE_ENV === 'production',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge,
-  });
+  // context?.res?.cookie('jwt', token, {
+  //   httpOnly: process.env.NODE_ENV === 'production',
+  //   secure: process.env.NODE_ENV === 'production',
+  //   maxAge,
+  // });
+
+  return token;
 };
 
 export default createToken;

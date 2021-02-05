@@ -7,6 +7,7 @@ import NotFoundError from '../../errors/NotFoundError';
 import createToken from '../utils/createToken';
 import BadRequestError from '../../errors/BadRequestError';
 import UnauthorizedError from '../../errors/UnauthorizedError';
+import CreationError from '../../errors/CreationError';
 
 type ID = Types.ObjectId;
 
@@ -22,23 +23,32 @@ interface IcreateUserData {
 }
 
 interface IgetUserData {
-  _id: ID;
+  _id: string;
+}
+
+interface userWithToken {
+  token: string;
+  user: IUser;
 }
 
 export default {
   Query: {
     async getUser(_: void, data: IgetUserData, context: any): Promise<IUser> {
-      if (!context.user._id) throw new UnauthorizedError();
+      if (!context.user.id) throw new UnauthorizedError();
       const errors: string[] = [];
       if (!mongoose.Types.ObjectId.isValid(data._id)) {
         errors.push('missing Id input');
       }
+
+      console.log('errors', errors);
 
       if (errors.length) {
         throw new InputError(errors);
       }
 
       const user = await Users.findById(data);
+
+      console.log('user', user);
 
       if (!user) {
         throw new NotFoundError();
@@ -52,7 +62,7 @@ export default {
       _: void,
       data: IcreateUserData,
       context: any
-    ): Promise<IUser> {
+    ): Promise<userWithToken> {
       console.log(data);
       const errors = [];
       const { firstname, lastname, email, password } = data;
@@ -97,11 +107,17 @@ export default {
       const user = new Users(data);
 
       if (user) {
-        createToken({ context, id: user._id });
-      }
+        const token = createToken({ context, id: user._id });
 
-      await user.save();
-      return user;
+        await user.save();
+        const result = {
+          token,
+          user,
+        };
+        return result;
+      } else {
+        throw new CreationError();
+      }
     },
   },
 };
