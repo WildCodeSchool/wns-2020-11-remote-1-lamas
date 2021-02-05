@@ -12,8 +12,6 @@ const createApolloServer = (user: any) => {
   return new ApolloServer({
     schema,
     context: async ({ req, res }) => {
-      console.log(user);
-
       return { user };
     },
   });

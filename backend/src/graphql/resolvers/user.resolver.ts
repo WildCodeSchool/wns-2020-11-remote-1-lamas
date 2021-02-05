@@ -53,6 +53,7 @@ export default {
       data: IcreateUserData,
       context: any
     ): Promise<IUser> {
+      console.log(data);
       const errors = [];
       const { firstname, lastname, email, password } = data;
       if (validator.isEmpty(firstname)) {

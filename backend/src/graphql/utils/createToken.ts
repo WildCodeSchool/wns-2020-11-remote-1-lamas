@@ -18,8 +18,6 @@ const createToken = ({
     expiresIn: maxAge,
   });
 
-  console.log(context.res);
-
   context?.res?.cookie('jwt', token, {
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',

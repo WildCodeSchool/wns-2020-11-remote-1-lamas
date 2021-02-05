@@ -38,6 +38,9 @@ const CREATE_USER = gql`
 
 beforeAll(async () => {
   await mongodbStart();
+});
+
+beforeEach(async () => {
   global.signin = async () => {
     const user = new Users({
       firstname: 'test firstname',
@@ -45,6 +48,8 @@ beforeAll(async () => {
       email: 'pate@hmail.fr',
       password: 'M!dpsuper@72320',
     });
+
+    //601c271c21aa07e2195fc45c
 
     const testUser = await user.save();
 

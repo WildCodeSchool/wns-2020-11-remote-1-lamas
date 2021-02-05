@@ -19,16 +19,19 @@ import NotFoundError from './errors/NotFoundError';
 
 dotenv.config();
 
+// initialize express server with apollo and cors
 mongodbStart();
 
-// initialize express server with apollo and cors
-
 const app = express();
+app.use(cors());
 
-serverApollo.applyMiddleware({ app, cors: false });
+serverApollo.applyMiddleware({
+  app,
+  cors: false,
+});
 const httpServer = new http.Server(app);
 const io = new Server(httpServer);
-app.use(cors());
+
 app.use(cookieParser());
 
 app.get('*', () => {
