@@ -1,3 +1,6 @@
+import { asyncHincrby, asyncHgetall } from './database/redis';
+import { parseIntHget, MoodCounter } from './shared/utils';
+
 const users: User[] = [];
 
 interface User {
@@ -6,11 +9,7 @@ interface User {
   actions: string[];
 }
 
-interface MoodCounter {
-  [k: string]: number;
-}
-
-let moodCounter: MoodCounter = {
+const moodCounter: MoodCounter = {
   happy: 0,
   dead: 0,
   thinking: 0,
@@ -35,23 +34,35 @@ const getUserInfos = (id: string): User => {
   return users[currentUser];
 };
 
-const getEmojisCount = (name: string, id: string, category: string): void => {
+const getEmojisCount = async (
+  name: string,
+  id: string,
+  category: string
+): Promise<void> => {
   const currentUser = users.findIndex((user) => user.socketId === id);
-
-  if (category === 'Emotion' && users[currentUser].mood !== name) {
-    moodCounter[users[currentUser].mood]--;
+  if (category === 'Emotion' && users[currentUser]?.mood !== name) {
+    moodCounter[users[currentUser]?.mood]--;
     users[currentUser].mood = name;
     moodCounter[name]++;
   } else if (category === 'Action') {
     if (users[currentUser]?.actions.indexOf(name) === -1) {
-      users[currentUser].actions.push(name);
+      users[currentUser]?.actions.push(name);
       moodCounter[name]++;
     }
   }
+  await asyncHincrby('moodcounter', name, 1);
 };
 
-const getMoodCounter = (): MoodCounter => {
-  return moodCounter;
+const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
+  // reçoit clics du student
+  const redisMoodCounter = await asyncHgetall(roomId);
+
+  if (!redisMoodCounter) {
+    return moodCounter;
+  }
+  const moodCounterCopy: MoodCounter = { ...moodCounter };
+  const newMoodCounter = parseIntHget(moodCounterCopy, redisMoodCounter);
+  return newMoodCounter;
 };
 
 const removeUser = (id: string): void => {

@@ -21,6 +21,7 @@
   },
   "rules": {
     "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "no-console": "off"
   }
 }
