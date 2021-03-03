@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server';
 
 const OrganizationType = gql`
+  scalar DateTime
+
   type Organization {
     _id: ID!
     organization_name: String!

@@ -13,8 +13,6 @@ interface Itoken {
 
 const verifyToken = (token: string): Itoken | null => {
   if (validator.isJWT(token)) {
-    console.log(token);
-
     return jwt.verify(token, jwtsecret) as Itoken;
   }
   return null;

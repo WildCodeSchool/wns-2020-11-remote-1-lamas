@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server';
 
 const UserType = gql`
+  scalar DateTime
+
   type User {
     _id: ID!
     firstname: String

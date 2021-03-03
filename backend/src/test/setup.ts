@@ -27,6 +27,14 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  const collections = await mongoose.connection.db.collections();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const collection of collections) {
+    // eslint-disable-next-line no-await-in-loop
+    await collection.deleteMany({});
+  }
+
   global.signin = async () => {
     const user = new Users({
       firstname: 'test firstname',
@@ -38,14 +46,6 @@ beforeEach(async () => {
     const testUser = await user.save();
 
     const { mutate, query } = createTestClient(createApolloServer(testUser));
-
-    const collections = await mongoose.connection.db.collections();
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const collection of collections) {
-      // eslint-disable-next-line no-await-in-loop
-      await collection.deleteMany({});
-    }
 
     return { query, mutate, testUser };
   };

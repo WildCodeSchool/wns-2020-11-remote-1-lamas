@@ -22,7 +22,6 @@ export default {
       data: IgetUserData,
       context: Icontext
     ): Promise<IUser> {
-      console.log('context', context);
       if (!context.user.id) throw new UnauthorizedError();
       const errors: string[] = [];
       if (!mongoose.Types.ObjectId.isValid(data._id)) {
