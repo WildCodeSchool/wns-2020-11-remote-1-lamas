@@ -1,16 +1,21 @@
 import jwt, { Secret } from 'jsonwebtoken';
 import validator from 'validator';
-import UnauthorizedError from '../../errors/UnauthorizedError';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 const jwtsecret = process.env.JWT_SECRET as Secret;
 
-const verifyToken = (token: string) => {
+interface Itoken {
+  exp: number;
+  iat: number;
+  id?: string;
+}
+
+const verifyToken = (token: string): Itoken | null => {
   if (validator.isJWT(token)) {
     console.log(token);
 
-    return jwt.verify(token, jwtsecret);
+    return jwt.verify(token, jwtsecret) as Itoken;
   }
   return null;
 };

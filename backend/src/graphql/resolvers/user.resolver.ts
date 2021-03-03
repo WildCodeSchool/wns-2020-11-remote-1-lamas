@@ -1,5 +1,5 @@
 import validator from 'validator';
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 import Users, { IUser } from '../../database/models/User';
 
 import InputError from '../../errors/InputError';
@@ -8,47 +8,32 @@ import createToken from '../utils/createToken';
 import BadRequestError from '../../errors/BadRequestError';
 import UnauthorizedError from '../../errors/UnauthorizedError';
 import CreationError from '../../errors/CreationError';
-
-type ID = Types.ObjectId;
-
-interface IcreateUserData {
-  firstname: string;
-  lastname: string;
-  role?: string;
-  email: string;
-  password: string;
-  room_list?: ID[];
-  todos_list?: ID[];
-  organization_id?: ID[];
-}
-
-interface IgetUserData {
-  _id: string;
-}
-
-interface userWithToken {
-  token: string;
-  user: IUser;
-}
+import {
+  Icontext,
+  IcreateUserData,
+  IgetUserData,
+  UserWithToken,
+} from './types/user.type';
 
 export default {
   Query: {
-    async getUser(_: void, data: IgetUserData, context: any): Promise<IUser> {
+    async getUser(
+      _: void,
+      data: IgetUserData,
+      context: Icontext
+    ): Promise<IUser> {
+      console.log('context', context);
       if (!context.user.id) throw new UnauthorizedError();
       const errors: string[] = [];
       if (!mongoose.Types.ObjectId.isValid(data._id)) {
         errors.push('missing Id input');
       }
 
-      console.log('errors', errors);
-
       if (errors.length) {
         throw new InputError(errors);
       }
 
       const user = await Users.findById(data);
-
-      console.log('user', user);
 
       if (!user) {
         throw new NotFoundError();
@@ -58,12 +43,7 @@ export default {
     },
   },
   Mutation: {
-    async createUser(
-      _: void,
-      data: IcreateUserData,
-      context: any
-    ): Promise<userWithToken> {
-      console.log(data);
+    async createUser(_: void, data: IcreateUserData): Promise<UserWithToken> {
       const errors = [];
       const { firstname, lastname, email, password } = data;
       if (validator.isEmpty(firstname)) {
@@ -107,17 +87,17 @@ export default {
       const user = new Users(data);
 
       if (user) {
-        const token = createToken({ context, id: user._id });
+        const token = createToken({ id: user._id });
 
         await user.save();
         const result = {
           token,
           user,
         };
+
         return result;
-      } else {
-        throw new CreationError();
       }
+      throw new CreationError();
     },
   },
 };

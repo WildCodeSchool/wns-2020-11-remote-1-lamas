@@ -23,13 +23,14 @@
     "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
     "no-underscore-dangle": "off",
     "no-console": "off",
-    "@typescript-eslint/naming-convention": [
-      "warn",
-      {
-        "selector": "variable",
-        "leadingUnderscore": "allow"
-      }
-    ],
-    "variable-name": [true, "allow-leading-underscore"]
+    "import/no-extraneous-dependencies": "off"
+    // "@typescript-eslint/naming-convention": [
+    //   "warn",
+    //   {
+    //     "selector": "variable",
+    //     "leadingUnderscore": "allow"
+    //   }
+    // ],
+    // "variable-name": [true, "allow-leading-underscore"]
   }
 }

@@ -13,11 +13,14 @@ const CREATE_USER = gql`
       email: $email
       password: $password
     ) {
-      _id
-      firstname
-      lastname
-      email
-      password
+      token
+      user {
+        _id
+        firstname
+        lastname
+        email
+        password
+      }
     }
   }
 `;
@@ -47,13 +50,17 @@ describe('user test', () => {
       },
     });
 
-    expect(res.data).toHaveProperty('createUser');
-    expect(typeof res.data.createUser).toBe('object');
-    expect(res.data.createUser).toHaveProperty('_id');
-    expect(res.data.createUser).toHaveProperty('firstname', 'Auguste');
-    expect(res.data.createUser).toHaveProperty('lastname', 'Patoune');
-    expect(res.data.createUser).toHaveProperty('email', 'patoune@hotmail.fr');
-    expect(res.data.createUser).toHaveProperty('password');
+    expect(res.data.createUser).toHaveProperty('user');
+    expect(res.data.createUser).toHaveProperty('token');
+    expect(typeof res.data.createUser.user).toBe('object');
+    expect(res.data.createUser.user).toHaveProperty('_id');
+    expect(res.data.createUser.user).toHaveProperty('firstname', 'Auguste');
+    expect(res.data.createUser.user).toHaveProperty('lastname', 'Patoune');
+    expect(res.data.createUser.user).toHaveProperty(
+      'email',
+      'patoune@hotmail.fr'
+    );
+    expect(res.data.createUser.user).toHaveProperty('password');
     done();
   });
 
@@ -70,14 +77,12 @@ describe('user test', () => {
       },
     });
 
-    const userId = user.data.createUser._id;
+    const userId = user.data.createUser.user._id;
 
     const res = await query({
       query: FIND_USER,
       variables: { userId },
     });
-
-    console.log('user', res);
 
     expect(res.data).toHaveProperty('getUser');
     expect(typeof res.data.getUser).toBe('object');

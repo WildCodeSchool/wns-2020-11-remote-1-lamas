@@ -1,10 +1,9 @@
-import { gql } from 'apollo-server';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-namespace */
 import { createTestClient } from 'apollo-server-testing';
 import mongoose from 'mongoose';
-import mongodbStart from '../database/db';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import createApolloServer from './graphQlServerTest';
-
-import Users, { IUser } from '../database/models/User';
+import Users from '../database/models/User';
 
 declare global {
   namespace NodeJS {
@@ -14,30 +13,17 @@ declare global {
   }
 }
 
-const CREATE_USER = gql`
-  mutation(
-    $firstname: String
-    $lastname: String
-    $email: String
-    $password: String
-  ) {
-    createUser(
-      firstname: $firstname
-      lastname: $lastname
-      email: $email
-      password: $password
-    ) {
-      _id
-      firstname
-      lastname
-      email
-      password
-    }
-  }
-`;
-
+let mongo: any;
 beforeAll(async () => {
-  await mongodbStart();
+  mongo = new MongoMemoryServer();
+  const mongoUri = await mongo.getUri();
+
+  await mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+  });
 });
 
 beforeEach(async () => {
@@ -53,20 +39,19 @@ beforeEach(async () => {
 
     const { mutate, query } = createTestClient(createApolloServer(testUser));
 
+    const collections = await mongoose.connection.db.collections();
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const collection of collections) {
+      // eslint-disable-next-line no-await-in-loop
+      await collection.deleteMany({});
+    }
+
     return { query, mutate, testUser };
   };
 });
 
-afterEach(async () => {
-  const collections = await mongoose.connection.db.collections();
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const collection of collections) {
-    // eslint-disable-next-line no-await-in-loop
-    await collection.deleteMany({});
-  }
-});
-
 afterAll(async () => {
+  await mongo.stop();
   await mongoose.connection.close();
 });

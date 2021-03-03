@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import validator from 'validator';
 import mongoose, { Types } from 'mongoose';
 import Organizations, {
@@ -8,6 +10,7 @@ import InputError from '../../errors/InputError';
 import NotFoundError from '../../errors/NotFoundError';
 import CreationError from '../../errors/CreationError';
 import UnauthorizedError from '../../errors/UnauthorizedError';
+import { Icontext } from './types/user.type';
 
 type ID = Types.ObjectId;
 
@@ -24,7 +27,7 @@ export default {
     async getOrganization(
       _: void,
       data: IgetOrganizationData,
-      context: any
+      context: Icontext
     ): Promise<IOrganization> {
       if (!context.user.id) throw new UnauthorizedError();
       const { _id } = data;
@@ -50,7 +53,7 @@ export default {
     async createOrganization(
       _: void,
       data: IcreateOrganizationData,
-      context: any
+      context: Icontext
     ): Promise<IOrganization> {
       if (!context.user.id) throw new UnauthorizedError();
 

@@ -43,6 +43,7 @@ const UserSchema = new Schema({
   },
 });
 
+// eslint-disable-next-line func-names
 UserSchema.pre<IUser>('save', async function (next: HookNextFunction) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
