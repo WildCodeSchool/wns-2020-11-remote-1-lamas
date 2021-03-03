@@ -2,37 +2,79 @@ import * as React from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Button, Input } from 'react-native-elements';
-import { Formik } from 'formik'
+import { Formik } from 'formik';
 import { Text, View } from '../components/Themed';
+import loginValidationSchema from './loginValidationSchema'
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function LoginScreen() {
-  const [inputLoginText, setInputLoginText] = React.useState({
-    email: '',
-    password: ''
-  });
-  
-  const handleConnection =()=>{
-    console.log('Connection cliqued !')
-    console.log('input login text : ', inputLoginText)
-  }
-  
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/logowhite.png')} style={styles.logo}/> 
-      <View style={styles.containerLogin}>
-        <Text style={styles.title}>Retrouve tes Lamas Tools </Text>
-          
-          <View style={styles.containerInput}>
-            <Text style={styles.label}>E-mail</Text>
-            <Input placeholder="votre e-mail" onChangeText={email => setInputLoginText({...inputLoginText, email})} value={inputLoginText.email}/>
-          </View>
-          <View style={styles.containerInput}>
-            <Text style={styles.label}>Mot de passe</Text>
-            <Input placeholder="votre password" onChangeText={password => setInputLoginText({...inputLoginText, password})} value={inputLoginText.password}/>
-          </View>
-          <Button title="Se connecter" onPress={handleConnection} style={styles.button}/>
-
-
+        <Image source={require('../assets/images/logowhite.png')} style={styles.logo}/> 
+        <View style={styles.containerLogin}>
+          <Text style={styles.title}>Retrouve tes Lamas Tools </Text>
+            <Formik 
+              initialValues={{ email: '', password: ''}}
+              onSubmit={values => console.log(values)}
+              validationSchema={loginValidationSchema}
+            >
+              {({handleChange, handleSubmit, values, errors, touched, isValid})=>(
+                <>
+                  <View style={styles.containerInput}>
+                    <Input 
+                      placeholder="E-mail"
+                      onChangeText={handleChange('email')}
+                      value={values.email}
+                      style={styles.input}
+                      leftIcon={
+                        <Icon 
+                          style={styles.icons}
+                          name='mail'
+                          size={18}
+                        />
+                      }
+                    />
+                    {(errors.email && touched.email) &&
+                      <Text style={styles.errors}>{errors.email}</Text>
+                    }
+                  </View>
+                  <View style={styles.containerInput}>
+                    <Input 
+                      placeholder="Mot de passe" 
+                      onChangeText={handleChange('password')}
+                      value={values.password}
+                      style={styles.input}
+                      secureTextEntry
+                      leftIcon={
+                        <Icon
+                          style={styles.icons}
+                          name='lock'
+                          size={18}
+                        />
+                      }
+                    />
+                    {(errors.password && touched.password) &&
+                      <Text style={styles.errors}>{errors.password}</Text>
+                    }
+                  </View>
+                  <Button 
+                    title="Se connecter" 
+                    onPress={() => handleSubmit()}
+                    buttonStyle={styles.button}
+                  />
+                </>
+              )}
+            </Formik>
+      </View>      
+      <View style={styles.footer}>
+        <Text style={styles.footertext}>
+          Made with <IconAnt
+                      name='heart'
+                      size={18}
+                      color="red"
+                      /> by Lamas
+        </Text>
       </View>
     </View>
   );
@@ -44,34 +86,83 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#00396A',
     paddingTop: 70,
+    justifyContent: "space-around"
   },
   containerLogin: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    height: 400,
+    marginBottom:100,
+    borderRadius: 10,
+    height: 'auto',
     width: 350,
-    paddingTop: 20,
-    marginTop: 20
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#00396A',
-    textAlign:'center'
+    textAlign:'center',
+    paddingTop: 30,
+    paddingBottom: 20
   },
   containerInput: {
-
+    paddingHorizontal:25,
   },
   label: {
-
+    color: '#00396A',
   },
   logo:{
-      height: 200,
-      resizeMode:"contain",
-
+    height: 200,
+    resizeMode:"contain",
   },
   button:{
     width: 150,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 20,
+    backgroundColor: '#00396A',
+    marginBottom:40,
+    borderRadius: 10
+  },
+  input: {
+    fontSize: 14,
+  },
+  errors: {
+    color: "red",
+    marginBottom:8,
+    marginLeft:10
+  },
+  icons: {
+    color:'#00396A',
+    paddingRight: 10
+  },
+  footer:{
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    alignContent:'flex-end',
+    backgroundColor: 'transparent',
+  },
+  footertext: {
+    color: 'white',
+    alignSelf:'flex-end',
   }
 });
+
+
+
+// onSubmit={async (values, actions) => {
+//   this.setState({ nouveauMail: values.nouveauMail });
+//   try {
+//     await AuthentificationApi.envoieMailModificationMail(values);
+//     actions.setSubmitting(false);
+
+//     this.props.addSnackbar(
+//       'ok',
+//       "L'email de confirmation de modification a bien été envoyé.",
+//       3000,
+//     );
+//     this.setState({ alertOpen: true });
+//   } catch (err) {
+//     this.props.addSnackbar(
+//       'warning',
+//       "Une erreur est survenue lors de l'envoi du email de confirmation.",
+//       3000,
+//     );
+//   }
+// }}
