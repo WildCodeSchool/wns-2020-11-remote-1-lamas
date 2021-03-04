@@ -23,6 +23,10 @@ interface IUpdateTodo {
   isChecked: boolean;
 }
 
+interface IDeleteTodo {
+  _id: ID;
+}
+
 export default {
   Query: {
     async getTodos(
@@ -103,8 +107,8 @@ export default {
       const { _id } = data;
 
       const errors = [];
-      if (validator.isEmpty(_id)) {
-        errors.push('missing todo_id input');
+      if (!mongoose.Types.ObjectId.isValid(_id)) {
+        errors.push('missing Id input');
       }
 
       if (errors.length) {
@@ -122,6 +126,34 @@ export default {
       }
 
       return newTodo;
+    },
+
+    async deleteTodo(
+      _: void,
+      data: IDeleteTodo,
+      context: Icontext
+    ): Promise<ITodo> {
+      if (!context.user.id) throw new UnauthorizedError();
+
+      const { _id } = data;
+
+      const errors = [];
+
+      if (!mongoose.Types.ObjectId.isValid(_id)) {
+        errors.push('missing Id input');
+      }
+
+      if (errors.length) {
+        throw new InputError(errors);
+      }
+
+      const deletedTodo = await Todo.findByIdAndDelete(_id);
+
+      if (!deletedTodo) {
+        throw new CreationError(['issue with todo update']);
+      }
+
+      return deletedTodo;
     },
   },
 };

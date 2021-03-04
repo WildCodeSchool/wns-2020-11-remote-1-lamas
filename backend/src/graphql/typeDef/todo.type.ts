@@ -37,6 +37,7 @@ const TodoType = gql`
       timeWork: DateTime!
       timeBreak: DateTime!
     ): Todo
+    deleteTodo(_id: ID!): Todo
   }
 `;
 

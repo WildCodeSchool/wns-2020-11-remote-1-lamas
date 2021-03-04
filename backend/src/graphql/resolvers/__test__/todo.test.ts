@@ -55,6 +55,18 @@ const UPDATE_TODO = gql`
   }
 `;
 
+const DELETE_TODO = gql`
+  mutation($_id: ID!) {
+    deleteTodo(_id: $_id) {
+      _id
+      todo_name
+      isChecked
+      timeWork
+      timeBreak
+    }
+  }
+`;
+
 describe('todos resolver', () => {
   it('create todo => return user todos_list', async (done) => {
     const { mutate } = await global.signin();
@@ -182,6 +194,44 @@ describe('todos resolver', () => {
     expect(res.data.updateTodo).toHaveProperty('isChecked', true);
     expect(res.data.updateTodo).toHaveProperty('timeWork');
     expect(res.data.updateTodo).toHaveProperty('timeBreak');
+    done();
+  });
+
+  it('delete todo => deleted todo', async (done) => {
+    const { mutate, query } = await global.signin();
+
+    const todo = await mutate({
+      mutation: CREATE_TODO,
+      variables: {
+        todo_name: 'testing todo',
+        isChecked: false,
+        timeWork: Date.now(),
+        timeBreak: Date.now(),
+      },
+    });
+
+    const res = await query({
+      query: DELETE_TODO,
+      variables: {
+        _id: todo.data.createTodo.todos_list[0],
+      },
+    });
+
+    const deletedTodo = await query({
+      query: GET_TODOS,
+    });
+
+    expect(res.data).toHaveProperty('deleteTodo');
+    expect(typeof res.data.deleteTodo).toBe('object');
+    expect(res.data.deleteTodo).toHaveProperty(
+      '_id',
+      todo.data.createTodo.todos_list[0]
+    );
+    expect(res.data.deleteTodo).toHaveProperty('todo_name', 'testing todo');
+    expect(res.data.deleteTodo).toHaveProperty('isChecked', false);
+    expect(res.data.deleteTodo).toHaveProperty('timeWork');
+    expect(res.data.deleteTodo).toHaveProperty('timeBreak');
+    expect(deletedTodo.data.getTodos).toHaveLength(0);
     done();
   });
 });
