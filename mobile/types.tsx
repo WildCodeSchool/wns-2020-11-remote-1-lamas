@@ -1,17 +1,23 @@
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
+  LamaReminderScreen: undefined
 };
 
 export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+  LamasTools: undefined;
+  ProfiLama: undefined;
 };
 
-export type TabOneParamList = {
-  TabOneScreen: undefined;
+export type LamasToolsParamList = {
+  LamasToolsScreen: undefined;
+  LamaReminderScreen: undefined
 };
 
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
+export type LamasReminderParamList = {
+  LamaRemindersScreen: undefined;
+};
+
+export type ProfiLamaParamList = {
+  ProfiLamaScreen: undefined;
 };

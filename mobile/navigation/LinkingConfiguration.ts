@@ -6,14 +6,15 @@ export default {
     screens: {
       Root: {
         screens: {
-          TabOne: {
+          LamasTools: {
             screens: {
-              TabOneScreen: 'one',
+              LamasToolsScreen: 'one',
+              LamaReminderScreen:'LamaReminderScreen',
             },
           },
-          TabTwo: {
+          ProfiLama: {
             screens: {
-              TabTwoScreen: 'two',
+              ProfiLamaScreen: 'two',
             },
           },
         },

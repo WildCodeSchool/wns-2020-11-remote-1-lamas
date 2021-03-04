@@ -5,9 +5,12 @@ import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
+import LamasToolsScreen from '../screens/LamasToolsScreen';
+import ProfiLamaScreen from '../screens/ProfiLamaScreen';
+import LamaReminderScreen from '../screens/LamaReminderScreen';
+
+import { BottomTabParamList, LamasToolsParamList, ProfiLamaParamList } from '../types';
+import Icon from "react-native-vector-icons/Feather";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -16,20 +19,28 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="LamasTools"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneNavigator}
+        name="LamasTools"
+        component={LamasToolsNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <Icon 
+          name='command'
+          color={color}
+          size={30}
+        />,
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoNavigator}
+        name="ProfiLama"
+        component={ProfiLamaNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <Icon 
+          name='user'
+          color={color}
+          size={30}
+        />,
         }}
       />
     </BottomTab.Navigator>
@@ -44,30 +55,36 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
+const LamasToolsStack = createStackNavigator<LamasToolsParamList>();
 
-function TabOneNavigator() {
+function LamasToolsNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
-        options={{ headerTitle: 'Tab One Title' }}
+    <LamasToolsStack.Navigator>
+      <LamasToolsStack.Screen
+        name="LamasToolsScreen"
+        component={LamasToolsScreen}
+        options={{ headerTitle: 'Lamas Tools' }}
       />
-    </TabOneStack.Navigator>
+      <LamasToolsStack.Screen
+        name="LamaReminderScreen"
+        component={LamaReminderScreen}
+        options={{ headerTitle: 'Laminder' }}
+      />
+    </LamasToolsStack.Navigator>
   );
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const ProfiLamaStack = createStackNavigator<ProfiLamaParamList>();
 
-function TabTwoNavigator() {
+function ProfiLamaNavigator() {
   return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="TabTwoScreen"
-        component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
+    <ProfiLamaStack.Navigator>
+      <ProfiLamaStack.Screen
+        name="ProfiLamaScreen"
+        component={ProfiLamaScreen}
+        options={{ headerTitle: 'Profil Lama' }}
       />
-    </TabTwoStack.Navigator>
+    </ProfiLamaStack.Navigator>
   );
 }
+

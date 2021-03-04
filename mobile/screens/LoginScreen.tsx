@@ -7,10 +7,15 @@ import { Text, View } from '../components/Themed';
 import loginValidationSchema from './loginValidationSchema'
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/Feather';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 export default function LoginScreen() {
   return (
-    <View style={styles.container}>
+    <LinearGradient style={styles.container}
+    colors={["#00396A", "#0371c8", "#00396A"]}
+    start={{ x: 0.2, y: 0 }}
+    end={{ x: 0.7, y: 0.5 }}>
         <Image source={require('../assets/images/logowhite.png')} style={styles.logo}/> 
         <View style={styles.containerLogin}>
           <Text style={styles.title}>Retrouve tes Lamas Tools </Text>
@@ -76,7 +81,7 @@ export default function LoginScreen() {
                       /> by Lamas
         </Text>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 

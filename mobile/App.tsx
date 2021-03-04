@@ -10,7 +10,9 @@ import LoginScreen from './screens/LoginScreen'
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  const isLogged = false;
+
+  // verifier token du client
+  const isLogged = true;
 
 
   if (!isLoadingComplete) {
