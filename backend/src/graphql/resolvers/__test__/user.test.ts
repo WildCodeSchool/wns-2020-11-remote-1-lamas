@@ -36,6 +36,20 @@ const FIND_USER = gql`
   }
 `;
 
+const LOGIN_USER = gql`
+  query($email: String, $password: String) {
+    loginUser(email: $email, password: $password) {
+      token
+      user {
+        _id
+        firstname
+        lastname
+        email
+      }
+    }
+  }
+`;
+
 describe('user test', () => {
   it('create a new user', async (done) => {
     const { mutate } = await global.signin();
@@ -90,6 +104,40 @@ describe('user test', () => {
     expect(res.data.getUser).toHaveProperty('firstname', 'Auguste');
     expect(res.data.getUser).toHaveProperty('lastname', 'Patoune');
     expect(res.data.getUser).toHaveProperty('email', 'patoune@hotmail.fr');
+    done();
+  });
+
+  it('login user => return user with token', async (done) => {
+    const { mutate, query } = await global.signin();
+
+    await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        firstname: 'Auguste',
+        lastname: 'Patoune',
+        email: 'patoune@hotmail.fr',
+        password: 'M!dpsuper@72320',
+      },
+    });
+
+    const res = await query({
+      query: LOGIN_USER,
+      variables: {
+        email: 'patoune@hotmail.fr',
+        password: 'M!dpsuper@72320',
+      },
+    });
+
+    expect(res.data).toHaveProperty('loginUser');
+    expect(typeof res.data.loginUser).toBe('object');
+    expect(res.data.loginUser).toHaveProperty('token');
+    expect(res.data.loginUser.user).toHaveProperty('_id');
+    expect(res.data.loginUser.user).toHaveProperty('firstname', 'Auguste');
+    expect(res.data.loginUser.user).toHaveProperty('lastname', 'Patoune');
+    expect(res.data.loginUser.user).toHaveProperty(
+      'email',
+      'patoune@hotmail.fr'
+    );
     done();
   });
 });

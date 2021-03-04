@@ -1,5 +1,6 @@
 import validator from 'validator';
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 import Users, { IUser } from '../../database/models/User';
 
 import InputError from '../../errors/InputError';
@@ -13,6 +14,7 @@ import {
   IcreateUserData,
   IgetUserData,
   UserWithToken,
+  ILoginUser,
 } from './types/user.type';
 
 export default {
@@ -39,6 +41,32 @@ export default {
       }
 
       return user;
+    },
+
+    async loginUser(_: void, data: ILoginUser): Promise<UserWithToken> {
+      const errors: string[] = [];
+
+      if (errors.length) {
+        throw new InputError(errors);
+      }
+
+      const { email, password } = data;
+
+      const findUserPerEmail = await Users.findOne({ email });
+
+      if (!findUserPerEmail) {
+        throw new NotFoundError();
+      }
+
+      const auth = await bcrypt.compare(password, findUserPerEmail?.password);
+
+      if (!auth) {
+        throw new Error();
+      }
+
+      const token = createToken(findUserPerEmail._id);
+
+      return { token, user: findUserPerEmail };
     },
   },
   Mutation: {
