@@ -53,7 +53,7 @@ const RoomSchema = new Schema({
       firstname: { type: String, required: true },
       lastname: { type: String, required: true },
       mood: String,
-      action: Array,
+      actions: Array,
     },
   ],
   chat: [
