@@ -19,6 +19,11 @@ export interface IgetUserData {
   _id: string;
 }
 
+export interface ILoginUser {
+  email: string;
+  password: string;
+}
+
 export interface UserWithToken {
   token: string;
   user: IUser;
