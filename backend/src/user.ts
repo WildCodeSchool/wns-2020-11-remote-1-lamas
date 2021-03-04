@@ -10,7 +10,7 @@ interface MoodCounter {
   [k: string]: number;
 }
 
-let moodCounter: MoodCounter = {
+const moodCounter: MoodCounter = {
   happy: 0,
   dead: 0,
   thinking: 0,

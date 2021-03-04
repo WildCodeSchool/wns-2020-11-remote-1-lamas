@@ -1,6 +1,4 @@
-import { createTestClient } from 'apollo-server-testing';
 import { gql } from 'apollo-server';
-import serverApollo from '../../graphqlServer';
 
 const FIND_ORGANIZATION = gql`
   query($organizationId: ID!) {
@@ -20,10 +18,10 @@ const CREATE_ORGANIZATION = gql`
   }
 `;
 
-const { mutate, query } = createTestClient(serverApollo);
-
 describe('organization test', () => {
   it('create organization', async (done) => {
+    const { mutate } = await global.signin();
+
     const res = await mutate({
       mutation: CREATE_ORGANIZATION,
       variables: { organization_name: 'testing' },
@@ -41,6 +39,8 @@ describe('organization test', () => {
   });
 
   it('get organization', async (done) => {
+    const { mutate, query } = await global.signin();
+
     const organization = await mutate({
       mutation: CREATE_ORGANIZATION,
       variables: { organization_name: 'testing' },
