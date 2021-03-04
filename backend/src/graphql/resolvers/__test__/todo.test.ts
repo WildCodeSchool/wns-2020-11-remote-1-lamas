@@ -88,7 +88,7 @@ describe('todos resolver', () => {
     expect(todoList).toHaveLength(1);
 
     done();
-  });
+  }, 30000);
 
   it('create todo => return data of one todo', async (done) => {
     const { mutate } = await global.signin();
@@ -113,7 +113,7 @@ describe('todos resolver', () => {
     expect(todo).toHaveProperty('todo_name', 'testing todo');
 
     done();
-  });
+  }, 30000);
 
   it('get todos', async (done) => {
     const { mutate, query } = await global.signin();
@@ -158,7 +158,7 @@ describe('todos resolver', () => {
     expect(res.data.getTodos[1]).toHaveProperty('timeWork');
     expect(res.data.getTodos[1]).toHaveProperty('timeBreak');
     done();
-  });
+  }, 30000);
 
   it('update todo => return todo updated', async (done) => {
     const { mutate, query } = await global.signin();
@@ -195,7 +195,7 @@ describe('todos resolver', () => {
     expect(res.data.updateTodo).toHaveProperty('timeWork');
     expect(res.data.updateTodo).toHaveProperty('timeBreak');
     done();
-  });
+  }, 30000);
 
   it('delete todo => deleted todo', async (done) => {
     const { mutate, query } = await global.signin();
@@ -233,5 +233,5 @@ describe('todos resolver', () => {
     expect(res.data.deleteTodo).toHaveProperty('timeBreak');
     expect(deletedTodo.data.getTodos).toHaveLength(0);
     done();
-  });
+  }, 30000);
 });
