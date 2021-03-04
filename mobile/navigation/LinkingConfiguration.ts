@@ -8,13 +8,13 @@ export default {
         screens: {
           LamasTools: {
             screens: {
-              LamasToolsScreen: 'one',
-              LamaReminderScreen:'LamaReminderScreen',
+              LamasToolsScreen: 'Home',
+              LamaReminderScreen: 'Todo-List'
             },
           },
           ProfiLama: {
             screens: {
-              ProfiLamaScreen: 'two',
+              ProfiLamaScreen: 'Profile',
             },
           },
         },

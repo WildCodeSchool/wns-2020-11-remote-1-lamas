@@ -21,7 +21,7 @@ export default function LamasToolsScreen({ navigation }: NavigationProps) {
     >
       <Image source={require('../assets/images/logowhite.png')} style={styles.logo}/> 
    
-      <Text style={styles.title}>Tools</Text>
+      <Text style={styles.title}>Lamas tools</Text>
 
       <View style={styles.menu}>
 
