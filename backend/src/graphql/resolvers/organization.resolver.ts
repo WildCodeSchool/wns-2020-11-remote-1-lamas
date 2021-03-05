@@ -7,7 +7,7 @@ export default {
     async getOrganization(
       _: void,
       organizationId: string
-    ): Promise<IOrganization> {
+    ): Promise<IOrganization | null> {
       const organization = await Organizations.findById(organizationId);
       return organization;
     },

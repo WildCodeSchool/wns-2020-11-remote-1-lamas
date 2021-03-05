@@ -1,22 +1,21 @@
 import redis from 'redis';
 import { promisify } from 'util';
 
-//create a new client (by default will use 6379)
+// create a new client (by default will use 6379)
 export const client = redis.createClient();
 
 // listen for connect
 client.on('connect', () => {
-    console.log('Redis client connected');
+  console.log('Redis client connected');
 });
-client.HGETALL('moodcounter', (err, reply) => console.log(reply))
-  
+client.HGETALL('moodcounter', (err: any, reply: any) => console.log(reply));
 export const asyncHincrby = promisify(client.hincrby).bind(client);
 export const asyncHgetall = promisify(client.hgetall).bind(client);
 export const asyncHget = promisify(client.hget).bind(client);
 
 // hash du moodcounter : HINCRBY room_id(key) happy(champ) 1(incrémentation par 1)
 
-client.on('error', (error) => {
+client.on('error', (error: any) => {
   console.error(error);
 });
 
@@ -26,7 +25,6 @@ client.on('error', (error) => {
 // emoticones
 // HSET user:user_id emotion 'happy'
 // liste actions:user_id "coffee, slow_down"
-
 
 /* 
 un moodcounter par room

@@ -41,27 +41,57 @@ const getEmojisCount = async (
 ): Promise<void> => {
   const currentUser = users.findIndex((user) => user.socketId === id);
   if (category === 'Emotion' && users[currentUser]?.mood !== name) {
-    moodCounter[users[currentUser]?.mood]--;
+    // recupère toutes les actions à effectuer vers redis
+    const promises = [];
+
+    // si mood !== default (happy, dead, thinking)
+    if (users[currentUser]?.mood !== 'default') {
+      // decremente le compteur de l'autre mood émotion
+      const decrement = asyncHincrby(
+        'moodcounter',
+        users[currentUser]?.mood,
+        -1
+      );
+      promises.push(decrement);
+    }
+    // On remplace l'ancienne émotion par la nouvelle
     users[currentUser].mood = name;
-    moodCounter[name]++;
+
+    // incremente le nouveau mood emotion
+    const increment = asyncHincrby('moodcounter', users[currentUser]?.mood, 1);
+    promises.push(increment);
+    // envoie en même temps l'increment et le decrement afin d'éviter les bugs de décalages de compteurs d'emotions
+    Promise.all(promises);
   } else if (category === 'Action') {
+    // si l'action n'est pas dans le moodCounter
     if (users[currentUser]?.actions.indexOf(name) === -1) {
+      // ajoute l'action
       users[currentUser]?.actions.push(name);
-      moodCounter[name]++;
+      await asyncHincrby('moodcounter', name, 1);
+    } else {
+      // sinon annule l'action
+      const actionIndex = users[currentUser]?.actions.indexOf(name);
+      users[currentUser]?.actions.splice(actionIndex, 1);
+      await asyncHincrby('moodcounter', name, -1);
     }
   }
-  await asyncHincrby('moodcounter', name, 1);
 };
 
 const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
-  // reçoit clics du student
+  // récupère le moodcounter de la bdd (string)
   const redisMoodCounter = await asyncHgetall(roomId);
 
   if (!redisMoodCounter) {
     return moodCounter;
   }
+
+  // copie du nouveau moodcounter (number)
   const moodCounterCopy: MoodCounter = { ...moodCounter };
+  console.log(3, redisMoodCounter);
+
+  // mise à jour du moodcounter en number et non string
   const newMoodCounter = parseIntHget(moodCounterCopy, redisMoodCounter);
+  console.log('retour du new mood compteur', newMoodCounter);
   return newMoodCounter;
 };
 
