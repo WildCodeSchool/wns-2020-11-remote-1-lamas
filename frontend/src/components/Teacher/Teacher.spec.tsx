@@ -16,7 +16,7 @@ describe('Teacher component', () => {
   });
 
   it('Handle students connection', () => {
-    // socket on getEmojisCount => change emojiCount
+    // socket on updateEmojisCount => change emojiCount
   });
 
   it('Handle teacher connection', () => {

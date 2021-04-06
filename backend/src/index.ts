@@ -10,7 +10,7 @@ import mongodbStart from './database/db';
 import serverApollo from './graphql/graphqlServer';
 import {
   addUser,
-  getEmojisCount,
+  updateEmojisCount,
   removeUser,
   getUserCount,
   getMoodCounter,
@@ -49,23 +49,26 @@ io.on('connect', (socket: Socket) => {
     socket.broadcast.emit('sendUserCount', userCount);
   });
 
-  socket.on('joinTeacher', () => {
-    const emojisCount = getMoodCounter();
-    socket.emit('getEmojisCount', emojisCount);
+  socket.on('joinTeacher', async() => {
+    const userCount = getUserCount();
+    socket.broadcast.emit('sendUserCount', userCount);
+    const emojisCount = await getMoodCounter();
+    socket.emit('updateEmojisCount', emojisCount);
   });
 
-  socket.on('changeMood', (name, category) => {
-    getEmojisCount(name, socket.id, category);
-    const emojisCount = getMoodCounter();
-    socket.broadcast.emit('getEmojisCount', emojisCount);
+  socket.on('changeMood', async (name, category) => {
+    await updateEmojisCount(name, socket.id, category);
+    const emojisCount = await getMoodCounter();
+    socket.broadcast.emit('updateEmojisCount', emojisCount);
     const user = getUserInfos(socket.id);
     socket.emit('userInfos', user);
   });
 
-  socket.on('disconnect', () => {
-    removeUser(socket.id);
+  socket.on('disconnect', async () => {
+    // Gérer la RAZ de la DB en vérifiant si c'est le teacher (user.role cf model)
+    await removeUser(socket.id);
     const userCount = getUserCount();
-    const emojisDecremented = getMoodCounter();
+    const emojisDecremented = await getMoodCounter();
     socket.broadcast.emit('sendUserCount', userCount);
     socket.broadcast.emit('getDecrement', emojisDecremented);
   });

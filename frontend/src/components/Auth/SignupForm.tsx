@@ -25,10 +25,10 @@ const SignupForm = (): JSX.Element => {
   };
 
   const [createUser, { data, error }] = useMutation(CREATE_USER, {
-    onCompleted: (data) => {
-      const token = data?.createUser?.token;
+    onCompleted: (res) => {
+      const token = res?.createUser?.token;
       if (token) {
-        localStorage.setItem('token', data.createUser.token);
+        localStorage.setItem('token', res.createUser.token);
       }
     },
   });
