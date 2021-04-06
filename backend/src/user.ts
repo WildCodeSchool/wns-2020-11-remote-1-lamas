@@ -1,4 +1,4 @@
-import { asyncHincrby, asyncHgetall } from './database/redis';
+import { asyncHincrby, asyncHgetall,asyncFlushDB } from './database/redis';
 import { parseIntHget, MoodCounter } from './shared/utils';
 
 const users: User[] = [];
@@ -34,7 +34,7 @@ const getUserInfos = (id: string): User => {
   return users[currentUser];
 };
 
-const getEmojisCount = async (
+const updateEmojisCount = async (
   name: string,
   id: string,
   category: string
@@ -43,7 +43,6 @@ const getEmojisCount = async (
   if (category === 'Emotion' && users[currentUser]?.mood !== name) {
     // recupère toutes les actions à effectuer vers redis
     const promises = [];
-
     // si mood !== default (happy, dead, thinking)
     if (users[currentUser]?.mood !== 'default') {
       // decremente le compteur de l'autre mood émotion
@@ -78,6 +77,9 @@ const getEmojisCount = async (
 };
 
 const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
+  // Commande pour RAZ la database : 
+  // await asyncFlushDB()
+
   // récupère le moodcounter de la bdd (string)
   const redisMoodCounter = await asyncHgetall(roomId);
 
@@ -87,26 +89,35 @@ const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
 
   // copie du nouveau moodcounter (number)
   const moodCounterCopy: MoodCounter = { ...moodCounter };
-  console.log(3, redisMoodCounter);
 
   // mise à jour du moodcounter en number et non string
   const newMoodCounter = parseIntHget(moodCounterCopy, redisMoodCounter);
-  console.log('retour du new mood compteur', newMoodCounter);
   return newMoodCounter;
 };
 
-const removeUser = (id: string): void => {
+const removeUser = async (id: string): Promise<void> => {
   const index = users.findIndex((user) => user.socketId === id);
+  
   if (index !== -1) {
     // remove emotion & actions from emojisCount
     const userMood = users[index].mood;
     const userActions = users[index].actions;
+
     if (userActions.length > 0) {
-      userActions.map((actions) => {
-        moodCounter[actions]--;
+      userActions.map(async(action) => {
+        // supprime les actions de l'user
+        await asyncHincrby('moodcounter', action, -1);
       });
     }
-    moodCounter[userMood]--;
+    // supprime l'émotion de l'user si !== 'default'
+    if (userMood !== 'default') {
+      await asyncHincrby(
+        'moodcounter',
+        userMood,
+        -1
+      );
+    }
+
     // remove user
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     users.splice(index, 1)[0];
@@ -115,7 +126,7 @@ const removeUser = (id: string): void => {
 
 export {
   addUser,
-  getEmojisCount,
+  updateEmojisCount,
   removeUser,
   getUserCount,
   getMoodCounter,

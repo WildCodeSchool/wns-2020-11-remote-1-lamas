@@ -12,8 +12,9 @@ client.HGETALL('moodcounter', (err: any, reply: any) => console.log(reply));
 export const asyncHincrby = promisify(client.hincrby).bind(client);
 export const asyncHgetall = promisify(client.hgetall).bind(client);
 export const asyncHget = promisify(client.hget).bind(client);
+export const asyncFlushDB = promisify(client.flushdb).bind(client);
 
-// hash du moodcounter : HINCRBY room_id(key) happy(champ) 1(incrémentation par 1)
+
 
 client.on('error', (error: any) => {
   console.error(error);
