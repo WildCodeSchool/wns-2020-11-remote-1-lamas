@@ -7,21 +7,14 @@ import { MoodCounter } from '../../shared/Emojis';
 
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
-  const [emojisCounts, setEmojisCounts] = useState<MoodCounter>({
-    happy: 0,
-    dead: 0,
-    thinking: 0,
-    coffee: 0,
-    slowDown: 0,
-    question: 0,
-  });
+  const [emojisCounts, setEmojisCounts] = useState<MoodCounter | null>(null);
 
   useEffect(() => {
     socket.emit('joinTeacher', {});
     socket.on('sendUserCount', (userCount: number) => {
       setTotalStudents(userCount);
     });
-    socket.on('getEmojisCount', (moodCounter: MoodCounter) => {
+    socket.on('updateEmojisCount', (moodCounter: MoodCounter) => {
       setEmojisCounts(moodCounter);
     });
     socket.on('getDecrement', (moodCounter: MoodCounter) => {
@@ -36,7 +29,11 @@ const Teacher = (): JSX.Element => {
         role="heading"
         aria-level={2}
         className="teacher_vertical_panel"
-        style={{ backgroundColor: getColorByMood(emojisCounts, totalStudents) }}
+        style={{
+          backgroundColor: emojisCounts
+            ? getColorByMood(emojisCounts, totalStudents)
+            : 'rgba(148, 234, 72, 0.7)',
+        }}
       >
         <div className="teacher_emojis_container">
           <div className="teacher_emojis">
