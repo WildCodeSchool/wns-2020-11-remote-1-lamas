@@ -4,6 +4,7 @@ import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
 import * as dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import mongodbStart from './database/db';
 
 import serverApollo from './graphql/graphqlServer';
@@ -15,18 +16,29 @@ import {
   getMoodCounter,
   getUserInfos,
 } from './user';
+import NotFoundError from './errors/NotFoundError';
 
 dotenv.config();
 
+// initialize express server with apollo and cors
 mongodbStart();
 
-// initialize express server with apollo and cors
-
 const app = express();
-serverApollo.applyMiddleware({ app });
+app.use(cors());
+
+serverApollo.applyMiddleware({
+  app,
+  cors: false,
+});
 const httpServer = new http.Server(app);
 const io = new Server(httpServer);
-app.use(cors());
+
+app.use(cookieParser());
+
+app.get('*', () => {
+  const error = new NotFoundError();
+  throw error;
+});
 
 // socket io logic TO BE MODIFIED
 

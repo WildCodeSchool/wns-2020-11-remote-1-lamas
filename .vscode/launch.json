@@ -8,6 +8,13 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\backend\\src\\user.test.ts",
       "outFiles": ["${workspaceFolder}/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch server",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}\\backend\\src\\index.ts"
     }
   ]
 }

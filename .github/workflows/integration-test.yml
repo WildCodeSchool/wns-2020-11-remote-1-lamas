@@ -24,6 +24,8 @@ jobs:
         run:  cd backend && npm run test:ci
         env: 
           MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
 
       # 5: Run lint test
       - name: Launch lint test
