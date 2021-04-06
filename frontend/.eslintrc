@@ -36,6 +36,8 @@
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": 0,
+    "import/prefer-default-export": "off",
+    "import/no-default-export": "error",
     "prettier/prettier": [
       "error",
       {
