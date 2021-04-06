@@ -5,7 +5,7 @@ import { User } from '../../shared/Users';
 interface EmojisProps {
   handleClick?: (name: string, category: string) => void;
   isStudent?: boolean;
-  emojisCounts?: MoodCounter;
+  emojisCounts?: MoodCounter | null;
   studentInfos?: User;
 }
 
