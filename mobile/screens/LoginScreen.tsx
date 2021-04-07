@@ -31,21 +31,16 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   const { signIn } = React.useContext(AuthContext);
 
   const [loginUser, { data, error }] = useMutation(LOGIN_USER, {
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       const token = data?.loginUser?.token;
       if (token) {
-        SecureStore.setItemAsync("userToken", data.loginUser.token);
+        await SecureStore.setItemAsync("userToken", data.loginUser.token);
         signIn();
         navigation.navigate("LamasToolsScreen");
       }
     },
     errorPolicy: "all",
-    onError: (e) => {
-      console.warn("zejdfjnsdnndskj", e);
-    },
   });
-
-  console.warn(error?.graphQLErrors, data, error);
 
   return (
     <LinearGradient

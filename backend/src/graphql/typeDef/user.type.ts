@@ -21,10 +21,10 @@ const UserType = gql`
 
   type Query {
     getUser(_id: ID!): User
-    loginUser(email: String, password: String): UserWithToken
   }
 
   type Mutation {
+    loginUser(email: String, password: String): UserWithToken
     createUser(
       firstname: String
       lastname: String

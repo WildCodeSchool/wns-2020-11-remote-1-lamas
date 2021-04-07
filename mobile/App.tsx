@@ -38,16 +38,15 @@ const App = () => {
     // uri: "http://46.193.68.20:8000/graphql",
   });
 
-  const authLink = setContext((_, { headers }) => {
-    console.log(headers);
-    // const token = MMKV.getString("token");
-    // console.warn("token set context", token);
-    // return {
-    //   headers: {
-    //     ...headers,
-    //     Authorization: token ? `Bearer ${token}` : "",
-    //   },
-    // };
+  const authLink = setContext(async (_, { headers }) => {
+    const token = await SecureStore.getItemAsync("userToken");
+    console.warn("token set context", typeof token);
+    return {
+      headers: {
+        ...headers,
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    };
   });
 
   const link = onError(({ graphQLErrors, networkError }) => {
@@ -75,7 +74,7 @@ const App = () => {
     if (networkError) console.log(`[Network error]: ${networkError}`);
   });
 
-  const clients = new ApolloClient({
+  const client = new ApolloClient({
     defaultOptions: {
       mutate: {
         errorPolicy: "all",
@@ -87,26 +86,13 @@ const App = () => {
   });
 
   // const client = new ApolloClient({
-  //   // uri: "46.193.68.20:8000/graphql",
-  //   uri: "http://46.193.68.20:8000/graphql",
+  //   uri: `http://${manifest?.debuggerHost?.split(":").shift()}:8000/graphql`,
+  //   // uri: `http://localhost:8000/graphql`,
+  //   // uri:'10.188.160.29:19000'
+
   //   cache: new InMemoryCache(),
+  //   defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
   // });
-
-  const client = new ApolloClient({
-    uri: `http://${manifest?.debuggerHost?.split(":").shift()}:8000/graphql`,
-    // uri: `http://localhost:8000/graphql`,
-    // uri:'10.188.160.29:19000'
-
-    cache: new InMemoryCache(),
-    defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
-  });
-
-  console.log(
-    `http://${manifest?.debuggerHost?.split(":").shift()}:8000/graphql`
-  );
-
-  // const isLogged = MMKV.set("isLogged", false);
-  // const logged = MMKV.getBoolean("isLogged");
 
   // verifier token du client
 
@@ -124,32 +110,6 @@ const App = () => {
       </ApolloProvider>
     );
   }
-  // } else {
-  //   return (
-  //     <ApolloProvider client={client}>
-  //       <StatusBar style="light" />
-
-  //       <NavigationContainer>
-  //         <Navigator.Navigator>
-
-  //           {/* <LoginScreen /> */}
-  //         </Navigator.Navigator>
-  //       </NavigationContainer>
-  //     </ApolloProvider>
-  //   );
-  // }
 };
 
 export default App;
-
-// const link = split(
-//   ({ query }) => {
-//     const definition = getMainDefinition(query);
-//     return (
-//       definition.kind === 'OperationDefinition' &&
-//       definition.operation === 'subscription'
-//     );
-//   },
-//   wsLink,
-//   httpAuthLink,
-// );

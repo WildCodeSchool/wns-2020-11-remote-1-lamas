@@ -42,10 +42,12 @@ export default {
 
       return user;
     },
-
+  },
+  Mutation: {
     async loginUser(_: void, data: ILoginUser): Promise<UserWithToken> {
-      const errors: string[] = [];
+      console.log('data', data);
 
+      const errors: string[] = [];
       if (errors.length) {
         throw new InputError(errors);
       }
@@ -64,12 +66,10 @@ export default {
         throw new Error();
       }
 
-      const token = createToken(findUserPerEmail._id);
+      const token = createToken({ id: findUserPerEmail._id });
 
       return { token, user: findUserPerEmail };
     },
-  },
-  Mutation: {
     async createUser(_: void, data: IcreateUserData): Promise<UserWithToken> {
       const errors = [];
       const { firstname, lastname, email, password } = data;
