@@ -64,7 +64,7 @@ export default {
         throw new Error();
       }
 
-      const token = createToken(findUserPerEmail._id);
+      const token = createToken({ id: findUserPerEmail._id });
 
       return { token, user: findUserPerEmail };
     },

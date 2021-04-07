@@ -24,6 +24,7 @@ describe('Emojis', () => {
       render(<Emojis />);
       expect(screen.queryAllByRole('img')).toHaveLength(6);
     });
+    // eslint-disable-next-line jest/expect-expect
     it('render count emoji', () => {
       // faire un mock
     });
