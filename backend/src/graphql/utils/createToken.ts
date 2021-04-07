@@ -15,7 +15,6 @@ const createToken = ({
   id: ID;
   maxAge?: number;
 }): string => {
-  console.log('id.toString()', id, typeof id);
   const token = jwt.sign({ id }, jwtsecret, {
     expiresIn: maxAge,
   });

@@ -82,7 +82,17 @@ const App = () => {
     },
     link: ApolloLink.from([errorLink, authLink.concat(httpLink)]),
     // link,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            project: {
+              merge: true,
+            },
+          },
+        },
+      },
+    }),
   });
 
   // const client = new ApolloClient({

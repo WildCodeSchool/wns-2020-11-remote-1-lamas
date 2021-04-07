@@ -2,9 +2,17 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Modal, Pressable } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { LinearGradient } from "expo-linear-gradient";
-import { Fab, Icon } from "native-base";
+import {
+  Fab,
+  Icon,
+  Container,
+  Header,
+  Content,
+  List,
+  ListItem,
+} from "native-base";
 
-import EditScreenInfo from "../components/EditScreenInfo";
+import IconAnt from "react-native-vector-icons/AntDesign";
 import { Text, View } from "../components/Themed";
 import { Input } from "react-native-elements";
 import { ScrollView } from "react-native";
@@ -16,55 +24,112 @@ import {
   UPDATE_TODO,
 } from "../graphql/TodoGraph";
 
-// Fab button qui ouvre une modal avec un input pour insérer une nouvelle todo
-// state pour gérer
-// .map des todo items (ScrollView) avec checkbox
-//
+interface ItodoText {
+  _id: string;
+  todo_name: string;
+  isChecked: boolean;
+}
+
+interface Itodo {
+  getTodos: ItodoText[];
+}
+
+interface ItodoEdited {
+  name: string;
+  _id?: string;
+}
+
 export default function LamaReminderScreen() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
   const [todo, setTodo] = useState("");
-  const [todoList, setTodoList] = useState();
+  const [todoEdited, setTodoEdited] = useState<ItodoEdited>();
+
+  const [todoList, setTodoList] = useState<Itodo>();
   const [createTodo] = useMutation(CREATE_TODO, {
     errorPolicy: "all",
+    refetchQueries: [{ query: GET_TODOS }],
+  });
+
+  const { data } = useQuery(GET_TODOS);
+
+  useEffect(() => {
+    if (data) {
+      setTodoList(data);
+    }
+  }, [data]);
+
+  const [updateTodo, { error }] = useMutation(UPDATE_TODO, {
+    errorPolicy: "all",
+    refetchQueries: [{ query: GET_TODOS }],
+  });
+
+  console.warn(error?.graphQLErrors);
+
+  const [deleteTodo] = useMutation(DELETE_TODO, {
+    errorPolicy: "all",
+    refetchQueries: [{ query: GET_TODOS }],
   });
 
   const handleSubmit = () => {
-    const values = { todo_name: "je suis todo", isChecked: true };
+    const values = { todo_name: todo, isChecked: false };
     createTodo({ variables: { ...values } });
     setTodo("");
     setIsModalOpen(false);
   };
 
-  const { data } = useQuery(GET_TODOS);
-  console.warn(data);
+  const handleSubmitEditing = () => {
+    const values = { _id: todoEdited?._id, todo_name: todoEdited?.name };
+    console.warn(values);
+    updateTodo({ variables: { ...values } });
+    setTodoEdited({ _id: "", name: "" });
+    setIsEditing(false);
+  };
 
-  useEffect(() => {
-    setTodoList(data);
-  }, []);
+  const handleEditing = (_id: string, name: string) => {
+    const data = { _id, name };
+    setIsEditing(true);
+    setTodoEdited((prevstate) => ({ ...prevstate, ...data }));
+  };
 
-  const [updateTodo] = useMutation(UPDATE_TODO, {
-    errorPolicy: "all",
-  });
-
-  const [deleteTodo] = useMutation(DELETE_TODO, {
-    errorPolicy: "all",
-  });
-
-  // const renderTodoItems = () => {
-  //   return todoList.map((todo) => {
-  //     return (
-  //       <View>
-  //         <CheckBox value={todo.isChecked} />
-  //         <Text>{todo.todo_name}</Text>
-  //       </View>
-  //     );
-  //   });
-  // };
+  const renderTodoItems = () => {
+    return todoList?.getTodos?.map((todo) => {
+      return (
+        <>
+          <ListItem>
+            <CheckBox
+              value={todo.isChecked}
+              onValueChange={(isChecked) =>
+                updateTodo({ variables: { _id: todo._id, isChecked } })
+              }
+            />
+            <Text>{todo.todo_name}</Text>
+            <IconAnt
+              name="edit"
+              size={18}
+              color="#00396A"
+              onPress={() => handleEditing(todo._id, todo.todo_name)}
+            />
+            <IconAnt
+              name="delete"
+              size={18}
+              color="#EA2E2E"
+              onPress={() => deleteTodo({ variables: { _id: todo._id } })}
+            />
+          </ListItem>
+        </>
+      );
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <CheckBox value={false} />
-      <Text>Reminder !</Text>
+      <Header />
+      <Content>
+        <List>{todoList && renderTodoItems()}</List>
+      </Content>
+
       <Fab
         direction="up"
         containerStyle={{}}
@@ -109,6 +174,30 @@ export default function LamaReminderScreen() {
             </Pressable>
           </View>
         </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isEditing}
+        onRequestClose={() => {
+          setIsEditing(false);
+        }}
+      >
+        <View style={styles.containerInput}>
+          <Input
+            onChangeText={(text) =>
+              setTodoEdited((prevstate) => ({ ...prevstate, name: text }))
+            }
+            value={todoEdited?.name}
+            style={styles.input}
+          />
+        </View>
+        <Pressable
+          onPress={() => handleSubmitEditing()}
+          style={[styles.button, styles.buttonClose]}
+        >
+          <Text>Update la todo</Text>
+        </Pressable>
       </Modal>
     </View>
   );

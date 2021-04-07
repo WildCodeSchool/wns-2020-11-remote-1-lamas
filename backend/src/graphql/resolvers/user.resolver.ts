@@ -45,8 +45,6 @@ export default {
   },
   Mutation: {
     async loginUser(_: void, data: ILoginUser): Promise<UserWithToken> {
-      console.log('data', data);
-
       const errors: string[] = [];
       if (errors.length) {
         throw new InputError(errors);

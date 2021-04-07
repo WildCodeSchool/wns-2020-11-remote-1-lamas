@@ -33,10 +33,10 @@ export const GET_TODOS = gql`
 export const UPDATE_TODO = gql`
   mutation(
     $_id: ID!
-    $todo_name: String!
-    $isChecked: Boolean!
-    $timeWork: DateTime!
-    $timeBreak: DateTime!
+    $todo_name: String
+    $isChecked: Boolean
+    $timeWork: DateTime
+    $timeBreak: DateTime
   ) {
     updateTodo(
       _id: $_id
