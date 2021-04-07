@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Modal, Pressable } from "react-native";
+import { StyleSheet, Modal, Pressable, Image } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -15,7 +15,6 @@ import {
 import IconAnt from "react-native-vector-icons/AntDesign";
 import { Text, View } from "../components/Themed";
 import { Input } from "react-native-elements";
-import { ScrollView } from "react-native";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_TODO,
@@ -65,8 +64,6 @@ export default function LamaReminderScreen() {
     refetchQueries: [{ query: GET_TODOS }],
   });
 
-  console.warn(error?.graphQLErrors);
-
   const [deleteTodo] = useMutation(DELETE_TODO, {
     errorPolicy: "all",
     refetchQueries: [{ query: GET_TODOS }],
@@ -81,7 +78,6 @@ export default function LamaReminderScreen() {
 
   const handleSubmitEditing = () => {
     const values = { _id: todoEdited?._id, todo_name: todoEdited?.name };
-    console.warn(values);
     updateTodo({ variables: { ...values } });
     setTodoEdited({ _id: "", name: "" });
     setIsEditing(false);
@@ -97,15 +93,21 @@ export default function LamaReminderScreen() {
     return todoList?.getTodos?.map((todo) => {
       return (
         <>
-          <ListItem>
+          <ListItem style={styles.itemsContainer}>
+            <View style={styles.items}>
             <CheckBox
               value={todo.isChecked}
               onValueChange={(isChecked) =>
                 updateTodo({ variables: { _id: todo._id, isChecked } })
               }
+              tintColors={{true:'#00396A', false:'#00396A'}}
+
             />
             <Text>{todo.todo_name}</Text>
+            </View>
+            <View style={styles.items}>
             <IconAnt
+              style={styles.editIcon}
               name="edit"
               size={18}
               color="#00396A"
@@ -117,6 +119,7 @@ export default function LamaReminderScreen() {
               color="#EA2E2E"
               onPress={() => deleteTodo({ variables: { _id: todo._id } })}
             />
+            </View>
           </ListItem>
         </>
       );
@@ -125,12 +128,19 @@ export default function LamaReminderScreen() {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <View style={styles.headerContainer}>
+      <Image
+        source={require("../assets/images/logowhite.png")}
+        style={styles.logo}
+      />
+        <Text style={styles.headerText}>N'oublies pas, petit lama</Text>
+      </View>
       <Content>
         <List>{todoList && renderTodoItems()}</List>
       </Content>
 
       <Fab
+        style={styles.fab}
         direction="up"
         containerStyle={{}}
         position="bottomRight"
@@ -138,10 +148,6 @@ export default function LamaReminderScreen() {
       >
         <Icon name="add" />
       </Fab>
-      {/* <ScrollView>
-
-      </ScrollView> */}
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -183,6 +189,8 @@ export default function LamaReminderScreen() {
           setIsEditing(false);
         }}
       >
+        <View style={styles.centeredView}>
+        <View style={styles.modalView}>
         <View style={styles.containerInput}>
           <Input
             onChangeText={(text) =>
@@ -191,19 +199,45 @@ export default function LamaReminderScreen() {
             value={todoEdited?.name}
             style={styles.input}
           />
-        </View>
+          </View>
         <Pressable
           onPress={() => handleSubmitEditing()}
           style={[styles.button, styles.buttonClose]}
         >
           <Text>Update la todo</Text>
         </Pressable>
+        </View>
+        </View>
       </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  editIcon: {
+    marginRight: 20
+  },
+  itemsContainer: {
+    justifyContent: 'space-between'
+  },
+  items: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  fab: {
+    backgroundColor: '#00396A'
+  },
+  headerContainer: {
+    paddingBottom: 60,
+    backgroundColor: '#00396A',
+    alignItems: 'center'
+  },
+  headerText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 23,
+    paddingTop: 50
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -211,9 +245,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    flex: 1
   },
   text: {
     fontSize: 56,
@@ -261,5 +293,9 @@ const styles = StyleSheet.create({
   },
   iconModal: {
     marginLeft: 260,
+  },
+  logo: {
+    height: 200,
+    resizeMode: "contain",
   },
 });

@@ -2,10 +2,9 @@ import * as React from "react";
 import { StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Text, View } from "../components/Themed";
 import {
-  createStackNavigator,
   StackNavigationProp,
 } from "@react-navigation/stack";
-import { RootStackParamList, LamasReminderParamList } from "../types";
+import { RootStackParamList } from "../types";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   widthPercentageToDP as wp,
@@ -84,7 +83,6 @@ const styles = StyleSheet.create({
   },
   menu: {
     backgroundColor: "transparent",
-    // height: hp("60%"),
   },
   title: {
     fontSize: 20,
@@ -100,7 +98,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingRight: 10,
     alignItems: "center",
-    //margin: 20,
     width: 200,
     height: 30,
     shadowColor: "#000",
@@ -117,7 +114,6 @@ const styles = StyleSheet.create({
   },
   icons: {
     backgroundColor: "transparent",
-    //color: 'white',
   },
   iconImage: {
     width: 100,

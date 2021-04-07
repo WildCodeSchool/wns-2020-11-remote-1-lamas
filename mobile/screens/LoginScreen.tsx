@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StyleSheet, Image, AsyncStorage } from "react-native";
 import { useMutation } from "@apollo/client";
-import { TextInput } from "react-native-gesture-handler";
 import { Button, Input } from "react-native-elements";
 import { Formik } from "formik";
 import { Text, View } from "../components/Themed";
@@ -9,10 +8,8 @@ import loginValidationSchema from "./loginValidationSchema";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import Icon from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
-import { MMKV } from "react-native-mmkv";
 
 import { LOGIN_USER } from "../graphql/loginUser";
-import { NavigationProps } from "./LamasToolsScreen";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList, LamasReminderParamList } from "../types";
 import * as SecureStore from "expo-secure-store";
