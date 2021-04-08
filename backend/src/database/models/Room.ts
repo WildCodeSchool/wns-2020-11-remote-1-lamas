@@ -23,14 +23,7 @@ type ChatType = {
 
 export interface IRoom extends mongoose.Document {
   name: string;
-  user_count: number;
-  emojis_list: {
-    Happy: number;
-    Dead: number;
-    Thinking: number;
-    Break: number;
-    SlowDown: number;
-  };
+  user_count?: number;
   users_list?: UserListType[];
   chat?: ChatType[];
   start_time_video?: Date;
@@ -39,13 +32,6 @@ export interface IRoom extends mongoose.Document {
 const RoomSchema = new Schema({
   name: { type: String, required: true },
   user_count: { type: Number, default: 0, required: true },
-  emojis_list: {
-    Happy: { type: Number, default: 0, required: true },
-    Dead: { type: Number, default: 0, required: true },
-    Thinking: { type: Number, default: 0, required: true },
-    Break: { type: Number, default: 0, required: true },
-    SlowDown: { type: Number, default: 0, required: true },
-  },
   users_list: [
     {
       user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
