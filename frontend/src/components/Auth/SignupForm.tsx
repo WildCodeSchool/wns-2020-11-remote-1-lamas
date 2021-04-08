@@ -7,13 +7,12 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import './SignupForm.css';
+import './Auth.css';
 import logo from '../../asset/logo-white-lamas_logo.svg';
-import signInValidationSchema from './signInValidationSchema';
+import signUpValidationSchema from './signUpValidationSchema';
 import { CREATE_USER } from '../../graphql/mutations/createUser';
 
 // Specific styles for MUI components
@@ -85,27 +84,22 @@ const SignupForm = (): JSX.Element => {
         createUser({ variables: { ...values } });
         history.push('/dashboard');
       }}
-      validationSchema={signInValidationSchema}
+      validationSchema={signUpValidationSchema}
     >
       {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
         <div className="form">
           <img className="signup__form__logo" src={logo} alt="logo des Lamas" />
           <div className="signup__form">
-            <h1 className="signup__form__title">Rejoins les autres lamas !</h1>
+            <h1 className="signup__form__title">Bienvenue à toi Lama !</h1>
             <div className="signup__form__input">
               <InputLabel className={classes.label}>Prénom</InputLabel>
               <Input
                 fullWidth
-                // variant="filled"
                 onChange={handleChange('firstname')}
                 disableUnderline
                 value={values.firstname}
                 error={touched.firstname && Boolean(errors.firstname)}
-                // InputProps={{ disableUnderline: true }}
                 className={classes.textField}
-                // InputLabelProps={{
-                //   style: { marginLeft: '15px', color: 'white' },
-                // }}
               />
               {errors.firstname && touched.firstname && (
                 <p className="input__error">{errors.firstname}</p>

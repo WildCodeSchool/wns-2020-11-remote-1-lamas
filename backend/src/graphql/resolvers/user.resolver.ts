@@ -42,32 +42,6 @@ export default {
 
       return user;
     },
-
-    async loginUser(_: void, data: ILoginUser): Promise<UserWithToken> {
-      const errors: string[] = [];
-
-      if (errors.length) {
-        throw new InputError(errors);
-      }
-
-      const { email, password } = data;
-
-      const findUserPerEmail = await Users.findOne({ email });
-
-      if (!findUserPerEmail) {
-        throw new NotFoundError();
-      }
-
-      const auth = await bcrypt.compare(password, findUserPerEmail?.password);
-
-      if (!auth) {
-        throw new Error();
-      }
-
-      const token = createToken({ id: findUserPerEmail._id });
-
-      return { token, user: findUserPerEmail };
-    },
   },
   Mutation: {
     async createUser(_: void, data: IcreateUserData): Promise<UserWithToken> {
@@ -125,6 +99,32 @@ export default {
         return result;
       }
       throw new CreationError();
+    },
+    async loginUser(_: void, data: ILoginUser): Promise<UserWithToken> {
+      const errors: string[] = [];
+      console.log('in user resolver data: ', data);
+
+      if (errors.length) {
+        throw new InputError(errors);
+      }
+
+      const { email, password } = data;
+
+      const findUserPerEmail = await Users.findOne({ email });
+
+      if (!findUserPerEmail) {
+        throw new NotFoundError();
+      }
+
+      const auth = await bcrypt.compare(password, findUserPerEmail?.password);
+
+      if (!auth) {
+        throw new Error();
+      }
+
+      const token = createToken({ id: findUserPerEmail._id });
+
+      return { token, user: findUserPerEmail };
     },
   },
 };
