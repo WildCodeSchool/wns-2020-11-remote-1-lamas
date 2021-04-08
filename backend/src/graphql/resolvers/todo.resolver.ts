@@ -102,6 +102,8 @@ export default {
       data: IUpdateTodo,
       context: Icontext
     ): Promise<ITodo> {
+      console.log(data);
+
       if (!context.user.id) throw new UnauthorizedError();
 
       const { _id } = data;

@@ -49,7 +49,7 @@ io.on('connect', (socket: Socket) => {
     socket.broadcast.emit('sendUserCount', userCount);
   });
 
-  socket.on('joinTeacher', async() => {
+  socket.on('joinTeacher', async () => {
     const userCount = getUserCount();
     socket.broadcast.emit('sendUserCount', userCount);
     const emojisCount = await getMoodCounter();

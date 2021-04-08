@@ -7,7 +7,7 @@ import * as yup from 'yup';
     .required("L'email est requis"),
   password: yup
     .string()
-    .min(8, ({ min }) => `Le mot de passe doit être de ${min} caractères`)
+    .min(6, ({ min }) => `Le mot de passe doit être de ${min} caractères`)
     .required('Le mot de passe est requis'),
 })
 

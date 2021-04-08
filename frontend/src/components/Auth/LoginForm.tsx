@@ -12,8 +12,8 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import './Auth.css';
 import logo from '../../asset/logo-white-lamas_logo.svg';
-import signUpValidationSchema from './signUpValidationSchema';
-import { CREATE_USER } from '../../graphql/mutations/createUser';
+import loginValidationSchema from './loginValidationSchema';
+import { LOGIN_USER } from '../../graphql/mutations/loginUser';
 
 // Specific styles for MUI components
 const useStyles = makeStyles({
@@ -59,17 +59,21 @@ const useStyles = makeStyles({
   },
 });
 
-const SignupForm = (): JSX.Element => {
+const LoginForm = (): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
 
-  const [createUser, { data, error }] = useMutation(CREATE_USER, {
+  const [loginUser, { data, error }] = useMutation(LOGIN_USER, {
     onCompleted: (res) => {
-      const token = res?.createUser?.token;
+      const token = res?.loginUser?.token;
       if (token) {
         localStorage.setItem('token', token);
       }
+    },
+    onError: (err) => {
+      // eslint-disable-next-line no-console
+      console.log('Error on login mutation  :', err);
     },
   });
 
@@ -80,46 +84,18 @@ const SignupForm = (): JSX.Element => {
   return (
     <div className="background">
       <Formik
-        initialValues={{ firstname: '', lastname: '', email: '', password: '' }}
+        initialValues={{ email: '', password: '' }}
         onSubmit={(values) => {
-          createUser({ variables: { ...values } });
+          loginUser({ variables: { ...values } });
           history.push('/dashboard');
         }}
-        validationSchema={signUpValidationSchema}
+        validationSchema={loginValidationSchema}
       >
         {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
           <div className="form">
             <img className="auth__form__logo" src={logo} alt="logo des Lamas" />
             <div className="auth__form">
-              <h1 className="auth__form__title">Bienvenue à toi Lama !</h1>
-              <div className="auth__form__input">
-                <InputLabel className={classes.label}>Prénom</InputLabel>
-                <Input
-                  fullWidth
-                  onChange={handleChange('firstname')}
-                  disableUnderline
-                  value={values.firstname}
-                  error={touched.firstname && Boolean(errors.firstname)}
-                  className={classes.textField}
-                />
-                {errors.firstname && touched.firstname && (
-                  <p className="input__error">{errors.firstname}</p>
-                )}
-              </div>
-              <div className="auth__form__input">
-                <InputLabel className={classes.label}>Nom</InputLabel>
-                <Input
-                  fullWidth
-                  onChange={handleChange('lastname')}
-                  value={values.lastname}
-                  error={touched.lastname && Boolean(errors.lastname)}
-                  className={classes.textField}
-                  disableUnderline
-                />
-                {errors.lastname && touched.lastname && (
-                  <p className="input__error">{errors.lastname}</p>
-                )}
-              </div>
+              <h1 className="auth__form__title">Rejoins les autres lamas !</h1>
               <div className="auth__form__input">
                 <InputLabel className={classes.label}>E-mail</InputLabel>
                 <Input
@@ -168,16 +144,16 @@ const SignupForm = (): JSX.Element => {
                 <Button
                   type="submit"
                   className={classes.button2}
-                  onClick={() => history.push('/')}
+                  onClick={() => history.push('/signup')}
                 >
-                  Déjà un compte ?
+                  Créer un compte
                 </Button>
                 <Button
                   type="submit"
                   className={classes.button}
                   onClick={() => handleSubmit()}
                 >
-                  Créer mon compte
+                  Se connecter
                 </Button>
               </div>
             </div>
@@ -189,4 +165,4 @@ const SignupForm = (): JSX.Element => {
 };
 
 // eslint-disable-next-line import/no-default-export
-export default SignupForm;
+export default LoginForm;

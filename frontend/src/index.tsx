@@ -7,7 +7,6 @@ import {
   InMemoryCache,
   createHttpLink,
 } from '@apollo/client';
-
 import { setContext } from '@apollo/client/link/context';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -19,6 +18,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
+  // eslint-disable-next-line no-console
   console.log('token set context', token);
   return {
     headers: {
