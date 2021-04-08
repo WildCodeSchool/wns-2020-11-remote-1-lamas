@@ -78,107 +78,117 @@ const SignupForm = (): JSX.Element => {
   };
 
   return (
-    <Formik
-      initialValues={{ firstname: '', lastname: '', email: '', password: '' }}
-      onSubmit={(values) => {
-        createUser({ variables: { ...values } });
-        history.push('/dashboard');
-      }}
-      validationSchema={signUpValidationSchema}
-    >
-      {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
-        <div className="form">
-          <img className="signup__form__logo" src={logo} alt="logo des Lamas" />
-          <div className="signup__form">
-            <h1 className="signup__form__title">Bienvenue à toi Lama !</h1>
-            <div className="signup__form__input">
-              <InputLabel className={classes.label}>Prénom</InputLabel>
-              <Input
-                fullWidth
-                onChange={handleChange('firstname')}
-                disableUnderline
-                value={values.firstname}
-                error={touched.firstname && Boolean(errors.firstname)}
-                className={classes.textField}
-              />
-              {errors.firstname && touched.firstname && (
-                <p className="input__error">{errors.firstname}</p>
-              )}
-            </div>
-            <div className="signup__form__input">
-              <InputLabel className={classes.label}>Nom</InputLabel>
-              <Input
-                fullWidth
-                onChange={handleChange('lastname')}
-                value={values.lastname}
-                error={touched.lastname && Boolean(errors.lastname)}
-                className={classes.textField}
-                disableUnderline
-              />
-              {errors.lastname && touched.lastname && (
-                <p className="input__error">{errors.lastname}</p>
-              )}
-            </div>
-            <div className="signup__form__input">
-              <InputLabel className={classes.label}>E-mail</InputLabel>
-              <Input
-                fullWidth
-                onChange={handleChange('email')}
-                className={classes.textField}
-                value={values.email}
-                error={touched.email && Boolean(errors.email)}
-                disableUnderline
-              />
-              {errors.email && touched.email && (
-                <p className="input__error">{errors.email}</p>
-              )}
-            </div>
-            <div className="signup__form__input">
-              <InputLabel className={classes.label}>Mot de passe</InputLabel>
-              <Input
-                fullWidth
-                onChange={handleChange('password')}
-                value={values.password}
-                className={classes.textField}
-                type={passwordVisibility ? 'text' : 'password'}
-                error={touched.password && Boolean(errors.password)}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      className={classes.iconButton}
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                    >
-                      {passwordVisibility ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              {errors.password && touched.password && (
-                <p className="input__error">{errors.password}</p>
-              )}
-            </div>
-            <div className="form__button">
-              <Button
-                type="submit"
-                className={classes.button2}
-                onClick={() => history.push('/')}
-              >
-                Déjà un compte ?
-              </Button>
-              <Button
-                type="submit"
-                className={classes.button}
-                onClick={() => handleSubmit()}
-              >
-                Créer mon compte
-              </Button>
+    <div className="background">
+      <Formik
+        initialValues={{ firstname: '', lastname: '', email: '', password: '' }}
+        onSubmit={(values) => {
+          createUser({ variables: { ...values } });
+          history.push('/dashboard');
+        }}
+        validationSchema={signUpValidationSchema}
+      >
+        {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
+          <div className="form">
+            <img
+              className="signup__form__logo"
+              src={logo}
+              alt="logo des Lamas"
+            />
+            <div className="signup__form">
+              <h1 className="signup__form__title">Bienvenue à toi Lama !</h1>
+              <div className="signup__form__input">
+                <InputLabel className={classes.label}>Prénom</InputLabel>
+                <Input
+                  fullWidth
+                  onChange={handleChange('firstname')}
+                  disableUnderline
+                  value={values.firstname}
+                  error={touched.firstname && Boolean(errors.firstname)}
+                  className={classes.textField}
+                />
+                {errors.firstname && touched.firstname && (
+                  <p className="input__error">{errors.firstname}</p>
+                )}
+              </div>
+              <div className="signup__form__input">
+                <InputLabel className={classes.label}>Nom</InputLabel>
+                <Input
+                  fullWidth
+                  onChange={handleChange('lastname')}
+                  value={values.lastname}
+                  error={touched.lastname && Boolean(errors.lastname)}
+                  className={classes.textField}
+                  disableUnderline
+                />
+                {errors.lastname && touched.lastname && (
+                  <p className="input__error">{errors.lastname}</p>
+                )}
+              </div>
+              <div className="signup__form__input">
+                <InputLabel className={classes.label}>E-mail</InputLabel>
+                <Input
+                  fullWidth
+                  onChange={handleChange('email')}
+                  className={classes.textField}
+                  value={values.email}
+                  error={touched.email && Boolean(errors.email)}
+                  disableUnderline
+                />
+                {errors.email && touched.email && (
+                  <p className="input__error">{errors.email}</p>
+                )}
+              </div>
+              <div className="signup__form__input">
+                <InputLabel className={classes.label}>Mot de passe</InputLabel>
+                <Input
+                  fullWidth
+                  onChange={handleChange('password')}
+                  value={values.password}
+                  className={classes.textField}
+                  type={passwordVisibility ? 'text' : 'password'}
+                  error={touched.password && Boolean(errors.password)}
+                  disableUnderline
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        className={classes.iconButton}
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                      >
+                        {passwordVisibility ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                {errors.password && touched.password && (
+                  <p className="input__error">{errors.password}</p>
+                )}
+              </div>
+              <div className="form__button">
+                <Button
+                  type="submit"
+                  className={classes.button2}
+                  onClick={() => history.push('/')}
+                >
+                  Déjà un compte ?
+                </Button>
+                <Button
+                  type="submit"
+                  className={classes.button}
+                  onClick={() => handleSubmit()}
+                >
+                  Créer mon compte
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </Formik>
+        )}
+      </Formik>
+    </div>
   );
 };
 

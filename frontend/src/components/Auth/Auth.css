@@ -2,6 +2,12 @@ body{
     background-color: #00396A;
 }
 
+.background{
+    background-image: url('../../asset/lesmontages_lama.png');
+    background-position: center;
+    background-size: 100%;
+}
+
 .form {
     display: flex;
     flex-direction: column;
