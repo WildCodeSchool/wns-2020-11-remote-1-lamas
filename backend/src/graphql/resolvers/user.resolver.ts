@@ -102,7 +102,6 @@ export default {
     },
     async loginUser(_: void, data: ILoginUser): Promise<UserWithToken> {
       const errors: string[] = [];
-      console.log('in user resolver data: ', data);
 
       if (errors.length) {
         throw new InputError(errors);

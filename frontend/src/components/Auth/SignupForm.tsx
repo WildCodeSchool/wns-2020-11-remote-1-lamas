@@ -89,14 +89,10 @@ const SignupForm = (): JSX.Element => {
       >
         {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
           <div className="form">
-            <img
-              className="signup__form__logo"
-              src={logo}
-              alt="logo des Lamas"
-            />
-            <div className="signup__form">
-              <h1 className="signup__form__title">Bienvenue à toi Lama !</h1>
-              <div className="signup__form__input">
+            <img className="auth__form__logo" src={logo} alt="logo des Lamas" />
+            <div className="auth__form">
+              <h1 className="auth__form__title">Bienvenue à toi Lama !</h1>
+              <div className="auth__form__input">
                 <InputLabel className={classes.label}>Prénom</InputLabel>
                 <Input
                   fullWidth
@@ -110,7 +106,7 @@ const SignupForm = (): JSX.Element => {
                   <p className="input__error">{errors.firstname}</p>
                 )}
               </div>
-              <div className="signup__form__input">
+              <div className="auth__form__input">
                 <InputLabel className={classes.label}>Nom</InputLabel>
                 <Input
                   fullWidth
@@ -124,7 +120,7 @@ const SignupForm = (): JSX.Element => {
                   <p className="input__error">{errors.lastname}</p>
                 )}
               </div>
-              <div className="signup__form__input">
+              <div className="auth__form__input">
                 <InputLabel className={classes.label}>E-mail</InputLabel>
                 <Input
                   fullWidth
@@ -138,7 +134,7 @@ const SignupForm = (): JSX.Element => {
                   <p className="input__error">{errors.email}</p>
                 )}
               </div>
-              <div className="signup__form__input">
+              <div className="auth__form__input">
                 <InputLabel className={classes.label}>Mot de passe</InputLabel>
                 <Input
                   fullWidth

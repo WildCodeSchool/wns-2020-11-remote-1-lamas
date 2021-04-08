@@ -66,19 +66,14 @@ const LoginForm = (): JSX.Element => {
 
   const [loginUser, { data, error }] = useMutation(LOGIN_USER, {
     onCompleted: (res) => {
-      console.log('on completed', res);
       const token = res?.loginUser?.token;
-      // eslint-disable-next-line no-console
-      console.log('token', token);
-      console.log('res', res);
-
       if (token) {
         localStorage.setItem('token', token);
       }
     },
     onError: (err) => {
       // eslint-disable-next-line no-console
-      console.log('error on mutation :', err);
+      console.log('Error on login mutation  :', err);
     },
   });
 
@@ -86,15 +81,11 @@ const LoginForm = (): JSX.Element => {
     setpasswordVisibility(!passwordVisibility);
   };
 
-  // Error: Cannot access 'email' before initialization
-
   return (
     <div className="background">
       <Formik
         initialValues={{ email: '', password: '' }}
         onSubmit={(values) => {
-          // eslint-disable-next-line no-console
-          console.log('in submit: ', values);
           loginUser({ variables: { ...values } });
           history.push('/dashboard');
         }}
@@ -102,16 +93,10 @@ const LoginForm = (): JSX.Element => {
       >
         {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
           <div className="form">
-            <img
-              className="signup__form__logo"
-              src={logo}
-              alt="logo des Lamas"
-            />
-            <div className="signup__form">
-              <h1 className="signup__form__title">
-                Rejoins les autres lamas !
-              </h1>
-              <div className="signup__form__input">
+            <img className="auth__form__logo" src={logo} alt="logo des Lamas" />
+            <div className="auth__form">
+              <h1 className="auth__form__title">Rejoins les autres lamas !</h1>
+              <div className="auth__form__input">
                 <InputLabel className={classes.label}>E-mail</InputLabel>
                 <Input
                   fullWidth
@@ -125,7 +110,7 @@ const LoginForm = (): JSX.Element => {
                   <p className="input__error">{errors.email}</p>
                 )}
               </div>
-              <div className="signup__form__input">
+              <div className="auth__form__input">
                 <InputLabel className={classes.label}>Mot de passe</InputLabel>
                 <Input
                   fullWidth

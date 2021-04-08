@@ -3,7 +3,7 @@ body{
 }
 
 .background{
-    background-image: url('../../asset/lesmontages_lama.png');
+    background-image: url('../../asset/lesmontagnes_lama.png');
     background-position: center;
     background-size: 100%;
 }
@@ -15,15 +15,16 @@ body{
     height:100vh;
 }
 
-.signup__form {
+.auth__form {
     width: 28%;
     margin: auto;
     background-color: white;
+    
     border-radius: 20px 20px 0 0;
     height: 100%;
 }
 
-.signup__form__logo {
+.auth__form__logo {
     width: 20vh;
     margin: auto;
     margin-bottom: 4vh;
@@ -31,7 +32,7 @@ body{
     justify-content: center
 }
 
-.signup__form__title {
+.auth__form__title {
     margin-top: 4vh;
     text-align: center;
     font-size: 23px;
@@ -39,7 +40,7 @@ body{
     margin-bottom: 2em;
 }
 
-.signup__form__input {
+.auth__form__input {
     width: 75%;
     margin: auto;
     padding-bottom: 1em;
