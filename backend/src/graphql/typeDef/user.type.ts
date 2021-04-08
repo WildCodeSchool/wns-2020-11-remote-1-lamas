@@ -24,6 +24,7 @@ const UserType = gql`
   }
 
   type Mutation {
+    loginUser(email: String, password: String): UserWithToken
     createUser(
       firstname: String
       lastname: String
