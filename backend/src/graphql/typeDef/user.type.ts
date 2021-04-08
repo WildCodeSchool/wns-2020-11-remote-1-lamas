@@ -31,6 +31,7 @@ const UserType = gql`
       email: String
       password: String
     ): UserWithToken
+    loginUser(email: String, password: String): UserWithToken
   }
 `;
 
