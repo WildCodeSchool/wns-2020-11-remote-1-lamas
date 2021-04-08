@@ -37,7 +37,7 @@ const FIND_USER = gql`
 `;
 
 const LOGIN_USER = gql`
-  query($email: String, $password: String) {
+  mutation($email: String, $password: String) {
     loginUser(email: $email, password: $password) {
       token
       user {
@@ -120,7 +120,7 @@ describe('user test', () => {
       },
     });
 
-    const res = await query({
+    const res = await mutate({
       query: LOGIN_USER,
       variables: {
         email: 'patoune@hotmail.fr',

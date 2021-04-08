@@ -1,25 +1,30 @@
-import * as Linking from 'expo-linking';
+import * as Linking from "expo-linking";
 
 export default {
-  prefixes: [Linking.makeUrl('/')],
+  prefixes: [Linking.makeUrl("/")],
   config: {
     screens: {
       Root: {
         screens: {
+          Login: {
+            screens: {
+              LoginScreen: "Home",
+            },
+          },
           LamasTools: {
             screens: {
-              LamasToolsScreen: 'Home',
-              LamaReminderScreen: 'Todo-List'
+              LamasToolsScreen: "tools",
+              LamaReminderScreen: "Todo-List",
             },
           },
           ProfiLama: {
             screens: {
-              ProfiLamaScreen: 'Profile',
+              ProfiLamaScreen: "Profile",
             },
           },
         },
       },
-      NotFound: '*',
+      NotFound: "*",
     },
   },
 };

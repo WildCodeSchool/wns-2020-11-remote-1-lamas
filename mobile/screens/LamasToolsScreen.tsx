@@ -1,15 +1,19 @@
 import * as React from "react";
 import { StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Text, View } from "../components/Themed";
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import {RootStackParamList, LamasReminderParamList} from '../types';
+import {
+  StackNavigationProp,
+} from "@react-navigation/stack";
+import { RootStackParamList } from "../types";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
-
-type NavigationProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'LamaReminderScreen' >;
+export type NavigationProps = {
+  navigation: StackNavigationProp<RootStackParamList, "LamaReminderScreen">;
 };
-
 
 export default function LamasToolsScreen({ navigation }: NavigationProps) {
   return (
@@ -19,14 +23,16 @@ export default function LamasToolsScreen({ navigation }: NavigationProps) {
       start={{ x: 0.9, y: 0 }}
       end={{ x: 0.7, y: 0.9 }}
     >
-      <Image source={require('../assets/images/logowhite.png')} style={styles.logo}/> 
-   
+      <Image
+        source={require("../assets/images/logowhite.png")}
+        style={styles.logo}
+      />
+
       <Text style={styles.title}>Lamas tools</Text>
 
       <View style={styles.menu}>
-
         <TouchableOpacity
-          onPress={() => navigation.navigate('LamaReminderScreen')} 
+          onPress={() => navigation.navigate("LamaReminderScreen")}
           style={styles.buttonTool}
         >
           <Image
@@ -38,7 +44,10 @@ export default function LamasToolsScreen({ navigation }: NavigationProps) {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonTool}>
+        <TouchableOpacity
+          style={styles.buttonTool}
+          onPress={() => navigation.navigate("LamadoroScreen")}
+        >
           <View style={styles.buttonShape}>
             <Text style={styles.titleButton}>Lamodoro</Text>
           </View>
@@ -48,7 +57,10 @@ export default function LamasToolsScreen({ navigation }: NavigationProps) {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonTool}>
+        <TouchableOpacity
+          style={styles.buttonTool}
+          onPress={() => navigation.navigate("LamojiScreen")}
+        >
           <Image
             style={styles.iconImage}
             source={require("../assets/images/icons_happy.png")}
@@ -76,6 +88,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "white",
+    width: wp("100%"),
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#00396A",
@@ -84,7 +98,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingRight: 10,
     alignItems: "center",
-    //margin: 20,
     width: 200,
     height: 30,
     shadowColor: "#000",
@@ -97,11 +110,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#00396A",
     marginTop: 5,
-    fontFamily:"Chalkduster",
+    fontFamily: "Chalkduster",
   },
   icons: {
     backgroundColor: "transparent",
-    //color: 'white',
   },
   iconImage: {
     width: 100,
@@ -118,10 +130,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     transform: [{ rotate: "-5deg" }],
-    marginBottom:40
+    marginBottom: 40,
   },
-  logo:{
+  logo: {
     height: 100,
-    resizeMode:"contain",
+    resizeMode: "contain",
   },
 });
