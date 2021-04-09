@@ -57,7 +57,7 @@ function RootNavigator() {
       }
     },
     {
-      isLoggedIn: false,
+      isLoggedIn: true,
     }
   );
 

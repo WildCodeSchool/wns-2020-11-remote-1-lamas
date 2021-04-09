@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Modal, Pressable, Image } from "react-native";
-import CheckBox from "@react-native-community/checkbox";
+//import CheckBox from "@react-native-community/checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Fab,
@@ -10,6 +10,7 @@ import {
   Content,
   List,
   ListItem,
+  CheckBox
 } from "native-base";
 
 import IconAnt from "react-native-vector-icons/AntDesign";
@@ -90,18 +91,17 @@ export default function LamaReminderScreen() {
   };
 
   const renderTodoItems = () => {
-    return todoList?.getTodos?.map((todo) => {
+    return todoList?.getTodos?.map((todo, index) => {
       return (
         <>
-          <ListItem style={styles.itemsContainer}>
+          <ListItem key={index} style={styles.itemsContainer}>
             <View style={styles.items}>
             <CheckBox
-              value={todo.isChecked}
-              onValueChange={(isChecked) =>
-                updateTodo({ variables: { _id: todo._id, isChecked } })
+              checked={todo.isChecked}
+              onPress={() =>
+                updateTodo({ variables: { _id: todo._id, isChecked: !todo.isChecked } })
               }
-              tintColors={{true:'#00396A', false:'#00396A'}}
-
+              color="#00396A"
             />
             <Text>{todo.todo_name}</Text>
             </View>
