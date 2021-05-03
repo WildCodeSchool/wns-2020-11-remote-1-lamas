@@ -1,1 +1,0 @@
-# lamas-project
