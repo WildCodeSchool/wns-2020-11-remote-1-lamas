@@ -1,0 +1,56 @@
+name: Automated browser tests
+on: [push,pull_request]
+
+jobs:
+  tests-backend:
+    runs-on: ubuntu-latest
+    steps:    
+    # 1: setup node
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+
+      # 2: Checkout repository in the CWD
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 3: install NPM dependencies
+      - name: Install dependencies
+        run: cd backend && npm ci
+
+      # 4: Run jest test
+      - name : Launch jest test
+        run:  cd backend && npm run test:ci
+        env: 
+          MONGODB_URI_TESTING: ${{ secrets.MONGODB_URI_TESTING }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+
+      # 5: Run lint test
+      - name: Launch lint test
+        run: cd backend && npm run lint
+
+  tests-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+
+      # 2: Checkout repository in the CWD
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 3: install NPM dependencies
+      - name: Install dependencies
+        run: cd frontend && npm install
+        
+        # 3: launch test front
+      - name: launch test front
+        run: cd frontend && npm run test
+
+        # 4: Run lint test
+      - name: Launch lint test
+        run: cd frontend && npm run lint

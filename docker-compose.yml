@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  lamas-frontend:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/node_modules:/app/node_modules
+
+
+  lamas-backend:
+    build: ./backend
+    ports:
+      - 8000:8000
+    env_file: ./backend/.env
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/node_modules:/app/node_modules

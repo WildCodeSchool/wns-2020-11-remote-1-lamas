@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.8.8 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: lamas-api #Must be unique in Heroku
+          heroku_email: lamaswcs@gmail.com
+          usedocker: true
+          appdir: ./backend
+  
+  buildfrontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.8.8 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: wild-lamas #Must be unique in Heroku
+          heroku_email: lamaswcs@gmail.com
+          usedocker: true
+          appdir: ./frontend

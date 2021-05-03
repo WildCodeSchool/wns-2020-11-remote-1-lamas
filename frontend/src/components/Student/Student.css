@@ -5,16 +5,12 @@ body {
 .student {
   height: inherit;
   display: flex;
-}
-
-.student_visio {
-  width: 80%;
+  justify-content: space-between;
 }
 
 .student_lateral_panel {
   display: flex;
   justify-content: flex-end;
-  width: 20%;
   height: 100%;
   background-color: rgba(78, 80, 78, 0.3);
 }
@@ -35,19 +31,31 @@ body {
 
 .student_emoji_button {
   margin: 7px;
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background-color: #00396a;
+  border-bottom: 4px solid #001634;
   cursor: pointer;
   outline: none;
+  padding: 3px;
 }
 
 .student_emoji_img {
-  width: inherit;
+  width: 100%;
   object-fit: contain;
 }
 
 .student_emoji_button:hover {
-  opacity: 0.5;
+  opacity: 0.8;
+}
+
+.student_emoji_button--active {
+  opacity: 0.8;
+  border-bottom: none;
+  border: 3px solid #fff;
+  padding: 0;
 }
