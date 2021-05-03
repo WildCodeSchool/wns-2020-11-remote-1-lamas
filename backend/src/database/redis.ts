@@ -14,8 +14,6 @@ export const asyncHgetall = promisify(client.hgetall).bind(client);
 export const asyncHget = promisify(client.hget).bind(client);
 export const asyncFlushDB = promisify(client.flushdb).bind(client);
 
-
-
 client.on('error', (error: any) => {
   console.error(error);
 });
