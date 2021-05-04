@@ -188,5 +188,5 @@ const SignupForm = (): JSX.Element => {
   );
 };
 
-// eslint-disable-next-line import/no-default-export
+
 export default SignupForm;
