@@ -72,7 +72,6 @@ const LoginForm = (): JSX.Element => {
       }
     },
     onError: (err) => {
-      // eslint-disable-next-line no-console
       console.log('Error on login mutation  :', err);
     },
   });
@@ -164,5 +163,4 @@ const LoginForm = (): JSX.Element => {
   );
 };
 
-// eslint-disable-next-line import/no-default-export
 export default LoginForm;

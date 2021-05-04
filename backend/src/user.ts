@@ -1,4 +1,4 @@
-import { asyncHincrby, asyncHgetall,asyncFlushDB } from './database/redis';
+import { asyncHincrby, asyncHgetall, asyncFlushDB } from './database/redis';
 import { parseIntHget, MoodCounter } from './shared/utils';
 
 const users: User[] = [];

@@ -18,3 +18,9 @@ services:
     volumes:
       - ./backend/src:/app/src
       - ./backend/node_modules:/app/node_modules
+
+  redis:
+    image: "redis:5-alpine"
+    command: redis-server --appendonly yes 
+    volumes:
+      - ./redis:/data

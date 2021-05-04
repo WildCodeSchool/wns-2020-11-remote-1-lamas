@@ -18,7 +18,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
-  // eslint-disable-next-line no-console
+
   console.log('token set context', token);
   return {
     headers: {
