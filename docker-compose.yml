@@ -11,10 +11,11 @@ services:
   lamas-backend:
     build: ./backend
     ports:
-      - 8000:8000
+      - 4000:8000
     env_file: ./backend/.env
     volumes:
       - ./backend/src:/app/src
 
   redis:
     image: redis
+    
