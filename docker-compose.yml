@@ -8,7 +8,6 @@ services:
     volumes:
       - ./frontend/src:/app/src
 
-
   lamas-backend:
     build: ./backend
     ports:
