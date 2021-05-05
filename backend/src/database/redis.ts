@@ -2,7 +2,9 @@ import redis from 'redis';
 import { promisify } from 'util';
 
 // create a new client (by default will use 6379)
-export const client = redis.createClient();
+export const client = redis.createClient({
+  host: 'redis',
+});
 
 // listen for connect
 client.on('connect', () => {
