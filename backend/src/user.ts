@@ -1,4 +1,4 @@
-import { asyncHincrby, asyncHgetall,asyncFlushDB } from './database/redis';
+import { asyncHincrby, asyncHgetall, asyncFlushDB } from './database/redis';
 import { parseIntHget, MoodCounter } from './shared/utils';
 
 const users: User[] = [];
@@ -77,7 +77,7 @@ const updateEmojisCount = async (
 };
 
 const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
-  // Commande pour RAZ la database : 
+  // Commande pour RAZ la database :
   // await asyncFlushDB()
 
   // récupère le moodcounter de la bdd (string)
@@ -97,25 +97,21 @@ const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
 
 const removeUser = async (id: string): Promise<void> => {
   const index = users.findIndex((user) => user.socketId === id);
-  
+
   if (index !== -1) {
     // remove emotion & actions from emojisCount
     const userMood = users[index].mood;
     const userActions = users[index].actions;
 
     if (userActions.length > 0) {
-      userActions.map(async(action) => {
+      userActions.map(async (action) => {
         // supprime les actions de l'user
         await asyncHincrby('moodcounter', action, -1);
       });
     }
     // supprime l'émotion de l'user si !== 'default'
     if (userMood !== 'default') {
-      await asyncHincrby(
-        'moodcounter',
-        userMood,
-        -1
-      );
+      await asyncHincrby('moodcounter', userMood, -1);
     }
 
     // remove user

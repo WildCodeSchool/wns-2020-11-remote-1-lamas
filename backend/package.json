@@ -11,6 +11,7 @@
     "start": "node dist/src/index.js",
     "lint": "eslint . ",
     "fix:lint": "eslint . --fix",
+    "heroku-postbuild": "cd frontend && npm install && npm run build",
     "test": "jest --watchAll --no-cache --runInBand",
     "test:ci": "jest --no-cache --runInBand",
     "build": "tsc",

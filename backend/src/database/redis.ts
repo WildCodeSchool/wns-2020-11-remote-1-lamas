@@ -2,7 +2,9 @@ import redis from 'redis';
 import { promisify } from 'util';
 
 // create a new client (by default will use 6379)
-export const client = redis.createClient();
+export const client = redis.createClient({
+  host: 'redis',
+});
 
 // listen for connect
 client.on('connect', () => {
@@ -13,8 +15,6 @@ export const asyncHincrby = promisify(client.hincrby).bind(client);
 export const asyncHgetall = promisify(client.hgetall).bind(client);
 export const asyncHget = promisify(client.hget).bind(client);
 export const asyncFlushDB = promisify(client.flushdb).bind(client);
-
-
 
 client.on('error', (error: any) => {
   console.error(error);
