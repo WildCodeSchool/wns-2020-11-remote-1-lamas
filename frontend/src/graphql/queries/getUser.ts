@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-// eslint-disable-next-line 
+// eslint-disable-next-line
 export const FIND_USER = gql`
-  query($userId: String!) {
+  query($userId: ID!) {
     getUser(_id: $userId) {
       _id
       firstname

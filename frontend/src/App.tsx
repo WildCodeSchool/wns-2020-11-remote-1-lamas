@@ -10,7 +10,7 @@ function App(): JSX.Element {
     <Router>
       <Route exact path="/signup" component={SignupForm} />
       <Route exact path="/" component={LoginForm} />
-      <Route exact path="/:id" component={Dashboard} />
+      <Route exact path="/dashboard/:id" component={Dashboard} />
       <Route exact path="/teacher" component={Teacher} />
       <Route exact path="/student" component={Student} />
     </Router>
