@@ -68,6 +68,8 @@ const SignupForm = (): JSX.Element => {
     onCompleted: (res) => {
       const token = res?.createUser?.token;
       if (token) {
+        // eslint-disable-next-line no-underscore-dangle
+        history.push(`/dashboard/${res.createUser.user._id}`);
         localStorage.setItem('token', token);
       }
     },
@@ -83,7 +85,6 @@ const SignupForm = (): JSX.Element => {
         initialValues={{ firstname: '', lastname: '', email: '', password: '' }}
         onSubmit={(values) => {
           createUser({ variables: { ...values } });
-          history.push('/dashboard');
         }}
         validationSchema={signUpValidationSchema}
       >
@@ -187,6 +188,5 @@ const SignupForm = (): JSX.Element => {
     </div>
   );
 };
-
 
 export default SignupForm;
