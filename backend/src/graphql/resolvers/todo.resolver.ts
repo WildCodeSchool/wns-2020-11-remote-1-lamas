@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import validator from 'validator';
 import mongoose, { Types } from 'mongoose';
 import Todo, { ITodo } from '../../database/models/Todo';
@@ -33,7 +31,7 @@ export default {
       _: void,
       _data: Record<string, never>,
       context: Icontext
-    ): Promise<ITodo> {
+    ): Promise<mongoose.Schema.Types.ObjectId[] | undefined> {
       if (!context.user.id) throw new UnauthorizedError();
 
       const errors: string[] = [];
@@ -60,9 +58,10 @@ export default {
       _: void,
       data: IcreateTodo,
       context: Icontext
-    ): Promise<ITodo> {
+    ): Promise<mongoose.Schema.Types.ObjectId[] | undefined> {
       if (!context.user.id) throw new UnauthorizedError();
 
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const { todo_name } = data;
 
       const errors = [];
@@ -94,7 +93,7 @@ export default {
         }
       );
 
-      return result;
+      return result.todos_list;
     },
 
     async updateTodo(
@@ -106,6 +105,7 @@ export default {
 
       if (!context.user.id) throw new UnauthorizedError();
 
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const { _id } = data;
 
       const errors = [];
@@ -137,6 +137,7 @@ export default {
     ): Promise<ITodo> {
       if (!context.user.id) throw new UnauthorizedError();
 
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const { _id } = data;
 
       const errors = [];

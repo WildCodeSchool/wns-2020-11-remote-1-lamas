@@ -75,14 +75,14 @@ io.on('connect', (socket: Socket) => {
 });
 
 // Heroku deployment
-if (process.env.NODE_ENV === 'production') {
+/* if (process.env.NODE_ENV === 'production') {
   app.use(express.static(join(__dirname, './frontend/build')));
 
   app.get('*', (req, res) => {
     res.sendFile(join(__dirname, './frontend/build/index.html'));
   });
 }
-
+ */
 /* eslint-disable no-console */
 const PORT = process.env.PORT || 8000;
 httpServer.listen(PORT, () =>

@@ -4,8 +4,8 @@ services:
   lamas-backend:
     command: sh -c "npm run build && npm run start"
     expose:
-      - 4000
-    restart: always
+      - 8000
+#  restart: always
     environment:
       - NODE_ENV=production
 
