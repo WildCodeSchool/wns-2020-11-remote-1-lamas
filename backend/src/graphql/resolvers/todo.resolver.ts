@@ -31,7 +31,7 @@ export default {
       _: void,
       _data: Record<string, never>,
       context: Icontext
-    ): Promise<mongoose.Schema.Types.ObjectId[] | undefined> {
+    ): Promise<mongoose.Types.ObjectId[] | undefined> {
       if (!context.user.id) throw new UnauthorizedError();
 
       const errors: string[] = [];
@@ -58,7 +58,7 @@ export default {
       _: void,
       data: IcreateTodo,
       context: Icontext
-    ): Promise<mongoose.Schema.Types.ObjectId[] | undefined> {
+    ): Promise<mongoose.Types.ObjectId[] | undefined> {
       if (!context.user.id) throw new UnauthorizedError();
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -93,7 +93,7 @@ export default {
         }
       );
 
-      return result.todos_list;
+      return result?.todos_list;
     },
 
     async updateTodo(
