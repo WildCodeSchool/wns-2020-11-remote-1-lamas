@@ -18,10 +18,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "outDir": "./dist",
   },
   "include": [
     "src"
   ],
-  "exclude": ["node_modules", "build", "dist", "src/**/*.js", "src/**/*.jsx"]
+  "exclude": ["node_modules", "build", "dist/**/*", "src/**/*.js", "src/**/*.jsx"]
 }

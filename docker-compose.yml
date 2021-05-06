@@ -1,9 +1,8 @@
-version: '2'
+version: "2"
 
 services:
   lamas-frontend:
     build: ./frontend
-    env_file: ./frontend/.env
     volumes:
       - ./frontend/src:/app/src
 
@@ -15,5 +14,3 @@ services:
 
   redis:
     image: redis
-   
-    
