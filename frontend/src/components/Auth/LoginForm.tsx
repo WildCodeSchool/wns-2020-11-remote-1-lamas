@@ -68,6 +68,8 @@ const LoginForm = (): JSX.Element => {
     onCompleted: (res) => {
       const token = res?.loginUser?.token;
       if (token) {
+        // eslint-disable-next-line no-underscore-dangle
+        history.push(`/dashboard/${res.loginUser.user._id}`);
         localStorage.setItem('token', token);
       }
     },
@@ -86,7 +88,6 @@ const LoginForm = (): JSX.Element => {
         initialValues={{ email: '', password: '' }}
         onSubmit={(values) => {
           loginUser({ variables: { ...values } });
-          history.push('/dashboard');
         }}
         validationSchema={loginValidationSchema}
       >

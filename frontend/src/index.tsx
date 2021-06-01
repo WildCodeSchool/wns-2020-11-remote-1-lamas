@@ -12,7 +12,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:8000/graphql',
+  uri: `${process.env.REACT_APP_LAMAS_BACK}/graphql`,
   credentials: 'same-origin',
 });
 
