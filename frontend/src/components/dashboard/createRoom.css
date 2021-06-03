@@ -1,0 +1,31 @@
+.create-room__title {
+    color: #00396A;
+    font-size: 20px;
+}
+
+.room-list__name {
+    margin-top: 1em;
+    color: #00396A;
+    background-color: white;
+    padding: 1em;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.room-list__name--active {
+    border: 2px solid #00396A
+}
+
+.room-list__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.create-room__error {
+    color: red;
+    margin:0;
+    margin-top:0.5em;
+    margin-left: 15px;
+    font-size:11px;
+}

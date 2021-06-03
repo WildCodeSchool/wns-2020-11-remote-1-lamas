@@ -7,13 +7,16 @@ import LoginForm from './components/Auth/LoginForm';
 
 function App(): JSX.Element {
   return (
-    <Router>
-      <Route exact path="/signup" component={SignupForm} />
-      <Route exact path="/" component={LoginForm} />
-      <Route exact path="/dashboard/:id" component={Dashboard} />
-      <Route exact path="/teacher" component={Teacher} />
-      <Route exact path="/student" component={Student} />
-    </Router>
+    <>
+      <div id="modal" />
+      <Router>
+        <Route exact path="/signup" component={SignupForm} />
+        <Route exact path="/" component={LoginForm} />
+        <Route exact path="/dashboard/:id" component={Dashboard} />
+        <Route exact path="/teacher/:id/room/:roomId" component={Teacher} />
+        <Route exact path="/student/:id/room/:roomId" component={Student} />
+      </Router>
+    </>
   );
 }
 
