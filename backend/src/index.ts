@@ -40,11 +40,18 @@ app.get('*', () => {
   throw error;
 });
 
-// socket io logic TO BE MODIFIED
+const users: Record<string, string> = {};
 
+// socket io logic TO BE MODIFIED
 io.on('connect', (socket: Socket) => {
-  socket.emit('yourID', socket.id);
+  console.log('test socket connection', socket.id);
+  if (!users[socket.id]) {
+    users[socket.id] = socket.id;
+  }
+  socket.emit('yourId', socket.id);
+  io.sockets.emit('allUsers', users);
   socket.on('callUser', (data) => {
+    console.log('data call user', data);
     io.to(data.userToCall).emit('userCallingMe', {
       signal: data.signalData,
       from: data.from,
@@ -59,8 +66,6 @@ io.on('connect', (socket: Socket) => {
     addUser(socket.id);
     const userCount = getUserCount();
     socket.broadcast.emit('sendUserCount', userCount);
-    // TEST VIDEO
-    socket.broadcast.emit('sendId', socket.id);
   });
 
   socket.on('joinTeacher', async () => {
@@ -79,6 +84,7 @@ io.on('connect', (socket: Socket) => {
   });
 
   socket.on('disconnect', async () => {
+    delete users[socket.id];
     // Gérer la RAZ de la DB en vérifiant si c'est le teacher (user.role cf model)
     await removeUser(socket.id);
     const userCount = getUserCount();

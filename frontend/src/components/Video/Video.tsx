@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 import { Container, Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
+import './Video.css';
 
 interface IVideo {
-  yourID: string;
+  yourId: string;
   stream: undefined | MediaStream;
   receivingCall: boolean;
   caller: string;
@@ -14,7 +16,7 @@ interface IVideo {
 }
 
 const initialVideo: IVideo = {
-  yourID: '',
+  yourId: '',
   stream: undefined,
   receivingCall: false,
   caller: '',
@@ -49,12 +51,10 @@ const Video = (): JSX.Element => {
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
 
     socket.on('yourId', (id: string) => {
-      console.log('useEffect => id', id);
-      setVideo({ ...video, yourID: id });
+      setVideo({ ...video, yourId: id });
     });
 
-    socket.on('allUsers', (allUsers: unknown[]) => {
-      console.log('useEffect => allUsers', allUsers);
+    socket.on('allUsers', (allUsers: any) => {
       setUsers(allUsers);
     });
 
@@ -62,12 +62,16 @@ const Video = (): JSX.Element => {
     socket.on(
       'userCallingMe',
       (data: { from: string; signal: string | SignalData }) => {
-        setVideo({ ...video, receivingCall: true });
-        setVideo({ ...video, caller: data.from });
-        setVideo({ ...video, callerSignal: data.signal });
+        setVideo({
+          ...video,
+          receivingCall: true,
+          caller: data.from,
+          callerSignal: data.signal,
+        });
       }
     );
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users]);
 
   const callPeer = (id: string) => {
     const peer = new Peer({
@@ -81,7 +85,7 @@ const Video = (): JSX.Element => {
       socket.emit('callUser', {
         userToCall: id,
         signalData: data,
-        from: video.yourID,
+        from: video.yourId,
       });
     });
 
@@ -100,7 +104,11 @@ const Video = (): JSX.Element => {
   };
 
   const acceptCall = () => {
-    setVideo({ ...video, callAccepted: true });
+    setVideo({
+      ...video,
+      callAccepted: true,
+      // receivingCall: false, A REPRENDRE
+    });
 
     // create new peer after call accepted
     const peer = new Peer({
@@ -126,12 +134,14 @@ const Video = (): JSX.Element => {
 
   let UserVideo;
   if (video.stream) {
-    UserVideo = <video playsInline muted ref={userVideo} autoPlay />;
+    UserVideo = (
+      <video playsInline muted ref={userVideo} autoPlay className="video" />
+    );
   }
 
   let PartnerVideo;
   if (video.callAccepted) {
-    PartnerVideo = <video playsInline ref={partnerVideo} autoPlay />;
+    PartnerVideo = <video playsInline muted ref={partnerVideo} autoPlay />;
   }
 
   let incomingCall;
@@ -152,7 +162,7 @@ const Video = (): JSX.Element => {
       </div>
       <div>
         {Object.keys(users).map((key) => {
-          if (key === video.yourID) {
+          if (key === video.yourId) {
             return null;
           }
           return (
