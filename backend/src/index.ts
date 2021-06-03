@@ -47,6 +47,8 @@ io.on('connect', (socket: Socket) => {
     addUser(socket.id);
     const userCount = getUserCount();
     socket.broadcast.emit('sendUserCount', userCount);
+    // TEST VIDEO
+    socket.broadcast.emit('sendId', socket.id);
   });
 
   socket.on('joinTeacher', async () => {
