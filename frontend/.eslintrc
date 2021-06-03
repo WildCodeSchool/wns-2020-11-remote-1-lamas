@@ -43,7 +43,8 @@
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "jsx-a11y/media-has-caption": "off"
   },
   "ignorePatterns": ["src/**/*.js", "src/**/*.jsx"]
 }

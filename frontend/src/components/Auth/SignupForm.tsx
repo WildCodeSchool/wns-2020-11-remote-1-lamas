@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import './Auth.css';
 import logo from '../../asset/logo-white-lamas_logo.svg';
 import signUpValidationSchema from './signUpValidationSchema';
-import { CREATE_USER } from '../../graphql/mutations/createUser';
+import CREATE_USER from '../../graphql/mutations/createUser';
 
 // Specific styles for MUI components
 const useStyles = makeStyles({

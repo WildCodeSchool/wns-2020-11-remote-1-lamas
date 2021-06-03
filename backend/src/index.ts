@@ -43,6 +43,18 @@ app.get('*', () => {
 // socket io logic TO BE MODIFIED
 
 io.on('connect', (socket: Socket) => {
+  socket.emit('yourID', socket.id);
+  socket.on('callUser', (data) => {
+    io.to(data.userToCall).emit('userCallingMe', {
+      signal: data.signalData,
+      from: data.from,
+    });
+  });
+
+  socket.on('acceptCall', (data) => {
+    io.to(data.to).emit('callAccepted', data.signal);
+  });
+
   socket.on('join', () => {
     addUser(socket.id);
     const userCount = getUserCount();
