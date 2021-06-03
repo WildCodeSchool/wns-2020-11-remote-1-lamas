@@ -3,11 +3,15 @@ version: "2"
 services:
   lamas-frontend:
     build: ./frontend
+    ports:
+      - 3000:3000
     volumes:
       - ./frontend/src:/app/src
 
   lamas-backend:
     build: ./backend
+    ports:
+      - 4000:8000
     env_file: ./backend/.env
     volumes:
       - ./backend/src:/app/src
