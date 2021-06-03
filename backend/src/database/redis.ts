@@ -10,11 +10,17 @@ export const client = redis.createClient({
 client.on('connect', () => {
   console.log('Redis client connected');
 });
-client.HGETALL('moodcounter', (err: any, reply: any) => console.log(reply));
+// client.HGETALL('moodcounter', (err: any, reply: any) => console.log(reply));
 export const asyncHincrby = promisify(client.hincrby).bind(client);
 export const asyncHgetall = promisify(client.hgetall).bind(client);
 export const asyncHget = promisify(client.hget).bind(client);
 export const asyncFlushDB = promisify(client.flushdb).bind(client);
+export const asyncgetLength = promisify(client.scard).bind(client);
+export const asyncHmset = client.hmset.bind(client);
+export const asyncSadd = client.sadd.bind(client);
+export const asyncSrem = client.srem.bind(client);
+export const asyncSisMember = promisify(client.sismember).bind(client);
+export const asyncHdel = client.hdel.bind(client);
 
 client.on('error', (error: any) => {
   console.error(error);
@@ -31,7 +37,7 @@ client.on('error', (error: any) => {
 un moodcounter par room
 
 {
-  ROOM_1 : {
+  idRoom : {
     happy: [user_1, user_2, user_3 ...], => possibilité de calculer la length && afficher la liste des users concernés
     dead: [user_1, user_2, user_3 ...],
     ....
@@ -41,9 +47,29 @@ un moodcounter par room
     dead: [user_1, user_2, user_3 ...],
     ....
   }
+  userList-roomId {
+    userList : [id, id]
+  }
 }
-
-
-
-
 */
+
+/**  Sets
+ * user-list-roomid {
+ * id
+ * id2
+ * ...
+ * }
+ *
+ */
+
+/* string[] => hmGet
+
+/** hash
+ * user-roomId-userId {
+ * name
+ *  
+ * }
+ * 
+ * 
+ * 
+ */

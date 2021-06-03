@@ -9,6 +9,7 @@ services:
       - 4000:8000
     environment:
       - NODE_ENV=development
+
   lamas-frontend:
     command: npm run start
     stdin_open: true
