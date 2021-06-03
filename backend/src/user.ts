@@ -1,123 +1,190 @@
-import { asyncHincrby, asyncHgetall, asyncFlushDB } from './database/redis';
-import { parseIntHget, MoodCounter } from './shared/utils';
-
-const users: User[] = [];
+import {
+  asyncHincrby,
+  asyncHgetall,
+  asyncFlushDB,
+  asyncgetLength,
+  asyncHmset,
+  asyncSadd,
+  asyncSrem,
+  asyncSisMember,
+  asyncHdel,
+  asyncHget,
+} from './database/redis';
+import { MoodCounter } from './shared/utils';
 
 interface User {
-  socketId: string;
+  id: string;
   mood: string;
   actions: string[];
 }
 
-const moodCounter: MoodCounter = {
-  happy: 0,
-  dead: 0,
-  thinking: 0,
-  coffee: 0,
-  slowDown: 0,
-  question: 0,
-};
-
 /* eslint-disable no-plusplus */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
-const addUser = (id: string): void => {
-  users.push({ socketId: id, mood: 'default', actions: [] });
+const addUser = (
+  roomId: string,
+  userId: string,
+  firstname: string,
+  lastname: string,
+  socketId: string
+): void => {
+  asyncSadd(`users_list-${roomId}`, userId);
+  asyncHmset(
+    `users-${socketId}`,
+    `lastname`,
+    lastname,
+    'firstname',
+    firstname,
+    'roomId',
+    roomId,
+    'userId',
+    userId
+  );
 };
 
-const getUserCount = (): number => {
-  return users.length;
+const getUserCount = async (roomId: string): Promise<number> => {
+  const usersLength = await asyncgetLength(`users_list-${roomId}`);
+  return usersLength;
 };
 
-const getUserInfos = (id: string): User => {
-  const currentUser = users.findIndex((user) => user.socketId === id);
-  return users[currentUser];
+const getUserInfos = async (roomId: string, id: string): Promise<User> => {
+  const userIsHappy = await asyncSisMember(`happy-${roomId}`, id);
+  const userIsDead = await asyncSisMember(`dead-${roomId}`, id);
+  const userIsThinking = await asyncSisMember(`thinking-${roomId}`, id);
+  const userWantsCoffee = await asyncSisMember(`coffee-${roomId}`, id);
+  const userIsSlowedDown = await asyncSisMember(`slowDown-${roomId}`, id);
+  const userAskQuestion = await asyncSisMember(`question-${roomId}`, id);
+
+  const actions: string[] = [];
+  let mood = '';
+
+  if (userIsHappy) {
+    mood = 'happy';
+  } else if (userIsDead) {
+    mood = 'dead';
+  } else if (userIsThinking) {
+    mood = 'thinking';
+  }
+
+  if (userWantsCoffee) {
+    actions.push('coffee');
+  }
+
+  if (userIsSlowedDown) {
+    actions.push('slowDown');
+  }
+
+  if (userAskQuestion) {
+    actions.push('question');
+  }
+
+  return {
+    id,
+    mood,
+    actions,
+  };
 };
 
 const updateEmojisCount = async (
+  roomId: string,
   name: string,
   id: string,
   category: string
 ): Promise<void> => {
-  const currentUser = users.findIndex((user) => user.socketId === id);
-  if (category === 'Emotion' && users[currentUser]?.mood !== name) {
-    // recupère toutes les actions à effectuer vers redis
-    const promises = [];
-    // si mood !== default (happy, dead, thinking)
-    if (users[currentUser]?.mood !== 'default') {
-      // decremente le compteur de l'autre mood émotion
-      const decrement = asyncHincrby(
-        'moodcounter',
-        users[currentUser]?.mood,
-        -1
-      );
-      promises.push(decrement);
+  // vérifie si l'utilisateur a une des ces émotions
+  const userIsHappy = await asyncSisMember(`happy-${roomId}`, id);
+  const userIsDead = await asyncSisMember(`dead-${roomId}`, id);
+  const userIsThinking = await asyncSisMember(`thinking-${roomId}`, id);
+
+  const hasEmotion = (userIsHappy || userIsDead || userIsThinking) === 1;
+
+  if (category === 'Emotion') {
+    if (hasEmotion) {
+      // enlève l'ancienne émotion de cet utilisateur
+      if (userIsHappy) {
+        asyncSrem(`happy-${roomId}`, id);
+      } else if (userIsDead) {
+        asyncSrem(`dead-${roomId}`, id);
+      } else {
+        asyncSrem(`thinking-${roomId}`, id);
+      }
     }
-    // On remplace l'ancienne émotion par la nouvelle
-    users[currentUser].mood = name;
 
     // incremente le nouveau mood emotion
-    const increment = asyncHincrby('moodcounter', users[currentUser]?.mood, 1);
-    promises.push(increment);
-    // envoie en même temps l'increment et le decrement afin d'éviter les bugs de décalages de compteurs d'emotions
-    Promise.all(promises);
+    asyncSadd(`${name}-${roomId}`, id);
   } else if (category === 'Action') {
     // si l'action n'est pas dans le moodCounter
-    if (users[currentUser]?.actions.indexOf(name) === -1) {
-      // ajoute l'action
-      users[currentUser]?.actions.push(name);
-      await asyncHincrby('moodcounter', name, 1);
-    } else {
-      // sinon annule l'action
-      const actionIndex = users[currentUser]?.actions.indexOf(name);
-      users[currentUser]?.actions.splice(actionIndex, 1);
-      await asyncHincrby('moodcounter', name, -1);
+
+    const userWantsCoffee = await asyncSisMember(`coffee-${roomId}`, id);
+    const userIsSlowedDown = await asyncSisMember(`slowDown-${roomId}`, id);
+    const userAskQuestion = await asyncSisMember(`question-${roomId}`, id);
+
+    switch (name) {
+      case 'coffee':
+        if (!userWantsCoffee) {
+          asyncSadd(`coffee-${roomId}`, id);
+        } else {
+          asyncSrem(`coffee-${roomId}`, id);
+        }
+        break;
+      case 'slowDown':
+        if (!userIsSlowedDown) {
+          asyncSadd(`slowDown-${roomId}`, id);
+        } else {
+          asyncSrem(`slowDown-${roomId}`, id);
+        }
+        break;
+      case 'question':
+        if (!userAskQuestion) {
+          asyncSadd(`question-${roomId}`, id);
+        } else {
+          asyncSrem(`question-${roomId}`, id);
+        }
+        break;
+      default:
     }
   }
 };
 
-const getMoodCounter = async (roomId = 'moodcounter'): Promise<MoodCounter> => {
+const getMoodCounter = async (roomId: string): Promise<MoodCounter> => {
   // Commande pour RAZ la database :
   // await asyncFlushDB()
+  const questionLength = await asyncgetLength(`question-${roomId}`);
+  const coffeeLength = await asyncgetLength(`coffee-${roomId}`);
+  const slowDownLength = await asyncgetLength(`slowDown-${roomId}`);
+  const thinkingLength = await asyncgetLength(`thinking-${roomId}`);
+  const deadLength = await asyncgetLength(`dead-${roomId}`);
+  const happyLength = await asyncgetLength(`happy-${roomId}`);
 
-  // récupère le moodcounter de la bdd (string)
-  const redisMoodCounter = await asyncHgetall(roomId);
-
-  if (!redisMoodCounter) {
-    return moodCounter;
-  }
-
-  // copie du nouveau moodcounter (number)
-  const moodCounterCopy: MoodCounter = { ...moodCounter };
-
-  // mise à jour du moodcounter en number et non string
-  const newMoodCounter = parseIntHget(moodCounterCopy, redisMoodCounter);
-  return newMoodCounter;
+  return {
+    happy: happyLength,
+    dead: deadLength,
+    thinking: thinkingLength,
+    coffee: coffeeLength,
+    slowDown: slowDownLength,
+    question: questionLength,
+  };
 };
 
-const removeUser = async (id: string): Promise<void> => {
-  const index = users.findIndex((user) => user.socketId === id);
+const removeUser = async (socketId: string): Promise<string> => {
+  const userId = await asyncHget(`users-${socketId}`, 'userId');
+  const roomId = await asyncHget(`users-${socketId}`, 'roomId');
 
-  if (index !== -1) {
-    // remove emotion & actions from emojisCount
-    const userMood = users[index].mood;
-    const userActions = users[index].actions;
-
-    if (userActions.length > 0) {
-      userActions.map(async (action) => {
-        // supprime les actions de l'user
-        await asyncHincrby('moodcounter', action, -1);
-      });
-    }
-    // supprime l'émotion de l'user si !== 'default'
-    if (userMood !== 'default') {
-      await asyncHincrby('moodcounter', userMood, -1);
-    }
-
-    // remove user
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    users.splice(index, 1)[0];
+  if (userId && roomId) {
+    // enlève de la liste des emojis
+    asyncSrem(`happy-${roomId}`, userId);
+    asyncSrem(`dead-${roomId}`, userId);
+    asyncSrem(`thinking-${roomId}`, userId);
+    asyncSrem(`coffee-${roomId}`, userId);
+    asyncSrem(`slowDown-${roomId}`, userId);
+    asyncSrem(`question-${roomId}`, userId);
+    // enlève de la liste des users de la room
+    asyncSrem(`users_list-${roomId}`, userId);
+    // supprime les infos de cet user
+    asyncHdel(`users-${socketId}`, 'lastname', 'firstname', 'roomId', 'userId');
   }
+
+  return roomId ?? '';
 };
 
 export {
