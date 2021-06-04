@@ -15,7 +15,7 @@ services:
       - lamas-frontend-build:/app/build
     environment:
       - NODE_ENV=production
-      - REACT_APP_LAMAS_BACK=https://staging.lamas.wns.wilders.dev
+      - REACT_APP_LAMAS_BACK=//staging.lamas.wns.wilders.dev
 
   nginx:
     image: nginx:1.19.10
@@ -25,6 +25,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - lamas-frontend-build:/lamas-frontend-build
+      - ./nginx/logs:/var/log/nginx
 
 volumes:
   lamas-frontend-build:
