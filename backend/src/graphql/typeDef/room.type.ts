@@ -3,15 +3,17 @@ import { gql } from 'apollo-server';
 const RoomType = gql`
   type Room {
     _id: ID!
-    room_name: String!
+    name: String!
+    owner: ID!
   }
 
   type Query {
     getRoom(_id: ID!): Room
+    getRooms: [Room]
   }
 
   type Mutation {
-    createRoom(room_name: String): Room
+    createRoom(name: String): Room
   }
 `;
 

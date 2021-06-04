@@ -24,6 +24,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0-next.98",
+    "react-use": "^17.2.4",
     "redux": "^4.0.5",
     "simple-peer": "^9.11.0",
     "socket.io-client": "^3.0.1",

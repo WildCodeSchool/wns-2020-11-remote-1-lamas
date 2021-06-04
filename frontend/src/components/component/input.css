@@ -1,0 +1,13 @@
+.textInput__label {
+    color: #00396A;
+    font-size: 16px;
+    margin-bottom:5px;
+}
+
+.textInput__input {
+ 
+    border: 2px solid #00396A;    font-size: 16px;
+    background: transparent;
+    border-radius: 20px;
+    height:25px;
+}

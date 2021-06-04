@@ -45,6 +45,8 @@ export default {
   },
   Mutation: {
     async createUser(_: void, data: IcreateUserData): Promise<UserWithToken> {
+      console.log(data);
+
       const errors = [];
       const { firstname, lastname, email, password } = data;
       if (validator.isEmpty(firstname)) {
@@ -88,9 +90,10 @@ export default {
       const user = new Users(data);
 
       if (user) {
+        await user.save();
+
         const token = createToken({ id: user._id });
 
-        await user.save();
         const result = {
           token,
           user,
