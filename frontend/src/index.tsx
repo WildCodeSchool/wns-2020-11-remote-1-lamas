@@ -6,8 +6,10 @@ import {
   ApolloClient,
   InMemoryCache,
   createHttpLink,
+  ApolloLink,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -28,8 +30,19 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log('graphQLErrors', graphQLErrors);
+  }
+  if (networkError) {
+    console.log('networkError', networkError);
+  }
+});
+
+const link = ApolloLink.from([errorLink, authLink.concat(httpLink)]);
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link,
   cache: new InMemoryCache(),
 });
 

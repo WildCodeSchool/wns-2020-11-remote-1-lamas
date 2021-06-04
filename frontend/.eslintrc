@@ -38,12 +38,18 @@
     "react/prop-types": 0,
     "import/prefer-default-export": "off",
     "import/no-default-export": 0,
+    "react/require-default-props": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-underscore-dangle": "off",
     "prettier/prettier": [
       "error",
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "jsx-a11y/media-has-caption": "off"
   },
   "ignorePatterns": ["src/**/*.js", "src/**/*.jsx"]
 }

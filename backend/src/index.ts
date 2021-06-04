@@ -40,35 +40,55 @@ app.get('*', () => {
   throw error;
 });
 
-// socket io logic TO BE MODIFIED
+const users: Record<string, string> = {};
 
+// socket io logic TO BE MODIFIED
 io.on('connect', (socket: Socket) => {
-  socket.on('join', () => {
-    addUser(socket.id);
-    const userCount = getUserCount();
+  console.log('test socket connection', socket.id);
+  if (!users[socket.id]) {
+    users[socket.id] = socket.id;
+  }
+  socket.emit('yourId', socket.id);
+  io.sockets.emit('allUsers', users);
+  socket.on('callUser', (data) => {
+    console.log('data call user', data);
+    io.to(data.userToCall).emit('userCallingMe', {
+      signal: data.signalData,
+      from: data.from,
+    });
+  });
+
+  socket.on('acceptCall', (data) => {
+    io.to(data.to).emit('callAccepted', data.signal);
+  });
+
+  socket.on('join', async (roomId, userId, firstname, lastname) => {
+    addUser(roomId, userId, firstname, lastname, socket.id);
+    const userCount = await getUserCount(roomId);
     socket.broadcast.emit('sendUserCount', userCount);
   });
 
-  socket.on('joinTeacher', async () => {
-    const userCount = getUserCount();
+  socket.on('joinTeacher', async (roomId, userId) => {
+    const userCount = await getUserCount(roomId);
     socket.broadcast.emit('sendUserCount', userCount);
-    const emojisCount = await getMoodCounter();
+    const emojisCount = await getMoodCounter(roomId);
     socket.emit('updateEmojisCount', emojisCount);
   });
 
-  socket.on('changeMood', async (name, category) => {
-    await updateEmojisCount(name, socket.id, category);
-    const emojisCount = await getMoodCounter();
+  socket.on('changeMood', async (roomId, userId, name, category) => {
+    await updateEmojisCount(roomId, name, userId, category);
+    const emojisCount = await getMoodCounter(roomId);
     socket.broadcast.emit('updateEmojisCount', emojisCount);
-    const user = getUserInfos(socket.id);
+    const user = await getUserInfos(roomId, userId);
     socket.emit('userInfos', user);
   });
 
   socket.on('disconnect', async () => {
+    delete users[socket.id];
     // Gérer la RAZ de la DB en vérifiant si c'est le teacher (user.role cf model)
-    await removeUser(socket.id);
-    const userCount = getUserCount();
-    const emojisDecremented = await getMoodCounter();
+    const roomId = await removeUser(socket.id);
+    const userCount = await getUserCount(roomId);
+    const emojisDecremented = await getMoodCounter(roomId);
     socket.broadcast.emit('sendUserCount', userCount);
     socket.broadcast.emit('getDecrement', emojisDecremented);
   });
@@ -82,7 +102,8 @@ io.on('connect', (socket: Socket) => {
     res.sendFile(join(__dirname, './frontend/build/index.html'));
   });
 }
- */
+*/
+
 /* eslint-disable no-console */
 const PORT = process.env.PORT || 8000;
 httpServer.listen(PORT, () =>

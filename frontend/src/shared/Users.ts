@@ -1,5 +1,5 @@
 export interface User {
-  socketId: string;
+  id: string;
   mood: string;
   actions: string[];
 }

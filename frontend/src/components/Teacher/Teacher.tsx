@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import socket from '../../socket/socket';
 import Emojis from '../Emojis/Emojis';
 import './Teacher.css';
@@ -8,9 +9,16 @@ import { MoodCounter } from '../../shared/Emojis';
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
   const [emojisCounts, setEmojisCounts] = useState<MoodCounter | null>(null);
+  const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
   useEffect(() => {
-    socket.emit('joinTeacher', {});
+    return () => {
+      socket.emit('disconnectFromRoom', roomId, id);
+    };
+  }, [id, roomId]);
+
+  useEffect(() => {
+    socket.emit('joinTeacher', roomId, id);
     socket.on('sendUserCount', (userCount: number) => {
       setTotalStudents(userCount);
     });
@@ -20,7 +28,7 @@ const Teacher = (): JSX.Element => {
     socket.on('getDecrement', (moodCounter: MoodCounter) => {
       setEmojisCounts(moodCounter);
     });
-  }, []);
+  }, [roomId, id]);
 
   return (
     <div className="teacher">

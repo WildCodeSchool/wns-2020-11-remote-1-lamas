@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 services:
   lamas-backend:
     command: npm run dev
@@ -9,6 +9,7 @@ services:
       - 4000:8000
     environment:
       - NODE_ENV=development
+
   lamas-frontend:
     command: npm run start
     stdin_open: true
@@ -19,4 +20,3 @@ services:
     environment:
       - NODE_ENV=development
       - REACT_APP_LAMAS_BACK=http://localhost:${API_PORT}
-
