@@ -1,63 +1,64 @@
-body{
-    background-color: #00396A;
+.background-color {
+  height: 100vh;
+  background-color: #00396a;
 }
 
-.background{
-    background-image: url('../../asset/lesmontagnes_lama.png');
-    background-position: center;
-    background-size: 100%;
+.background {
+  background-image: url('../../asset/lesmontagnes_lama.png');
+  background-position: center;
+  background-size: 100%;
 }
 
 .form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height:100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
 }
 
 .auth__form {
-    width: 28%;
-    margin: auto;
-    background-color: white;
-    
-    border-radius: 20px 20px 0 0;
-    height: 100%;
+  width: 28%;
+  margin: auto;
+  background-color: white;
+
+  border-radius: 20px 20px 0 0;
+  height: 100%;
 }
 
 .auth__form__logo {
-    width: 20vh;
-    margin: auto;
-    margin-bottom: 4vh;
-    margin-top: 2em;
-    justify-content: center
+  width: 20vh;
+  margin: auto;
+  margin-bottom: 4vh;
+  margin-top: 2em;
+  justify-content: center;
 }
 
 .auth__form__title {
-    margin-top: 4vh;
-    text-align: center;
-    font-size: 23px;
-    color: #00396A ;
-    margin-bottom: 2em;
+  margin-top: 4vh;
+  text-align: center;
+  font-size: 23px;
+  color: #00396a;
+  margin-bottom: 2em;
 }
 
 .auth__form__input {
-    width: 75%;
-    margin: auto;
-    padding-bottom: 1em;
+  width: 75%;
+  margin: auto;
+  padding-bottom: 1em;
 }
 
 .form__button {
-    width: 80%;
-    margin:auto;
-    display: flex;
-    justify-content: space-around;
-    margin-top: 1em
+  width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1em;
 }
 
 .input__error {
-    color: red;
-    margin:0;
-    margin-top:0.5em;
-    margin-left: 15px;
-    font-size:11px;
+  color: red;
+  margin: 0;
+  margin-top: 0.5em;
+  margin-left: 15px;
+  font-size: 11px;
 }

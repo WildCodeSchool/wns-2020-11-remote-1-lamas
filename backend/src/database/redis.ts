@@ -20,6 +20,7 @@ export const asyncHmset = client.hmset.bind(client);
 export const asyncSadd = client.sadd.bind(client);
 export const asyncSrem = client.srem.bind(client);
 export const asyncSisMember = promisify(client.sismember).bind(client);
+export const asyncSMembers = promisify(client.smembers).bind(client);
 export const asyncHdel = client.hdel.bind(client);
 
 client.on('error', (error: any) => {

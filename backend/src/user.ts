@@ -1,25 +1,22 @@
 import {
-  asyncHincrby,
-  asyncHgetall,
-  asyncFlushDB,
   asyncgetLength,
   asyncHmset,
   asyncSadd,
   asyncSrem,
   asyncSisMember,
+  asyncSMembers,
   asyncHdel,
   asyncHget,
 } from './database/redis';
 import { MoodCounter } from './shared/utils';
+import Users from './database/models/User';
+import {Types} from 'mongoose'
 
 interface User {
   id: string;
   mood: string;
   actions: string[];
 }
-
-/* eslint-disable no-plusplus */
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 const addUser = (
   roomId: string,
@@ -83,6 +80,19 @@ const getUserInfos = async (roomId: string, id: string): Promise<User> => {
     mood,
     actions,
   };
+};
+
+const getUsersInfosEmojis = async (emoji:string, roomId:number) => {
+  const userListPerEmojis:string[] = await asyncSMembers(`${emoji}-${roomId}`);
+  console.log('userListPerEmojis', userListPerEmojis)
+  const objectIds = userListPerEmojis.map(id => Types.ObjectId(id));
+  console.log('objectIds', objectIds)
+
+  // récupérer que le nom/prénom
+  const user = await Users.find({_id: {$in: objectIds}},{_id:1, firstname:1, lastname:1});
+  console.log('user', user, )
+
+  return user;
 };
 
 const updateEmojisCount = async (
@@ -194,4 +204,5 @@ export {
   getUserCount,
   getMoodCounter,
   getUserInfos,
+  getUsersInfosEmojis
 };

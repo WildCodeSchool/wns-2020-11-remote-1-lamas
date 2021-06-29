@@ -31,12 +31,7 @@ const JoinRoom = ({ handleModalClose }: RoomListProps): ReactElement => {
 
       // error message
     } else {
-      if (userId === selectedRoom.owner) {
-        history.push(`/teacher/${userId}/room/${roomId}`);
-      } else {
-        history.push(`/student/${userId}/room/${roomId}`);
-      }
-
+      history.push(`/${userId}/room/${roomId}`);
       setRoomId('');
       setErrorMessage('');
     }

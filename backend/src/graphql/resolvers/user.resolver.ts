@@ -1,5 +1,5 @@
 import validator from 'validator';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import Users, { IUser } from '../../database/models/User';
 
@@ -16,6 +16,8 @@ import {
   UserWithToken,
   ILoginUser,
 } from './types/user.type';
+
+type ID = Types.ObjectId;
 
 export default {
   Query: {
@@ -42,11 +44,17 @@ export default {
 
       return user;
     },
+    async getUserConnected(
+      _: void,
+      _data: null,
+      context: Icontext
+    ): Promise<ID> {
+      if (!context?.user?.id) throw new UnauthorizedError();
+      return context.user.id;
+    },
   },
   Mutation: {
     async createUser(_: void, data: IcreateUserData): Promise<UserWithToken> {
-      console.log(data);
-
       const errors = [];
       const { firstname, lastname, email, password } = data;
       if (validator.isEmpty(firstname)) {

@@ -1,6 +1,8 @@
 import React from 'react';
+import { useParams } from 'react-router';
 import { Emoji, emojis, MoodCounter } from '../../shared/Emojis';
 import { User } from '../../shared/Users';
+import EmojiIcon from './EmojiIcon/EmojiIcon';
 
 interface EmojisProps {
   handleClick?: (name: string, category: string) => void;
@@ -23,6 +25,7 @@ const Emojis: React.FC<EmojisProps> = ({
       return 'student_emoji_button--active';
     return '';
   };
+  const { roomId } = useParams<{ roomId: string }>();
 
   return (
     <div className={`${isStudent ? 'student_emojis' : 'teacher_emojis'}`}>
@@ -45,16 +48,15 @@ const Emojis: React.FC<EmojisProps> = ({
                 />
               </button>
             ) : (
-              <div key={emoji.name} className="teacher_emoji_headband">
-                <img
-                  className="teacher_emoji_img"
-                  src={emoji.image}
-                  alt={emoji.name}
-                />
-                <p role="paragraph">
-                  {emojisCounts && emojisCounts[emoji.name]}
-                </p>
-              </div>
+              <>
+                {emojisCounts && (
+                  <EmojiIcon
+                    emoji={emoji}
+                    emojisCounts={emojisCounts}
+                    roomId={roomId}
+                  />
+                )}
+              </>
             )}
           </div>
         ))}

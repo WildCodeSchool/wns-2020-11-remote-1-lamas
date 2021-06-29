@@ -23,7 +23,7 @@ describe('Teacher component', () => {
   it('Handle teacher connection', () => {
     render(<Teacher />);
     expect(socket.emit).toHaveBeenCalledTimes(1);
-    expect(socket.emit).toHaveBeenLastCalledWith('joinTeacher', {});
+    expect(socket.emit).toHaveBeenLastCalledWith('studentJoinTheRoom', {});
   });
 
   describe('Teacher render emojis component', () => {

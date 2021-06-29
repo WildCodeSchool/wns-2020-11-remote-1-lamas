@@ -12,6 +12,8 @@ services:
 
   lamas-frontend:
     command: npm run start
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     stdin_open: true
     volumes:
       - ./frontend:/app

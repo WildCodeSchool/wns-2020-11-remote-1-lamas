@@ -68,9 +68,8 @@ const LoginForm = (): JSX.Element => {
     onCompleted: (res) => {
       const token = res?.loginUser?.token;
       if (token) {
-        // eslint-disable-next-line no-underscore-dangle
-        history.push(`/dashboard/${res.loginUser.user._id}`);
         localStorage.setItem('token', token);
+        history.push(`/dashboard/${res.loginUser.user._id}`);
       }
     },
     onError: (err) => {
@@ -84,83 +83,100 @@ const LoginForm = (): JSX.Element => {
   };
 
   return (
-    <div className="background">
-      <Formik
-        initialValues={{ email: '', password: '' }}
-        onSubmit={(values) => {
-          loginUser({ variables: { ...values } });
-        }}
-        validationSchema={loginValidationSchema}
-      >
-        {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
-          <div className="form">
-            <img className="auth__form__logo" src={logo} alt="logo des Lamas" />
-            <div className="auth__form">
-              <h1 className="auth__form__title">Rejoins les autres lamas !</h1>
-              <div className="auth__form__input">
-                <InputLabel className={classes.label}>E-mail</InputLabel>
-                <Input
-                  fullWidth
-                  onChange={handleChange('email')}
-                  className={classes.textField}
-                  value={values.email}
-                  error={touched.email && Boolean(errors.email)}
-                  disableUnderline
-                />
-                {errors.email && touched.email && (
-                  <p className="input__error">{errors.email}</p>
-                )}
-              </div>
-              <div className="auth__form__input">
-                <InputLabel className={classes.label}>Mot de passe</InputLabel>
-                <Input
-                  fullWidth
-                  onChange={handleChange('password')}
-                  value={values.password}
-                  className={classes.textField}
-                  type={passwordVisibility ? 'text' : 'password'}
-                  error={touched.password && Boolean(errors.password)}
-                  disableUnderline
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        className={classes.iconButton}
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                      >
-                        {passwordVisibility ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-                {errors.password && touched.password && (
-                  <p className="input__error">{errors.password}</p>
-                )}
-              </div>
-              <div className="form__button">
-                <Button
-                  type="submit"
-                  className={classes.button2}
-                  onClick={() => history.push('/signup')}
-                >
-                  Créer un compte
-                </Button>
-                <Button
-                  type="submit"
-                  className={classes.button}
-                  onClick={() => handleSubmit()}
-                >
-                  Se connecter
-                </Button>
+    <div className="background-color">
+      <div className="background">
+        <Formik
+          initialValues={{ email: '', password: '' }}
+          onSubmit={(values) => {
+            loginUser({ variables: { ...values } });
+          }}
+          validationSchema={loginValidationSchema}
+        >
+          {({
+            handleChange,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            isValid,
+          }) => (
+            <div className="form">
+              <img
+                className="auth__form__logo"
+                src={logo}
+                alt="logo des Lamas"
+              />
+              <div className="auth__form">
+                <h1 className="auth__form__title">
+                  Rejoins les autres lamas !
+                </h1>
+                <div className="auth__form__input">
+                  <InputLabel className={classes.label}>E-mail</InputLabel>
+                  <Input
+                    fullWidth
+                    onChange={handleChange('email')}
+                    className={classes.textField}
+                    value={values.email}
+                    error={touched.email && Boolean(errors.email)}
+                    disableUnderline
+                  />
+                  {errors.email && touched.email && (
+                    <p className="input__error">{errors.email}</p>
+                  )}
+                </div>
+                <div className="auth__form__input">
+                  <InputLabel className={classes.label}>
+                    Mot de passe
+                  </InputLabel>
+                  <Input
+                    fullWidth
+                    onChange={handleChange('password')}
+                    value={values.password}
+                    className={classes.textField}
+                    type={passwordVisibility ? 'text' : 'password'}
+                    error={touched.password && Boolean(errors.password)}
+                    disableUnderline
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          className={classes.iconButton}
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                        >
+                          {passwordVisibility ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                  {errors.password && touched.password && (
+                    <p className="input__error">{errors.password}</p>
+                  )}
+                </div>
+                <div className="form__button">
+                  <Button
+                    type="submit"
+                    className={classes.button2}
+                    onClick={() => history.push('/signup')}
+                  >
+                    Créer un compte
+                  </Button>
+                  <Button
+                    type="submit"
+                    className={classes.button}
+                    onClick={() => handleSubmit()}
+                  >
+                    Se connecter
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </Formik>
+          )}
+        </Formik>
+      </div>
     </div>
   );
 };

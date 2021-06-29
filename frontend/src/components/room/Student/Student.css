@@ -1,11 +1,13 @@
-body {
-  background-color: rgb(245, 240, 234);
-}
-
 .student {
   height: inherit;
   display: flex;
   justify-content: space-between;
+}
+
+.student_visio {
+  display: flex;
+  height: 90vh;
+  width: 100%;
 }
 
 .student_lateral_panel {
@@ -15,10 +17,19 @@ body {
   background-color: rgba(78, 80, 78, 0.3);
 }
 
-.student_emojis_container {
+.studentemojis_container {
   width: 100%;
   height: 100px;
   background-color: rgba(158, 158, 158, 0.3);
+  border-radius: 30px;
+}
+
+.student_emojis {
+  width: inherit;
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+  align-items: center;
 }
 
 .student_emojis {

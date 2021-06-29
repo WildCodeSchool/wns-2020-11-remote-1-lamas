@@ -1,0 +1,76 @@
+.teacher {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.teacher_visio {
+  display: flex;
+  height: 90vh;
+  width: 100%;
+}
+
+.teacher_vertical_panel {
+  display: flex;
+  justify-content: flex-end;
+  width: 60%;
+  height: 100px;
+  background-color: rgba(78, 80, 78, 0.3);
+  border-radius: 30px;
+  margin: 10px;
+}
+
+.teacher_emoji_headband--none {
+  opacity: 0.8;
+}
+
+.teacher_emojis_container {
+  width: 100%;
+  height: 100px;
+  background-color: rgba(158, 158, 158, 0.3);
+  border-radius: 30px;
+}
+
+.teacher_emojis {
+  width: inherit;
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+  align-items: center;
+}
+
+.teacher_emoji_headband {
+  position: relative;
+  display: flex;
+  margin: 7px;
+  width: auto;
+  height: 60px;
+  background-color: white;
+  border-radius: 30px;
+  border: none;
+  gap: 10px;
+  align-items: center;
+}
+
+.teacher_emoji_img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.teacher_emoji_count {
+  width: 2rem;
+  height: fit-content;
+  color: #00396a;
+}
+
+.teacher_infos {
+  display: flex;
+}
+
+.icons_call {
+  display: flex;
+  width: 40%;
+  justify-content: space-around;
+  align-items: center;
+}

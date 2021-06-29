@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './Student.css';
 import { useParams } from 'react-router';
 import { useQuery } from '@apollo/client/react/hooks/useQuery';
-import Emojis from '../Emojis/Emojis';
-import socket from '../../socket/socket';
-import { User } from '../../shared/Users';
-import { FIND_USER } from '../../graphql/queries/getUser';
+import { FIND_USER } from '../../../graphql/queries/getUser';
+import { User } from '../../../shared/Users';
+import socket from '../../../socket/socket';
+import Emojis from '../../Emojis/Emojis';
+import VideoRoom from '../../videoRoom/videoRoom';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -18,16 +19,9 @@ const Student = (): JSX.Element => {
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
 
   useEffect(() => {
-    return () => {
-      console.log('yooo');
-      socket.emit('disconnectFromRoom', roomId, id);
-    };
-  }, [id, roomId]);
-
-  useEffect(() => {
     if (data?.getUser) {
       socket.emit(
-        'join',
+        'teacherJoinTheRoom',
         roomId,
         id,
         data?.getUser?.firstname,
@@ -49,16 +43,29 @@ const Student = (): JSX.Element => {
     socket.emit('changeMood', roomId, id, name, category);
   };
 
+  const temporaryArray = [{ name: 'emeline' }];
+
   return (
     <div role="heading" aria-level={2} className="student">
-      <div className="student_visio" />
+      <div className="student_visio">
+        {temporaryArray &&
+          temporaryArray.map((item) => {
+            return (
+              <>
+                <VideoRoom name={item.name} />
+              </>
+            );
+          })}
+      </div>
       <div className="student_lateral_panel">
         <div className="student_emojis_container">
-          <Emojis
-            handleClick={handleClick}
-            isStudent
-            studentInfos={studentInfos}
-          />
+          <div className="student_emojis">
+            <Emojis
+              handleClick={handleClick}
+              isStudent
+              studentInfos={studentInfos}
+            />
+          </div>
         </div>
       </div>
     </div>

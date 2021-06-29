@@ -4,15 +4,12 @@ import { IUser } from '../../../database/models/User';
 type ID = Types.ObjectId;
 
 export interface IcreateUserData {
-  id?: string;
+  id?: ID;
   firstname: string;
   lastname: string;
-  role?: string;
   email: string;
   password: string;
-  room_list?: ID[];
   todos_list?: ID[];
-  organization_id?: ID[];
 }
 
 export interface IgetUserData {
