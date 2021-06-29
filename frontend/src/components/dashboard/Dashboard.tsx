@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import PageLayout from '../PageLayout/PageLayout';
 import { FIND_USER } from '../../graphql/queries/getUser';
-import Video from '../Video/Video';
 import { MnPortal } from '../portal/Portal';
 import CreateRoom from './CreateRoom';
 import ModalLayout from '../component/ModalLayout';
@@ -84,8 +83,6 @@ const Dashboard = (): JSX.Element => {
           </Button>
         </div>
       </PageLayout>
-      <h1>Test video</h1>
-      <Video />
     </>
   );
 };

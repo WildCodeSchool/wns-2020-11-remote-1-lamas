@@ -5,7 +5,7 @@ import Emojis from '../Emojis/Emojis';
 import './Teacher.css';
 import getColorByMood from '../Methods/getColorByMood';
 import { MoodCounter } from '../../shared/Emojis';
-import Video from '../Video/Video';
+import VideoGroup from '../VideoGroup/VideoGroup';
 
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
@@ -50,7 +50,7 @@ const Teacher = (): JSX.Element => {
           </div>
           <p>student length: {totalStudents}</p>
           <h1>Test video</h1>
-          <Video />
+          <VideoGroup roomId={roomId} />
         </div>
       </div>
     </div>
