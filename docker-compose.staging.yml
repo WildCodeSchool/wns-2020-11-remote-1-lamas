@@ -1,0 +1,31 @@
+version: "2"
+
+services:
+  lamas-backend:
+    command: sh -c "npm run build && npm run start"
+    expose:
+      - 8000
+    restart: always
+    environment:
+      - NODE_ENV=production
+
+  lamas-frontend:
+    command: sh -c "npm run build"
+    volumes:
+      - lamas-frontend-build:/app/build
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_LAMAS_BACK=//staging.lamas.wns.wilders.dev
+
+  nginx:
+    image: nginx:1.19.10
+    restart: always
+    ports:
+      - ${GATEWAY_PORT}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - lamas-frontend-build:/lamas-frontend-build
+      - ./nginx/logs:/var/log/nginx
+
+volumes:
+  lamas-frontend-build:

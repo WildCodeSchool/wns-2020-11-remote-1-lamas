@@ -11,7 +11,8 @@ const schema = makeExecutableSchema({
 
 const serverApollo = new ApolloServer({
   schema,
-
+    introspection: true,
+  playground: true,
   context: ({ req, res }) => {
     const token = req.get('Authorization') || '';
 
