@@ -41,6 +41,8 @@ app.get('*', () => {
 });
 
 const users: Record<string, string> = {};
+const usersInTheRoom: Record<string, string[]> = {};
+const socketToRoom: Record<string, string> = {};
 
 // socket io logic TO BE MODIFIED
 io.on('connect', (socket: Socket) => {
@@ -48,7 +50,7 @@ io.on('connect', (socket: Socket) => {
   if (!users[socket.id]) {
     users[socket.id] = socket.id;
   }
-  socket.emit('yourId', socket.id);
+  socket.emit('yourId', socket.id); // a virer quand videogroup fonctionnera
   io.sockets.emit('allUsers', users);
   socket.on('callUser', (data) => {
     console.log('data call user', data);
@@ -66,6 +68,33 @@ io.on('connect', (socket: Socket) => {
     addUser(roomId, userId, firstname, lastname, socket.id);
     const userCount = await getUserCount(roomId);
     socket.broadcast.emit('sendUserCount', userCount);
+  });
+
+  socket.on('join room', (roomID: string) => {
+    if (usersInTheRoom[roomID]) {
+      usersInTheRoom[roomID].push(socket.id);
+    } else {
+      usersInTheRoom[roomID] = [socket.id];
+    }
+    socketToRoom[socket.id] = roomID;
+    const usersTotalInRoom = usersInTheRoom[roomID].filter(
+      (id) => id !== socket.id
+    );
+    socket.emit('all users', usersTotalInRoom);
+  });
+
+  socket.on('sending signal', (payload) => {
+    io.to(payload.userToSignal).emit('user joined', {
+      signal: payload.signal,
+      callerID: payload.callerID,
+    });
+  });
+
+  socket.on('returning signal', (payload) => {
+    io.to(payload.callerID).emit('receiving returned signal', {
+      signal: payload.signal,
+      id: socket.id,
+    });
   });
 
   socket.on('joinTeacher', async (roomId, userId) => {
@@ -91,6 +120,12 @@ io.on('connect', (socket: Socket) => {
     const emojisDecremented = await getMoodCounter(roomId);
     socket.broadcast.emit('sendUserCount', userCount);
     socket.broadcast.emit('getDecrement', emojisDecremented);
+    // const roomID = socketToRoom[socket.id];
+    // let room = usersInTheRoom[roomID];
+    // if (room) {
+    //   room = room.filter((id) => id !== socket.id);
+    //   usersInTheRoom[roomID] = room;
+    // }
   });
 });
 

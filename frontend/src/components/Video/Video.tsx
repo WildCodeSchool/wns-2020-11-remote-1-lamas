@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { Container, Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
 import './Video.css';
@@ -107,7 +106,7 @@ const Video = (): JSX.Element => {
     setVideo({
       ...video,
       callAccepted: true,
-      // receivingCall: false, A REPRENDRE
+      receivingCall: false,
     });
 
     // create new peer after call accepted
@@ -166,9 +165,11 @@ const Video = (): JSX.Element => {
             return null;
           }
           return (
-            <Button key={key} onClick={() => callPeer(key)}>
-              Call {key}
-            </Button>
+            !video.callAccepted && (
+              <Button key={key} onClick={() => callPeer(key)}>
+                Call {key}
+              </Button>
+            )
           );
         })}
       </div>
