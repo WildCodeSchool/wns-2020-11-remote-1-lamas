@@ -74,3 +74,19 @@ un moodcounter par room
  * 
  * 
  */
+
+// MEMBER
+
+// roomId-messageKeys
+// "41525454524" => uuid()
+// id
+
+// SET
+
+// roomId-message-id {
+// idUser : "51515125125"
+// firstname
+// lastname
+// date
+// text
+//}

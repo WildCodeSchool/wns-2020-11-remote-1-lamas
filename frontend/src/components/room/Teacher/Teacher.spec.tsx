@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Teacher from './Teacher';
 import '@testing-library/jest-dom';
-import socket from '../../socket/socket';
+import socket from '../../../socket/socket';
 
 jest.mock('../../socket/socket');
 

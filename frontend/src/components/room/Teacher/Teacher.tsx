@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
 import { MoodCounter } from '../../../shared/Emojis';
 import socket from '../../../socket/socket';
 import Emojis from '../../Emojis/Emojis';
@@ -10,6 +12,7 @@ import IconCalls from '../../IconCalls/IconCalls';
 
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
+  const [message, setMessage] = useState('');
 
   const [emojisCounts, setEmojisCounts] = useState<MoodCounter | null>(null);
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
@@ -27,7 +30,19 @@ const Teacher = (): JSX.Element => {
     });
   }, [roomId, id]);
 
+  useEffect(() => {
+    socket.emit('getMessages', roomId);
+    socket.on('getMessagesList', (listMessage: any) => {
+      console.log(listMessage);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const temporaryArray = [{ name: 'emeline' }];
+
+  const handleMessage = (): void => {
+    socket.emit('createMessage', roomId, id, message);
+  };
 
   return (
     <div className="teacher">
@@ -36,7 +51,7 @@ const Teacher = (): JSX.Element => {
           temporaryArray.map((item) => {
             return (
               <>
-                <VideoRoom name={item.name} />
+                <VideoRoom key={item.name} name={item.name} />
               </>
             );
           })}
@@ -60,6 +75,15 @@ const Teacher = (): JSX.Element => {
         </div>
         <IconCalls id={id} />
       </div>
+      <Input
+        fullWidth
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setMessage(e.target.value)
+        }
+        value={message}
+        disableUnderline
+      />
+      <Button onClick={() => handleMessage()}>Envoyer message</Button>
     </div>
   );
 };

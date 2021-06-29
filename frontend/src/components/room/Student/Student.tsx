@@ -7,6 +7,7 @@ import { User } from '../../../shared/Users';
 import socket from '../../../socket/socket';
 import Emojis from '../../Emojis/Emojis';
 import VideoRoom from '../../videoRoom/videoRoom';
+import IconCalls from '../../IconCalls/IconCalls';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -52,21 +53,24 @@ const Student = (): JSX.Element => {
           temporaryArray.map((item) => {
             return (
               <>
-                <VideoRoom name={item.name} />
+                <VideoRoom key={item.name} name={item.name} />
               </>
             );
           })}
       </div>
-      <div className="student_lateral_panel">
-        <div className="student_emojis_container">
-          <div className="student_emojis">
-            <Emojis
-              handleClick={handleClick}
-              isStudent
-              studentInfos={studentInfos}
-            />
+      <div className="student_infos">
+        <div className="student_lateral_panel">
+          <div className="student_emojis_container">
+            <div className="student_emojis">
+              <Emojis
+                handleClick={handleClick}
+                isStudent
+                studentInfos={studentInfos}
+              />
+            </div>
           </div>
         </div>
+        <IconCalls id={id} />
       </div>
     </div>
   );

@@ -2,6 +2,8 @@
   height: inherit;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .student_visio {
@@ -13,14 +15,15 @@
 .student_lateral_panel {
   display: flex;
   justify-content: flex-end;
-  height: 100%;
-  background-color: rgba(78, 80, 78, 0.3);
+  width: fit-content;
+  height: 100px;
+  border-radius: 30px;
+  margin: 10px;
 }
 
 .studentemojis_container {
   width: 100%;
   height: 100px;
-  background-color: rgba(158, 158, 158, 0.3);
   border-radius: 30px;
 }
 
@@ -38,6 +41,8 @@
   justify-content: space-around;
   height: 100%;
   align-items: center;
+  gap: 20px;
+  padding: 0 10px;
 }
 
 .student_emoji_button {
@@ -69,4 +74,9 @@
   border-bottom: none;
   border: 3px solid #fff;
   padding: 0;
+}
+
+.student_infos {
+  display: flex;
+  justify-content: space-around;
 }

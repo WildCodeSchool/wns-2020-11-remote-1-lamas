@@ -10,7 +10,8 @@ import {
 } from './database/redis';
 import { MoodCounter } from './shared/utils';
 import Users from './database/models/User';
-import {Types} from 'mongoose'
+import { Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 interface User {
   id: string;
@@ -82,17 +83,75 @@ const getUserInfos = async (roomId: string, id: string): Promise<User> => {
   };
 };
 
-const getUsersInfosEmojis = async (emoji:string, roomId:number) => {
-  const userListPerEmojis:string[] = await asyncSMembers(`${emoji}-${roomId}`);
-  console.log('userListPerEmojis', userListPerEmojis)
-  const objectIds = userListPerEmojis.map(id => Types.ObjectId(id));
-  console.log('objectIds', objectIds)
+const getUsersInfosEmojis = async (emoji: string, roomId: number) => {
+  const userListPerEmojis: string[] = await asyncSMembers(`${emoji}-${roomId}`);
+  const objectIds = userListPerEmojis.map((id) => Types.ObjectId(id));
 
   // récupérer que le nom/prénom
-  const user = await Users.find({_id: {$in: objectIds}},{_id:1, firstname:1, lastname:1});
-  console.log('user', user, )
+  const user = await Users.find(
+    { _id: { $in: objectIds } },
+    { _id: 1, firstname: 1, lastname: 1 }
+  );
 
   return user;
+};
+
+const createRoomMessage = async (
+  socketId: string,
+  roomId: string,
+  userId: string,
+  message: string
+) => {
+  // récup info user firstname lastname
+  const firstname = await asyncHget(`users-${socketId}`, 'firstname');
+  const lastname = await asyncHget(`users-${socketId}`, 'lastname');
+
+  // créer member list messageId avec uuid
+  const messageId = uuidv4();
+  asyncSadd(`${roomId}-messageKeys`, messageId);
+  // créer member rajouter les données du message
+  console.log(firstname, lastname, roomId, userId, message);
+
+  asyncHmset(
+    `${roomId}-message-${messageId}`,
+    `lastname`,
+    'mfdkkdo',
+    'firstname',
+    'skldjfkd',
+    'roomId',
+    roomId,
+    'userId',
+    userId,
+    'message',
+    message
+  );
+};
+
+const getRoomMessages = async (roomId: number) => {
+  // récup les clés
+  const messagesRoomId: string[] = await asyncSMembers(`${roomId}-messageKeys`);
+
+  // map et récupérer les données, les push ds un tableau
+  const listMessage = [];
+
+  for await (const messageId of messagesRoomId) {
+    const firstname = await asyncHget(
+      `${roomId}-message-${messageId}`,
+      'firstname'
+    );
+    const lastname = await asyncHget(
+      `${roomId}-message-${messageId}`,
+      'lastname'
+    );
+    const userId = await asyncHget(`${roomId}-message-${messageId}`, 'userId');
+    const message = await asyncHget(
+      `${roomId}-message-${messageId}`,
+      'message'
+    );
+    listMessage.push({ firstname, lastname, userId, message });
+  }
+
+  return listMessage;
 };
 
 const updateEmojisCount = async (
@@ -204,5 +263,7 @@ export {
   getUserCount,
   getMoodCounter,
   getUserInfos,
-  getUsersInfosEmojis
+  getUsersInfosEmojis,
+  createRoomMessage,
+  getRoomMessages,
 };
