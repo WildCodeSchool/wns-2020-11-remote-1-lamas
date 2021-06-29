@@ -13,6 +13,7 @@ interface IVideo {
   caller: string;
   callerSignal: string | SignalData;
   callAccepted: boolean;
+  isCaller: boolean;
 }
 
 const initialVideo: IVideo = {
@@ -22,6 +23,7 @@ const initialVideo: IVideo = {
   caller: '',
   callerSignal: '',
   callAccepted: false,
+  isCaller: false,
 };
 
 const Video = (): JSX.Element => {
@@ -70,8 +72,7 @@ const Video = (): JSX.Element => {
         });
       }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users]);
+  }, [video]); // A REVOIR
 
   const callPeer = (id: string) => {
     const peer = new Peer({
@@ -107,7 +108,7 @@ const Video = (): JSX.Element => {
     setVideo({
       ...video,
       callAccepted: true,
-      // receivingCall: false, A REPRENDRE
+      receivingCall: false,
     });
 
     // create new peer after call accepted
@@ -165,10 +166,13 @@ const Video = (): JSX.Element => {
           if (key === video.yourId) {
             return null;
           }
+
           return (
-            <Button key={key} onClick={() => callPeer(key)}>
-              Call {key}
-            </Button>
+            !video.callAccepted && (
+              <Button key={key} onClick={() => callPeer(key)}>
+                Call {key}
+              </Button>
+            )
           );
         })}
       </div>
