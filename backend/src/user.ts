@@ -108,22 +108,25 @@ const createRoomMessage = async (
 
   // créer member list messageId avec uuid
   const messageId = uuidv4();
-  asyncSadd(`${roomId}-messageKeys`, messageId);
+  asyncSadd(`${roomId}-messageKeys`, messageId, userId, message);
   // créer member rajouter les données du message
-  console.log(firstname, lastname, roomId, userId, message);
+
+  console.log(lastname, firstname, roomId);
 
   asyncHmset(
     `${roomId}-message-${messageId}`,
     `lastname`,
-    'mfdkkdo',
+    lastname,
     'firstname',
-    'skldjfkd',
+    firstname,
     'roomId',
     roomId,
     'userId',
     userId,
     'message',
-    message
+    message,
+    'date',
+    `${Date.now()}`
   );
 };
 
@@ -148,8 +151,11 @@ const getRoomMessages = async (roomId: number) => {
       `${roomId}-message-${messageId}`,
       'message'
     );
-    listMessage.push({ firstname, lastname, userId, message });
+    const date = await asyncHget(`${roomId}-message-${messageId}`, 'date');
+    listMessage.push({ firstname, lastname, userId, message, date });
   }
+
+  listMessage.sort((a, b) => parseInt(a.date) - parseInt(b.date));
 
   return listMessage;
 };
@@ -238,6 +244,7 @@ const getMoodCounter = async (roomId: string): Promise<MoodCounter> => {
 const removeUser = async (socketId: string): Promise<string> => {
   const userId = await asyncHget(`users-${socketId}`, 'userId');
   const roomId = await asyncHget(`users-${socketId}`, 'roomId');
+  const lastname = await asyncHget(`users-${socketId}`, 'lastname');
 
   if (userId && roomId) {
     // enlève de la liste des emojis

@@ -5,11 +5,13 @@ import Input from '@material-ui/core/Input';
 import { makeStyles } from '@material-ui/core/styles';
 
 interface TextInputProps {
-  label: string;
+  label?: string;
   name: string;
   handleOnchange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  className?: string;
   value: string;
+  placeholder?: string;
 }
 
 const defaultProps = {
@@ -18,6 +20,7 @@ const defaultProps = {
 
 const useStyles = makeStyles({
   textField: {
+    position: 'relative',
     backgroundColor: '#F1F5F8',
     border: '2px solid #00396A',
     borderRadius: '20px',
@@ -42,13 +45,20 @@ const TextInput = ({
   handleOnchange,
   name,
   type,
+  className,
+  placeholder,
   value,
 }: TextInputProps): ReactElement => {
   const classes = useStyles();
   return (
     <div className="textInput">
-      <InputLabel className={classes.label}>{label}</InputLabel>
+      {label && (
+        <InputLabel className={`${classes.label} ${className}`}>
+          {label}
+        </InputLabel>
+      )}
       <Input
+        placeholder={placeholder}
         fullWidth
         disableUnderline
         name={name}

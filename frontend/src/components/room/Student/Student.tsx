@@ -22,7 +22,7 @@ const Student = (): JSX.Element => {
   useEffect(() => {
     if (data?.getUser) {
       socket.emit(
-        'teacherJoinTheRoom',
+        'studentJoinTheRoom',
         roomId,
         id,
         data?.getUser?.firstname,
@@ -32,6 +32,7 @@ const Student = (): JSX.Element => {
         setStudentInfos(user);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     roomId,
     id,

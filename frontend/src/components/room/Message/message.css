@@ -1,0 +1,23 @@
+.message {
+  background-color: #e2e9ee;
+  border-radius: 20px;
+  width: 475px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message__title {
+  color: #00396a;
+  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 1.2em;
+}
+
+.message__chat {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.message__send {
+  position: relative;
+}

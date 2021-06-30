@@ -15,8 +15,6 @@ const useStyles = makeStyles({
     color: '#00396a',
     backgroundColor: 'white',
     boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.15)',
-    width: '80px',
-    height: '60px',
     objectFit: 'cover',
     '&:hover': {
       backgroundColor: 'white',
@@ -24,7 +22,6 @@ const useStyles = makeStyles({
     },
   },
   iconButtonCallEnd: {
-    width: '60px',
     backgroundColor: '#D70909',
     color: 'white',
     '&:hover': {

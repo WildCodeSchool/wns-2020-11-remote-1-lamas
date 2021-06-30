@@ -1,7 +1,6 @@
 .teacher {
   height: 100vh;
   display: flex;
-  flex-direction: column;
 }
 
 .teacher_visio {
@@ -10,11 +9,15 @@
   width: 100%;
 }
 
+.teacher__left {
+  width: 100%;
+}
+
 .teacher_vertical_panel {
   display: flex;
   justify-content: flex-end;
   width: 60%;
-  height: 100px;
+  height: 70px;
   background-color: rgba(78, 80, 78, 0.3);
   border-radius: 30px;
   margin: 10px;
@@ -26,7 +29,7 @@
 
 .teacher_emojis_container {
   width: 100%;
-  height: 100px;
+  height: 70px;
   background-color: rgba(158, 158, 158, 0.3);
   border-radius: 30px;
 }
@@ -35,31 +38,31 @@
   width: inherit;
   display: flex;
   justify-content: space-around;
-  height: 100%;
+  height: 70px;
   align-items: center;
 }
 
 .teacher_emoji_headband {
   position: relative;
   display: flex;
-  margin: 7px;
+  margin: 5px;
   width: auto;
-  height: 60px;
+  height: 50px;
   background-color: white;
   border-radius: 30px;
   border: none;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
 .teacher_emoji_img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
 
 .teacher_emoji_count {
-  width: 2rem;
+  width: 1.5rem;
   height: fit-content;
   color: #00396a;
 }
@@ -70,7 +73,7 @@
 
 .icons_call {
   display: flex;
-  width: 40%;
+  width: 35%;
   justify-content: space-around;
   align-items: center;
 }

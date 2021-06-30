@@ -5,10 +5,14 @@ import LoginForm from './components/Auth/LoginForm';
 import Room from './components/room/Room';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
-function App(): JSX.Element {
+const App = (): JSX.Element => {
+  // const { data } = useQuery(GET_CONNECTED_USER);
+
+  // if (data) {
+  //   getConnectedUser(data);
+  // }
   return (
     <>
-      <div id="modal" />
       <Router>
         <Route exact path="/signup" component={SignupForm} />
         <Route exact path="/" component={LoginForm} />
@@ -17,6 +21,6 @@ function App(): JSX.Element {
       </Router>
     </>
   );
-}
+};
 
 export default App;

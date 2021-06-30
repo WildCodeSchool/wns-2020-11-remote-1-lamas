@@ -17,6 +17,7 @@ const SocketIo = (httpServer: http.Server) => {
   const users: Record<string, string> = {};
 
   io.on('connect', (socket: Socket) => {
+    console.log(socket);
     console.log('test socket connection', socket.id);
     if (!users[socket.id]) {
       users[socket.id] = socket.id;
@@ -36,7 +37,7 @@ const SocketIo = (httpServer: http.Server) => {
     });
 
     socket.on(
-      'teacherJoinTheRoom',
+      'studentJoinTheRoom',
       async (roomId, userId, firstname, lastname) => {
         addUser(roomId, userId, firstname, lastname, socket.id);
         const userCount = await getUserCount(roomId);
@@ -44,12 +45,16 @@ const SocketIo = (httpServer: http.Server) => {
       }
     );
 
-    socket.on('studentJoinTheRoom', async (roomId, userId) => {
-      const userCount = await getUserCount(roomId);
-      socket.broadcast.emit('sendUserCount', userCount);
-      const emojisCount = await getMoodCounter(roomId);
-      socket.emit('updateEmojisCount', emojisCount);
-    });
+    socket.on(
+      'teacherJoinTheRoom',
+      async (roomId, userId, firstname, lastname) => {
+        const userCount = await getUserCount(roomId);
+        addUser(roomId, userId, firstname, lastname, socket.id);
+        socket.broadcast.emit('sendUserCount', userCount);
+        const emojisCount = await getMoodCounter(roomId);
+        socket.emit('updateEmojisCount', emojisCount);
+      }
+    );
 
     socket.on('getListUsersPerEmoji', async (roomId, emoji) => {
       const userList = await getUsersInfosEmojis(emoji, roomId);
@@ -72,7 +77,6 @@ const SocketIo = (httpServer: http.Server) => {
 
     socket.on('getMessages', async (roomId) => {
       const messages = await getRoomMessages(roomId);
-      console.log('messages', messages);
       socket.emit('getMessagesList', messages);
     });
 

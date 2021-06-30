@@ -17,9 +17,15 @@ const UserType = gql`
     user: User
   }
 
+  type UserConnected {
+    _id: ID
+    firstname: String
+    lastname: String
+  }
+
   type Query {
     getUser(_id: ID!): User
-    getUserConnected: ID!
+    getUserConnected: UserConnected!
   }
 
   type Mutation {

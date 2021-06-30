@@ -16,6 +16,7 @@ import {
   UserWithToken,
   ILoginUser,
 } from './types/user.type';
+import User from '../../database/models/User';
 
 type ID = Types.ObjectId;
 
@@ -48,9 +49,15 @@ export default {
       _: void,
       _data: null,
       context: Icontext
-    ): Promise<ID> {
+    ): Promise<Partial<IUser>> {
       if (!context?.user?.id) throw new UnauthorizedError();
-      return context.user.id;
+      const user: IUser = await Users.findById(context?.user?.id, {
+        _id: 1,
+        firstname: 1,
+        lastname: 1,
+      });
+
+      return user;
     },
   },
   Mutation: {
