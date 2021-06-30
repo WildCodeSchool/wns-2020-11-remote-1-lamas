@@ -50,19 +50,19 @@ io.on('connect', (socket: Socket) => {
   if (!users[socket.id]) {
     users[socket.id] = socket.id;
   }
-  socket.emit('yourId', socket.id); // a virer quand videogroup fonctionnera
-  io.sockets.emit('allUsers', users);
-  socket.on('callUser', (data) => {
-    console.log('data call user', data);
-    io.to(data.userToCall).emit('userCallingMe', {
-      signal: data.signalData,
-      from: data.from,
-    });
-  });
+  // socket.emit('yourId', socket.id); // a virer quand videogroup fonctionnera
+  // io.sockets.emit('allUsers', users);
+  // socket.on('callUser', (data) => {
+  //   console.log('data call user', data);
+  //   io.to(data.userToCall).emit('userCallingMe', {
+  //     signal: data.signalData,
+  //     from: data.from,
+  //   });
+  // });
 
-  socket.on('acceptCall', (data) => {
-    io.to(data.to).emit('callAccepted', data.signal);
-  });
+  // socket.on('acceptCall', (data) => {
+  //   io.to(data.to).emit('callAccepted', data.signal);
+  // });
 
   socket.on('join', async (roomId, userId, firstname, lastname) => {
     addUser(roomId, userId, firstname, lastname, socket.id);
@@ -120,12 +120,13 @@ io.on('connect', (socket: Socket) => {
     const emojisDecremented = await getMoodCounter(roomId);
     socket.broadcast.emit('sendUserCount', userCount);
     socket.broadcast.emit('getDecrement', emojisDecremented);
-    // const roomID = socketToRoom[socket.id];
-    // let room = usersInTheRoom[roomID];
-    // if (room) {
-    //   room = room.filter((id) => id !== socket.id);
-    //   usersInTheRoom[roomID] = room;
-    // }
+    const roomID = socketToRoom[socket.id];
+    let room = usersInTheRoom[roomID];
+    if (room) {
+      room = room.filter((id) => id !== socket.id);
+      usersInTheRoom[roomID] = room;
+      socket.broadcast.emit('removeUserVideo', socket.id);
+    }
   });
 });
 

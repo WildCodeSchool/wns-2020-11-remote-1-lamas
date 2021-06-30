@@ -92,15 +92,12 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
       .getUserMedia({ video: true, audio: true })
       // demarre le stream une fois que c'est accepté
       .then((stream: MediaStream) => {
-        console.log('useEffect => stream', stream);
         // si le user a accepté la video
         if (userVideo.current) {
-          console.log('useEffect => userVideo', userVideo);
           userVideo.current.srcObject = stream;
           socket.emit('join room', roomID);
-
-          socket.on('all users', (users: any) => {
-            const usersPeers = [];
+          socket.on('all users', (users: string[]) => {
+            const usersPeers: Peer.Instance[] = [];
             users.forEach((userID: string) => {
               const peer = createPeer(userID, socket.id, stream);
               peersRef.current.push({
@@ -109,7 +106,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
               });
               usersPeers.push(peer);
             });
-            setPeers(peers);
+            setPeers(usersPeers);
           });
 
           socket.on('user joined', (payload: IPayload) => {
@@ -125,10 +122,18 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
             const item = peersRef.current.find((p) => p.peerID === payload.id);
             item?.peer.signal(payload.signal);
           });
+
+          socket.on('removeUserVideo', (socketId: string) => {
+            peersRef.current = peersRef.current.filter(
+              (el) => el.peerID !== socketId
+            );
+            setPeers(peersRef.current.map((el) => el.peer));
+          });
         }
       })
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [peersRef]);
 
   return (
     <Container>
