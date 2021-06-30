@@ -112,6 +112,10 @@ io.on('connect', (socket: Socket) => {
     socket.emit('userInfos', user);
   });
 
+  socket.on('turnOffVideo', () => {
+    socket.broadcast.emit('removeUserVideo', socket.id);
+  });
+
   socket.on('disconnect', async () => {
     delete users[socket.id];
     // Gérer la RAZ de la DB en vérifiant si c'est le teacher (user.role cf model)
