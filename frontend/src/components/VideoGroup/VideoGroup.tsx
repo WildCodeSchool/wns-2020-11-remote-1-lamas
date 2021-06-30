@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Container } from '@material-ui/core';
+import { Button, Container } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
@@ -24,6 +24,11 @@ interface IPeer {
   peer: Peer.Instance;
 }
 
+const videoConstraints = {
+  height: window.innerHeight / 2,
+  width: window.innerWidth / 2,
+};
+
 const Video = ({ peer }: IPeer) => {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -35,7 +40,14 @@ const Video = ({ peer }: IPeer) => {
     });
   }, [peer]);
 
-  return <video playsInline autoPlay ref={ref} />;
+  return (
+    <video
+      style={{ margin: '5%', height: '25%', width: '25%' }}
+      playsInline
+      autoPlay
+      ref={ref}
+    />
+  );
 };
 
 const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
@@ -85,16 +97,30 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
 
     return peer;
   }
+
+  const removeUserLeavingRoomVideo = (socketId: string) => {
+    peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
+    setPeers(peersRef.current.map((el) => el.peer));
+  };
+
+  const turnOffUserVideo = () => {
+    if (userVideo && userVideo.current && userVideo.current.srcObject) {
+      (userVideo.current.srcObject as MediaStream).getVideoTracks()[0].stop();
+    }
+  };
+
   // HELP: useEffect called when a new user join session
   useEffect(() => {
     // notification to activate video and audio in the browser
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: videoConstraints, audio: true })
       // demarre le stream une fois que c'est accepté
       .then((stream: MediaStream) => {
         // si le user a accepté la video
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
+          // const tracks = userVideo.current.srcObject.getVideoTracks();
+          // console.log('lalala tracks : ', tracks);
           socket.emit('join room', roomID);
           socket.on('all users', (users: string[]) => {
             const usersPeers: Peer.Instance[] = [];
@@ -124,10 +150,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
           });
 
           socket.on('removeUserVideo', (socketId: string) => {
-            peersRef.current = peersRef.current.filter(
-              (el) => el.peerID !== socketId
-            );
-            setPeers(peersRef.current.map((el) => el.peer));
+            removeUserLeavingRoomVideo(socketId);
           });
         }
       })
@@ -138,6 +161,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
   return (
     <Container>
       <video muted ref={userVideo} autoPlay playsInline />
+      <Button onClick={turnOffUserVideo}>Turn off video</Button>
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;
