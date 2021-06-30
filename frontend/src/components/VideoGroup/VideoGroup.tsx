@@ -92,14 +92,11 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
       .getUserMedia({ video: true, audio: true })
       // demarre le stream une fois que c'est accepté
       .then((stream: MediaStream) => {
-        console.log('useEffect => stream', stream);
         // si le user a accepté la video
         if (userVideo.current) {
-          console.log('useEffect => userVideo', userVideo);
           userVideo.current.srcObject = stream;
           socket.emit('join room', roomID);
-
-          socket.on('all users', (users: any) => {
+          socket.on('all users', (users: string[]) => {
             const usersPeers: Peer.Instance[] = [];
             users.forEach((userID: string) => {
               const peer = createPeer(userID, socket.id, stream);
@@ -124,6 +121,13 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
           socket.on('receiving returned signal', (payload: IPayload) => {
             const item = peersRef.current.find((p) => p.peerID === payload.id);
             item?.peer.signal(payload.signal);
+          });
+
+          socket.on('removeUserVideo', (socketId: string) => {
+            peersRef.current = peersRef.current.filter(
+              (el) => el.peerID !== socketId
+            );
+            setPeers(peersRef.current.map((el) => el.peer));
           });
         }
       })
