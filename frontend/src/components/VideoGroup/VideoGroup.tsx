@@ -100,7 +100,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
           socket.emit('join room', roomID);
 
           socket.on('all users', (users: any) => {
-            const usersPeers = [];
+            const usersPeers: Peer.Instance[] = [];
             users.forEach((userID: string) => {
               const peer = createPeer(userID, socket.id, stream);
               peersRef.current.push({
@@ -109,7 +109,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
               });
               usersPeers.push(peer);
             });
-            setPeers(peers);
+            setPeers(usersPeers);
           });
 
           socket.on('user joined', (payload: IPayload) => {
@@ -128,7 +128,8 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
         }
       })
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [peersRef]);
 
   return (
     <Container>
