@@ -56,6 +56,11 @@ export default {
         firstname: 1,
         lastname: 1,
       });
+        
+      if(!user) {
+        throw new NotFoundError();
+      }
+
 
       return user;
     },
