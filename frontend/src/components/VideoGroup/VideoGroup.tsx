@@ -109,6 +109,12 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
       .current?.srcObject as MediaStream).getVideoTracks()[0].enabled;
   };
 
+  const toggleUserAudio = () => {
+    (userVideo.current
+      ?.srcObject as MediaStream).getAudioTracks()[0].enabled = !(userVideo
+      .current?.srcObject as MediaStream).getAudioTracks()[0].enabled;
+  };
+
   // HELP: useEffect called when a new user join session
   useEffect(() => {
     // notification to activate video and audio in the browser
@@ -159,6 +165,8 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
     <Container>
       <video muted ref={userVideo} autoPlay playsInline />
       <Button onClick={toggleUserVideo}>Toggle video</Button>
+      <Button onClick={toggleUserAudio}>Toggle audio</Button>
+
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;
