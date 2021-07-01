@@ -2,6 +2,10 @@
 import { Button, Container } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
+import VideocamRoundedIcon from '@material-ui/icons/VideocamRounded';
+import VideocamOffRoundedIcon from '@material-ui/icons/VideocamOffRounded';
+import MicRoundedIcon from '@material-ui/icons/MicRounded';
+import MicOffRoundedIcon from '@material-ui/icons/MicOffRounded';
 import socket from '../../socket/socket';
 import './VideoGroup.css';
 
@@ -52,6 +56,9 @@ const Video = ({ peer }: IPeer) => {
 
 const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
   const [peers, setPeers] = useState<Peer.Instance[]>([]);
+  const [isVideo, setIsVideo] = useState(true);
+  const [isAudio, setIsAudio] = useState(true);
+
   const peersRef = useRef<IPeerWithId[]>([]);
   const roomID = roomId;
   const userVideo = useRef<HTMLVideoElement>(null);
@@ -104,10 +111,40 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
   };
 
   const toggleUserVideo = () => {
+    setIsVideo(!isVideo);
     (userVideo.current
       ?.srcObject as MediaStream).getVideoTracks()[0].enabled = !(userVideo
       .current?.srcObject as MediaStream).getVideoTracks()[0].enabled;
   };
+
+  const toggleUserAudio = () => {
+    setIsAudio(!isAudio);
+    (userVideo.current
+      ?.srcObject as MediaStream).getAudioTracks()[0].enabled = !(userVideo
+      .current?.srcObject as MediaStream).getAudioTracks()[0].enabled;
+  };
+
+  // const shareScreen = () => {
+  //   (userVideo.current
+  //     ?.srcObject as MediaStream).getTracks()[0].enabled = !(userVideo.current
+  //     ?.srcObject as MediaStream).getTracks()[0].enabled;
+  // };
+
+  // const shareScreen = () => {
+  //   navigator.mediaDevices
+  //     .getDisplayMedia({ cursor: true })
+  //     .then((stream: MediaStream) => {
+  //       const screenTrack = stream.getTracks()[0];
+  //       senders.current
+  //         .find((sender) => sender.track.kind === 'video')
+  //         .replaceTrack(screenTrack);
+  //         screenTrack.onended = function() {
+  //         senders.current
+  //           .find((sender) => sender.track.kind === 'video')
+  //           .replaceTrack(userStream.current.getTracks()[1]);
+  //         }
+  //     })
+  // }
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
@@ -119,8 +156,6 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
         // si le user a accepté la video
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
-          // const tracks = userVideo.current.srcObject.getVideoTracks();
-          // console.log('lalala tracks : ', tracks);
           socket.emit('join room', roomID);
           socket.on('all users', (users: string[]) => {
             const usersPeers: Peer.Instance[] = [];
@@ -155,13 +190,29 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
         }
       })
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId]);
+  }, [roomID]);
+
+  const getVideoIcon = () => {
+    return (
+      <Button onClick={toggleUserVideo}>
+        {isVideo ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
+      </Button>
+    );
+  };
+
+  const getAudioIcon = () => {
+    return (
+      <Button onClick={toggleUserAudio}>
+        {isAudio ? <MicRoundedIcon /> : <MicOffRoundedIcon />}
+      </Button>
+    );
+  };
 
   return (
     <Container>
       <video muted ref={userVideo} autoPlay playsInline />
-      <Button onClick={toggleUserVideo}>Turn off video</Button>
+      {getVideoIcon()}
+      {getAudioIcon()}
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;
