@@ -9,6 +9,7 @@ import Emojis from '../../Emojis/Emojis';
 import VideoRoom from '../../videoRoom/videoRoom';
 import IconCalls from '../../IconCalls/IconCalls';
 import Message from '../Message/Message';
+import VideoGroup from '../../VideoGroup/VideoGroup';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -37,14 +38,16 @@ const Student = (): JSX.Element => {
     <div role="heading" aria-level={2} className="student">
       <div className="student__left">
         <div className="student_visio">
-          {temporaryArray &&
+          <VideoGroup roomId={roomId} />
+
+          {/* {temporaryArray &&
             temporaryArray.map((item) => {
               return (
                 <>
                   <VideoRoom key={item.name} name={item.name} />
                 </>
               );
-            })}
+            })} */}
         </div>
         <div className="student_infos">
           <div className="student_lateral_panel">

@@ -11,6 +11,7 @@ import VideoRoom from '../../videoRoom/videoRoom';
 import IconCalls from '../../IconCalls/IconCalls';
 import { FIND_USER } from '../../../graphql/queries/getUser';
 import Message from '../Message/Message';
+import VideoGroup from '../../VideoGroup/VideoGroup';
 
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
@@ -45,14 +46,15 @@ const Teacher = (): JSX.Element => {
     <div className="teacher">
       <div className="teacher__left">
         <div className="teacher_visio">
-          {temporaryArray &&
+          <VideoGroup roomId={roomId} />
+          {/* {temporaryArray &&
             temporaryArray.map((item) => {
               return (
                 <div key={item.name}>
                   <VideoRoom key={item.name} name={item.name} />
                 </div>
               );
-            })}
+            })} */}
         </div>
         <div className="teacher_infos">
           <div

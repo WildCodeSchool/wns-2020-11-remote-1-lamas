@@ -10,7 +10,6 @@ import { SocketIo } from './socket';
 
 dotenv.config();
 
-// initialize express server with apollo and cors
 mongodbStart();
 
 const app = express();
@@ -29,17 +28,7 @@ app.get('*', () => {
   throw error;
 });
 
-SocketIo(httpServer)
-
-// Heroku deployment
-/* if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(join(__dirname, './frontend/build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(join(__dirname, './frontend/build/index.html'));
-  });
-}
-*/
+SocketIo(httpServer);
 
 /* eslint-disable no-console */
 const PORT = process.env.PORT || 8000;

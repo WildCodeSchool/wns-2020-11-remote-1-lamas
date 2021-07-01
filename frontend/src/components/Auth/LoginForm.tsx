@@ -75,6 +75,7 @@ const LoginForm = (): JSX.Element => {
   const [loginUser, { data, error }] = useMutation(LOGIN_USER, {
     onCompleted: (res) => {
       const token = res?.loginUser?.token;
+      console.log(res.loginUser.user._id);
       if (token) {
         localStorage.setItem('token', token);
         history.push(`/dashboard/${res.loginUser.user._id}`);
