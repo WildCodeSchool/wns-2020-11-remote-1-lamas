@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import PageLayout from '../PageLayout/PageLayout';
 import { FIND_USER } from '../../graphql/queries/getUser';
 import { GET_ROOMS } from '../../graphql/queries/getRooms';
-import Video from '../Video/Video';
 import CreateRoom from './CreateRoom';
 import ModalLayout from '../component/ModalLayout';
 import RoomList from './RoomList';
@@ -36,7 +35,7 @@ const Dashboard = (): JSX.Element => {
   const classes = useStyles();
   const [openModal, setOpenModal] = useState('');
 
-  const { loading, error, data } = useQuery(FIND_USER, {
+  const { data } = useQuery(FIND_USER, {
     variables: { userId: id },
   });
 
@@ -93,8 +92,6 @@ const Dashboard = (): JSX.Element => {
           </Button>
         </div>
       </PageLayout>
-      <h1>Test video</h1>
-      <Video />
     </>
   );
 };

@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
+import './Video.css';
 import { Container, Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
-import './Video.css';
 
 interface IVideo {
   yourId: string;
@@ -70,7 +70,7 @@ const Video = (): JSX.Element => {
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users, socket]);
+  }, [users]);
 
   const callPeer = (id: string) => {
     const peer = new Peer({

@@ -27,15 +27,7 @@ const Teacher = (): JSX.Element => {
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
 
   useEffect(() => {
-    if (data?.getUser) {
-      socket.emit(
-        'teacherJoinTheRoom',
-        roomId,
-        id,
-        data?.getUser?.firstname,
-        data?.getUser?.lastname
-      );
-    }
+    socket.emit('teacherJoinTheRoom', roomId);
     socket.on('sendUserCount', (userCount: number) => {
       setTotalStudents(userCount);
     });
@@ -45,8 +37,7 @@ const Teacher = (): JSX.Element => {
     socket.on('getDecrement', (moodCounter: MoodCounter) => {
       setEmojisCounts(moodCounter);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId, id]);
+  }, [roomId]);
 
   const temporaryArray = [{ name: 'emeline' }];
 
@@ -57,9 +48,9 @@ const Teacher = (): JSX.Element => {
           {temporaryArray &&
             temporaryArray.map((item) => {
               return (
-                <>
+                <div key={item.name}>
                   <VideoRoom key={item.name} name={item.name} />
-                </>
+                </div>
               );
             })}
         </div>

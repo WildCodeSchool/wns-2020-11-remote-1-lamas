@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
@@ -14,6 +14,7 @@ import './Auth.css';
 import logo from '../../asset/logo-white-lamas_logo.svg';
 import loginValidationSchema from './loginValidationSchema';
 import { LOGIN_USER } from '../../graphql/mutations/loginUser';
+import { currentUser } from '../../cache';
 
 // Specific styles for MUI components
 const useStyles = makeStyles({
@@ -63,6 +64,13 @@ const LoginForm = (): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
+  const user = currentUser();
+
+  useEffect(() => {
+    if (user) {
+      history.push(`/dashboard/${user?.getUserConnected?._id}`);
+    }
+  }, [history, user]);
 
   const [loginUser, { data, error }] = useMutation(LOGIN_USER, {
     onCompleted: (res) => {

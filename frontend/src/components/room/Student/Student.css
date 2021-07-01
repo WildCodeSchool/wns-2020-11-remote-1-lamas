@@ -2,7 +2,6 @@
   height: inherit;
   display: flex;
   justify-content: space-between;
-  flex-direction: column;
   height: 100vh;
 }
 
@@ -12,18 +11,23 @@
   width: 100%;
 }
 
+.student__left {
+  width: 100%;
+}
+
 .student_lateral_panel {
   display: flex;
   justify-content: flex-end;
   width: fit-content;
-  height: 100px;
+  height: 70px;
+  width: 60%;
   border-radius: 30px;
   margin: 10px;
 }
 
 .studentemojis_container {
   width: 100%;
-  height: 100px;
+  height: 70px;
   border-radius: 30px;
 }
 
@@ -31,15 +35,7 @@
   width: inherit;
   display: flex;
   justify-content: space-around;
-  height: 100%;
-  align-items: center;
-}
-
-.student_emojis {
-  width: inherit;
-  display: flex;
-  justify-content: space-around;
-  height: 100%;
+  height: 70px;
   align-items: center;
   gap: 20px;
   padding: 0 10px;
@@ -57,11 +53,12 @@
   border-bottom: 4px solid #001634;
   cursor: pointer;
   outline: none;
-  padding: 3px;
+  padding: 5px;
 }
 
 .student_emoji_img {
-  width: 100%;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
 
@@ -72,7 +69,7 @@
 .student_emoji_button--active {
   opacity: 0.8;
   border-bottom: none;
-  border: 3px solid #fff;
+  border: 5px solid #fff;
   padding: 0;
 }
 

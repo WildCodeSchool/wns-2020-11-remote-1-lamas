@@ -8,6 +8,7 @@ import {
   getUsersInfosEmojis,
   getRoomMessages,
   createRoomMessage,
+  deleteMessages,
 } from './user';
 import { Socket, Server } from 'socket.io';
 import http from 'http';
@@ -17,8 +18,19 @@ const SocketIo = (httpServer: http.Server) => {
   const users: Record<string, string> = {};
 
   io.on('connect', (socket: Socket) => {
-    console.log(socket);
-    console.log('test socket connection', socket.id);
+    const currentUser = socket.handshake.query as any;
+    const connectedUser = JSON.parse(currentUser.connectedUser);
+
+    if (!!connectedUser && !!connectedUser?.roomId) {
+      addUser(
+        connectedUser.roomId,
+        connectedUser._id,
+        connectedUser.firstname,
+        connectedUser.lastname,
+        socket
+      );
+    }
+
     if (!users[socket.id]) {
       users[socket.id] = socket.id;
     }
@@ -36,25 +48,17 @@ const SocketIo = (httpServer: http.Server) => {
       io.to(data.to).emit('callAccepted', data.signal);
     });
 
-    socket.on(
-      'studentJoinTheRoom',
-      async (roomId, userId, firstname, lastname) => {
-        addUser(roomId, userId, firstname, lastname, socket.id);
-        const userCount = await getUserCount(roomId);
-        socket.broadcast.emit('sendUserCount', userCount);
-      }
-    );
+    socket.on('studentJoinTheRoom', async (roomId) => {
+      const userCount = await getUserCount(roomId);
+      socket.broadcast.emit('sendUserCount', userCount);
+    });
 
-    socket.on(
-      'teacherJoinTheRoom',
-      async (roomId, userId, firstname, lastname) => {
-        const userCount = await getUserCount(roomId);
-        addUser(roomId, userId, firstname, lastname, socket.id);
-        socket.broadcast.emit('sendUserCount', userCount);
-        const emojisCount = await getMoodCounter(roomId);
-        socket.emit('updateEmojisCount', emojisCount);
-      }
-    );
+    socket.on('teacherJoinTheRoom', async (roomId) => {
+      const userCount = await getUserCount(roomId);
+      socket.broadcast.emit('sendUserCount', userCount);
+      const emojisCount = await getMoodCounter(roomId);
+      socket.emit('updateEmojisCount', emojisCount);
+    });
 
     socket.on('getListUsersPerEmoji', async (roomId, emoji) => {
       const userList = await getUsersInfosEmojis(emoji, roomId);
@@ -72,7 +76,7 @@ const SocketIo = (httpServer: http.Server) => {
     socket.on('createMessage', async (roomId, userId, message) => {
       await createRoomMessage(socket.id, roomId, userId, message);
       const messages = await getRoomMessages(roomId);
-      socket.emit('getMessagesList', messages);
+      io.in(roomId).emit('getMessagesList', messages);
     });
 
     socket.on('getMessages', async (roomId) => {
@@ -85,6 +89,7 @@ const SocketIo = (httpServer: http.Server) => {
       const roomId = await removeUser(socket.id);
       const userCount = await getUserCount(roomId);
       const emojisDecremented = await getMoodCounter(roomId);
+      await deleteMessages(roomId, socket.id);
       socket.broadcast.emit('sendUserCount', userCount);
       socket.broadcast.emit('getDecrement', emojisDecremented);
     });

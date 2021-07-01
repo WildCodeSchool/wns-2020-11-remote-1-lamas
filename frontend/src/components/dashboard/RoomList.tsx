@@ -23,7 +23,9 @@ const RoomList = ({ handleModalClose }: RoomListProps): ReactElement => {
   const params = useParams<IParams>();
   const userId = params?.id ?? '';
 
-  const { loading, error, data } = useQuery(GET_ROOMS);
+  const { loading, error, data } = useQuery(GET_ROOMS, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   useEffect(() => {
     if (roomId !== '' && errorMessage) setErrorMessage(false);

@@ -4,6 +4,31 @@
   width: 475px;
   display: flex;
   flex-direction: column;
+  margin: 10px;
+}
+
+.messageCard__user {
+  width: 70%;
+  background-color: #cceaa4;
+  border-radius: 15px;
+  padding: 10px;
+  margin-left: auto;
+}
+
+.messageCard__other {
+  width: 70%;
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.messageCard__name {
+  color: #00396a;
+  font-weight: 500;
+}
+
+.messageCard__message {
+  padding-top: 5px;
 }
 
 .message__title {
@@ -14,10 +39,21 @@
 }
 
 .message__chat {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  gap: 20px;
+  padding: 0 10px;
   overflow-y: scroll;
+  padding-bottom: 10px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .message__send {
   position: relative;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

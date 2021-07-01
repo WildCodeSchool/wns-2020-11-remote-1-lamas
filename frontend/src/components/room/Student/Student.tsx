@@ -8,6 +8,7 @@ import socket from '../../../socket/socket';
 import Emojis from '../../Emojis/Emojis';
 import VideoRoom from '../../videoRoom/videoRoom';
 import IconCalls from '../../IconCalls/IconCalls';
+import Message from '../Message/Message';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -20,26 +21,11 @@ const Student = (): JSX.Element => {
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
 
   useEffect(() => {
-    if (data?.getUser) {
-      socket.emit(
-        'studentJoinTheRoom',
-        roomId,
-        id,
-        data?.getUser?.firstname,
-        data?.getUser?.lastname
-      );
-      socket.on('userInfos', (user: User) => {
-        setStudentInfos(user);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    roomId,
-    id,
-    data?.getUser,
-    data?.getUser?.firstname,
-    data?.getUser?.lastname,
-  ]);
+    socket.emit('studentJoinTheRoom', roomId);
+    socket.on('userInfos', (user: User) => {
+      setStudentInfos(user);
+    });
+  }, [roomId]);
 
   const handleClick = (name: string, category: string): void => {
     socket.emit('changeMood', roomId, id, name, category);
@@ -49,30 +35,33 @@ const Student = (): JSX.Element => {
 
   return (
     <div role="heading" aria-level={2} className="student">
-      <div className="student_visio">
-        {temporaryArray &&
-          temporaryArray.map((item) => {
-            return (
-              <>
-                <VideoRoom key={item.name} name={item.name} />
-              </>
-            );
-          })}
-      </div>
-      <div className="student_infos">
-        <div className="student_lateral_panel">
-          <div className="student_emojis_container">
-            <div className="student_emojis">
-              <Emojis
-                handleClick={handleClick}
-                isStudent
-                studentInfos={studentInfos}
-              />
+      <div className="student__left">
+        <div className="student_visio">
+          {temporaryArray &&
+            temporaryArray.map((item) => {
+              return (
+                <>
+                  <VideoRoom key={item.name} name={item.name} />
+                </>
+              );
+            })}
+        </div>
+        <div className="student_infos">
+          <div className="student_lateral_panel">
+            <div className="student_emojis_container">
+              <div className="student_emojis">
+                <Emojis
+                  handleClick={handleClick}
+                  isStudent
+                  studentInfos={studentInfos}
+                />
+              </div>
             </div>
           </div>
+          <IconCalls id={id} />
         </div>
-        <IconCalls id={id} />
       </div>
+      <Message />
     </div>
   );
 };

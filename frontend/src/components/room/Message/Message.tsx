@@ -40,7 +40,7 @@ interface IMessageList {
   userId: string;
 }
 
-const Message = () => {
+const Message = (): JSX.Element => {
   const classes = useStyles();
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState<IMessageList[]>([]);
@@ -52,9 +52,7 @@ const Message = () => {
     socket.on('getMessagesList', (listMessage: IMessageList[]) => {
       setMessageList(listMessage);
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [roomId]);
 
   const handleMessage = (): void => {
     socket.emit('createMessage', roomId, id, message);
@@ -67,12 +65,14 @@ const Message = () => {
     <div className="message">
       <h3 className="message__title">Messages</h3>
       <div className="message__chat">
-        {connectedUser?.getUserConnected?._id &&
+        {connectedUser?._id &&
           messageList.map((messageItem) => {
-            const isUser =
-              messageItem.userId === connectedUser?.getUserConnected?._id;
+            const isUser = messageItem.userId === connectedUser?._id;
             return (
-              <div key={messageItem.id} className="messageCard">
+              <div
+                key={messageItem.id}
+                className={`messageCard${isUser ? '__user' : '__other'}`}
+              >
                 <div className="messageCard__name">
                   {messageItem.firstname} {messageItem.lastname}
                 </div>

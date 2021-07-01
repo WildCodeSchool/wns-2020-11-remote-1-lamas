@@ -36,6 +36,7 @@ const CreateRoom = ({ handleModalClose }: CreationModalProps): ReactElement => {
     } else {
       setErrorMessage('Veuillez indiquer un nom de salle');
     }
+    handleModalClose();
   };
 
   return (

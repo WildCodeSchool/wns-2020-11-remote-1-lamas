@@ -10,6 +10,7 @@
   padding: 1em;
   border-radius: 10px;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .room-list__name--active {
@@ -19,7 +20,6 @@
 .room-list__content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
 }
 
 .create-room__error {

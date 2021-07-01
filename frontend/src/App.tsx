@@ -1,23 +1,28 @@
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import Dashboard from './components/dashboard/Dashboard';
 import SignupForm from './components/Auth/SignupForm';
 import LoginForm from './components/Auth/LoginForm';
 import Room from './components/room/Room';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import { GET_CONNECTED_USER } from './graphql/queries/getConnectedUser';
+import { currentUser } from './cache';
 
 const App = (): JSX.Element => {
-  // const { data } = useQuery(GET_CONNECTED_USER);
+  const connectedUser = useQuery(GET_CONNECTED_USER);
 
-  // if (data) {
-  //   getConnectedUser(data);
-  // }
+  if (connectedUser?.data?.getUserConnected) {
+    currentUser(connectedUser.data.getUserConnected);
+  }
   return (
     <>
       <Router>
-        <Route exact path="/signup" component={SignupForm} />
-        <Route exact path="/" component={LoginForm} />
-        <PrivateRoute path="/dashboard/:id" component={Dashboard} />
-        <PrivateRoute path="/:id/room/:roomId" component={Room} />
+        <Switch>
+          <Route exact path="/signup" component={SignupForm} />
+          <Route exact path="/" component={LoginForm} />
+          <PrivateRoute path="/dashboard/:id" component={Dashboard} />
+          <PrivateRoute path="/:id/room/:roomId" component={Room} />
+        </Switch>
       </Router>
     </>
   );
