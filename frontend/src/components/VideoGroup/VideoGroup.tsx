@@ -103,10 +103,10 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
     setPeers(peersRef.current.map((el) => el.peer));
   };
 
-  const turnOffUserVideo = () => {
-    if (userVideo && userVideo.current && userVideo.current.srcObject) {
-      (userVideo.current.srcObject as MediaStream).getVideoTracks()[0].stop();
-    }
+  const toggleUserVideo = () => {
+    (userVideo.current
+      ?.srcObject as MediaStream).getVideoTracks()[0].enabled = !(userVideo
+      .current?.srcObject as MediaStream).getVideoTracks()[0].enabled;
   };
 
   // HELP: useEffect called when a new user join session
@@ -156,12 +156,12 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
       })
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [peersRef]);
+  }, [roomId]);
 
   return (
     <Container>
       <video muted ref={userVideo} autoPlay playsInline />
-      <Button onClick={turnOffUserVideo}>Turn off video</Button>
+      <Button onClick={toggleUserVideo}>Turn off video</Button>
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;
