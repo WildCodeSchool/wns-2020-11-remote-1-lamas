@@ -60,7 +60,6 @@ const Student = (): JSX.Element => {
             isStudent
             studentInfos={studentInfos}
           />
-          <h1>Test video</h1>
           <VideoGroup roomId={roomId} />
         </div>
       </div>

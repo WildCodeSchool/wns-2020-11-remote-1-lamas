@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Button, Container, makeStyles } from '@material-ui/core';
+import { Button, Container } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
 import VideocamRoundedIcon from '@material-ui/icons/VideocamRounded';
@@ -8,27 +8,6 @@ import MicRoundedIcon from '@material-ui/icons/MicRounded';
 import MicOffRoundedIcon from '@material-ui/icons/MicOffRounded';
 import socket from '../../socket/socket';
 import './VideoGroup.css';
-
-const useStyles = makeStyles({
-  button: {
-    '&:hover': {
-      background: 'none',
-    },
-  },
-  video: {
-    color: 'white',
-    padding: '10px',
-    borderRadius: '40px',
-    width: '60px',
-    height: '60px',
-  },
-  videoOn: {
-    backgroundColor: 'green',
-  },
-  videoOff: {
-    backgroundColor: 'red',
-  },
-});
 
 interface IVideoProps {
   roomId: string;
@@ -67,7 +46,12 @@ const Video = ({ peer }: IPeer) => {
 
   return (
     <video
-      style={{ margin: '5%', height: '25%', width: '25%' }}
+      style={{
+        margin: '2%',
+        height: '25%',
+        width: '25%',
+        borderRadius: '10px',
+      }}
       playsInline
       autoPlay
       ref={ref}
@@ -76,7 +60,6 @@ const Video = ({ peer }: IPeer) => {
 };
 
 const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
-  const classes = useStyles();
   const [peers, setPeers] = useState<Peer.Instance[]>([]);
   const [isVideo, setIsVideo] = useState(true);
   const [isAudio, setIsAudio] = useState(true);
@@ -195,20 +178,8 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
 
   const getVideoIcon = () => {
     return (
-      <Button
-        className={classes.button}
-        onClick={toggleUserVideo}
-        disableRipple
-      >
-        {isVideo ? (
-          <VideocamRoundedIcon
-            className={`${classes.video} ${classes.videoOn}`}
-          />
-        ) : (
-          <VideocamOffRoundedIcon
-            className={`${classes.video} ${classes.videoOff}`}
-          />
-        )}
+      <Button onClick={toggleUserVideo} disableRipple>
+        {isVideo ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
       </Button>
     );
   };
@@ -222,10 +193,21 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
   };
 
   return (
-    <Container>
-      <video muted ref={userVideo} autoPlay playsInline />
-      {getVideoIcon()}
-      {getAudioIcon()}
+    <Container style={{ display: 'flex', flexWrap: 'wrap' }}>
+      <video
+        muted
+        ref={userVideo}
+        autoPlay
+        playsInline
+        style={{
+          margin: '1%',
+          height: '25%',
+          width: '25%',
+          borderRadius: '10px',
+        }}
+      />
+      {/* {getVideoIcon()}
+      {getAudioIcon()} */}
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;

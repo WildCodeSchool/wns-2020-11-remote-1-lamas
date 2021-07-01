@@ -49,7 +49,6 @@ const Teacher = (): JSX.Element => {
             <Emojis emojisCounts={emojisCounts} />
           </div>
           <p>student length: {totalStudents}</p>
-          <h1>Test video</h1>
           <VideoGroup roomId={roomId} />
         </div>
       </div>
