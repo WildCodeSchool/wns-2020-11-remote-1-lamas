@@ -1,13 +1,19 @@
+import { Types } from 'mongoose';
 import Rooms, { IRoom } from '../../database/models/Room';
 import CreationError from '../../errors/CreationError';
 import NotFoundError from '../../errors/NotFoundError';
 import UnauthorizedError from '../../errors/UnauthorizedError';
 import { Icontext } from './types/user.type';
 
+
+type ID = Types.ObjectId;
+
 interface ICreateRoom {
   name: string;
-  owner: string;
+  owner: ID;
 }
+
+
 
 export default {
   Query: {

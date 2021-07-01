@@ -12,6 +12,8 @@ services:
 
   lamas-frontend:
     command: npm run start
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     stdin_open: true
     volumes:
       - ./frontend:/app
@@ -20,3 +22,4 @@ services:
     environment:
       - NODE_ENV=development
       - REACT_APP_LAMAS_BACK=http://localhost:${API_PORT}
+

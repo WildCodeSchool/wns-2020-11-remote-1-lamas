@@ -1,0 +1,11 @@
+.popin {
+  position: absolute;
+  bottom: 60px;
+  width: fit-content;
+  white-space: nowrap;
+  height: auto;
+  background-color: #00396a;
+  color: white;
+  border-radius: 20px;
+  padding: 5px 10px;
+}

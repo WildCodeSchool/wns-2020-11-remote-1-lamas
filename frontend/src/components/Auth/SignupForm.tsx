@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
@@ -13,7 +13,8 @@ import IconButton from '@material-ui/core/IconButton';
 import './Auth.css';
 import logo from '../../asset/logo-white-lamas_logo.svg';
 import signUpValidationSchema from './signUpValidationSchema';
-import { CREATE_USER } from '../../graphql/mutations/createUser';
+import CREATE_USER from '../../graphql/mutations/createUser';
+import { currentUser } from '../../cache';
 
 // Specific styles for MUI components
 const useStyles = makeStyles({
@@ -63,6 +64,14 @@ const SignupForm = (): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
+
+  const user = currentUser();
+
+  useEffect(() => {
+    if (user) {
+      history.push(`/dashboard/${user?._id}`);
+    }
+  }, [history, user]);
 
   const [createUser, { data, error }] = useMutation(CREATE_USER, {
     onCompleted: (res) => {

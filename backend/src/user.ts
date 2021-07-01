@@ -1,16 +1,19 @@
 import {
-  asyncHincrby,
-  asyncHgetall,
-  asyncFlushDB,
   asyncgetLength,
   asyncHmset,
   asyncSadd,
   asyncSrem,
   asyncSisMember,
+  asyncSMembers,
   asyncHdel,
   asyncHget,
+  asyncSDel,
 } from './database/redis';
 import { MoodCounter } from './shared/utils';
+import Users from './database/models/User';
+import { Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
+import { Socket } from 'socket.io';
 
 interface User {
   id: string;
@@ -18,19 +21,17 @@ interface User {
   actions: string[];
 }
 
-/* eslint-disable no-plusplus */
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-
 const addUser = (
   roomId: string,
   userId: string,
   firstname: string,
   lastname: string,
-  socketId: string
+  socket: Socket
 ): void => {
   asyncSadd(`users_list-${roomId}`, userId);
+  socket.join(roomId);
   asyncHmset(
-    `users-${socketId}`,
+    `users-${socket.id}`,
     `lastname`,
     lastname,
     'firstname',
@@ -45,6 +46,34 @@ const addUser = (
 const getUserCount = async (roomId: string): Promise<number> => {
   const usersLength = await asyncgetLength(`users_list-${roomId}`);
   return usersLength;
+};
+
+const deleteMessages = async (
+  roomId: string,
+  socketId: string
+): Promise<void> => {
+  setTimeout(async function () {
+    const usersLength = await getUserCount(roomId);
+
+    if (usersLength === 0) {
+      const messagesRoomId: string[] = await asyncSMembers(
+        `${roomId}-messageKeys`
+      );
+      for await (const messageId of messagesRoomId) {
+        asyncHdel(
+          `users-${socketId}`,
+          'lastname',
+          'firstname',
+          'roomId',
+          'userId',
+          'date',
+          'message'
+        );
+      }
+
+      asyncSDel(`${roomId}-messageKeys`);
+    }
+  }, 8000);
 };
 
 const getUserInfos = async (roomId: string, id: string): Promise<User> => {
@@ -83,6 +112,88 @@ const getUserInfos = async (roomId: string, id: string): Promise<User> => {
     mood,
     actions,
   };
+};
+
+const getUsersInfosEmojis = async (emoji: string, roomId: number) => {
+  const userListPerEmojis: string[] = await asyncSMembers(`${emoji}-${roomId}`);
+  const objectIds = userListPerEmojis.map((id) => Types.ObjectId(id));
+
+  // récupérer que le nom/prénom
+  const user = await Users.find(
+    { _id: { $in: objectIds } },
+    { _id: 1, firstname: 1, lastname: 1 }
+  );
+
+  return user;
+};
+
+const createRoomMessage = async (
+  socketId: string,
+  roomId: string,
+  userId: string,
+  message: string
+) => {
+  // récup info user firstname lastname
+  const firstname = await asyncHget(`users-${socketId}`, 'firstname');
+  const lastname = await asyncHget(`users-${socketId}`, 'lastname');
+
+  // créer member list messageId avec uuid
+  const messageId = uuidv4();
+  asyncSadd(`${roomId}-messageKeys`, messageId);
+  // créer member rajouter les données du message
+
+  asyncHmset(
+    `${roomId}-message-${messageId}`,
+    `lastname`,
+    lastname,
+    'firstname',
+    firstname,
+    'roomId',
+    roomId,
+    'userId',
+    userId,
+    'message',
+    message,
+    'date',
+    `${new Date()}`
+  );
+};
+
+const getRoomMessages = async (roomId: number) => {
+  // récup les clés
+  const messagesRoomId: string[] = await asyncSMembers(`${roomId}-messageKeys`);
+
+  // map et récupérer les données, les push ds un tableau
+  const listMessage = [];
+
+  for await (const messageId of messagesRoomId) {
+    const firstname = await asyncHget(
+      `${roomId}-message-${messageId}`,
+      'firstname'
+    );
+    const lastname = await asyncHget(
+      `${roomId}-message-${messageId}`,
+      'lastname'
+    );
+    const userId = await asyncHget(`${roomId}-message-${messageId}`, 'userId');
+    const message = await asyncHget(
+      `${roomId}-message-${messageId}`,
+      'message'
+    );
+    const date = await asyncHget(`${roomId}-message-${messageId}`, 'date');
+    listMessage.push({
+      id: messageId,
+      firstname,
+      lastname,
+      userId,
+      message,
+      date,
+    });
+  }
+
+  listMessage.sort((a, b) => a.date.localeCompare(b.date));
+
+  return listMessage;
 };
 
 const updateEmojisCount = async (
@@ -194,4 +305,8 @@ export {
   getUserCount,
   getMoodCounter,
   getUserInfos,
+  getUsersInfosEmojis,
+  createRoomMessage,
+  getRoomMessages,
+  deleteMessages,
 };

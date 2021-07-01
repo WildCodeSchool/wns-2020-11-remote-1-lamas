@@ -6,6 +6,7 @@ import Emojis from '../Emojis/Emojis';
 import socket from '../../socket/socket';
 import { User } from '../../shared/Users';
 import { FIND_USER } from '../../graphql/queries/getUser';
+import VideoGroup from '../VideoGroup/VideoGroup';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -59,6 +60,7 @@ const Student = (): JSX.Element => {
             isStudent
             studentInfos={studentInfos}
           />
+          <VideoGroup roomId={roomId} />
         </div>
       </div>
     </div>

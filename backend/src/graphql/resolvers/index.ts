@@ -1,6 +1,5 @@
 import { mergeResolvers } from '@graphql-tools/merge';
 import { GraphQLScalarType, Kind } from 'graphql';
-import organizationResolver from './organization.resolver';
 import todoResolver from './todo.resolver';
 import userResolver from './user.resolver';
 import roomResolver from './room.resolver';
@@ -23,7 +22,6 @@ const dateScalar = new GraphQLScalarType({
 });
 
 export default mergeResolvers([
-  organizationResolver,
   userResolver,
   todoResolver,
   roomResolver,

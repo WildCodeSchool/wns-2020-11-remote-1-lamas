@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Teacher from './Teacher';
 import '@testing-library/jest-dom';
-import socket from '../../socket/socket';
+import socket from '../../../socket/socket';
 
 jest.mock('../../socket/socket');
 
@@ -23,7 +23,7 @@ describe('Teacher component', () => {
   it('Handle teacher connection', () => {
     render(<Teacher />);
     expect(socket.emit).toHaveBeenCalledTimes(1);
-    expect(socket.emit).toHaveBeenLastCalledWith('joinTeacher', {});
+    expect(socket.emit).toHaveBeenLastCalledWith('studentJoinTheRoom', {});
   });
 
   describe('Teacher render emojis component', () => {

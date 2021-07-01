@@ -5,12 +5,13 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import PageLayout from '../PageLayout/PageLayout';
 import { FIND_USER } from '../../graphql/queries/getUser';
-import { MnPortal } from '../portal/Portal';
+import { GET_ROOMS } from '../../graphql/queries/getRooms';
 import CreateRoom from './CreateRoom';
 import ModalLayout from '../component/ModalLayout';
 import RoomList from './RoomList';
 import './Dashboard.css';
 import JoinRoom from './JoinRoom';
+import { IRoom } from '../../types/type';
 
 interface RouteParams {
   id: string;
@@ -34,13 +35,21 @@ const Dashboard = (): JSX.Element => {
   const classes = useStyles();
   const [openModal, setOpenModal] = useState('');
 
-  const { loading, error, data } = useQuery(FIND_USER, {
+  const { data } = useQuery(FIND_USER, {
     variables: { userId: id },
+  });
+
+  const getRoom = useQuery(GET_ROOMS, {
+    fetchPolicy: 'cache-and-network',
   });
 
   const handleModalClose = () => {
     setOpenModal('');
   };
+
+  const roomsUser = getRoom?.data?.getRooms?.filter(
+    (room: IRoom) => room.owner === id
+  );
 
   return (
     <>
@@ -69,12 +78,14 @@ const Dashboard = (): JSX.Element => {
           >
             Créer une nouvelle salle
           </Button>
-          <Button
-            className={classes.button}
-            onClick={() => setOpenModal('ROOMS')}
-          >
-            Mes salles
-          </Button>
+          {roomsUser?.length > 0 && (
+            <Button
+              className={classes.button}
+              onClick={() => setOpenModal('ROOMS')}
+            >
+              Mes salles
+            </Button>
+          )}
           <Button
             className={classes.button}
             onClick={() => setOpenModal('JOIN')}

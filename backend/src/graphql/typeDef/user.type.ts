@@ -9,8 +9,6 @@ const UserType = gql`
     lastname: String
     email: String
     password: String
-    organization_id: ID
-    room_list: ID
     todos_list: ID
   }
 
@@ -19,8 +17,15 @@ const UserType = gql`
     user: User
   }
 
+  type UserConnected {
+    _id: ID
+    firstname: String
+    lastname: String
+  }
+
   type Query {
     getUser(_id: ID!): User
+    getUserConnected: UserConnected!
   }
 
   type Mutation {
@@ -31,7 +36,6 @@ const UserType = gql`
       email: String
       password: String
     ): UserWithToken
-    loginUser(email: String, password: String): UserWithToken
   }
 `;
 

@@ -13,6 +13,11 @@ const Menu = (): ReactElement => {
     setActiveTab(history.location.pathname);
   }, [history.location.pathname]);
 
+  const handleDisconnect = () => {
+    localStorage.setItem('token', '');
+    history.push('/');
+  };
+
   return (
     <div className="menu">
       <div
@@ -25,8 +30,8 @@ const Menu = (): ReactElement => {
         <Link to={`/dashboard/${id}`}>
           <p className="tab__text">Profil</p>
         </Link>
-        <div className="tab__id">
-          <p>Mon ID : {id}</p>
+        <div className="tab__id" onClick={() => handleDisconnect()}>
+          <p>Se déconnecter</p>
         </div>
       </div>
     </div>

@@ -6,4 +6,5 @@ export interface IRoom {
 
 export interface IParams {
   id: string;
+  roomId: string;
 }

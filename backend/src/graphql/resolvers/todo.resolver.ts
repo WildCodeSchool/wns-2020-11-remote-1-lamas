@@ -101,8 +101,6 @@ export default {
       data: IUpdateTodo,
       context: Icontext
     ): Promise<ITodo> {
-      console.log(data);
-
       if (!context.user.id) throw new UnauthorizedError();
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
