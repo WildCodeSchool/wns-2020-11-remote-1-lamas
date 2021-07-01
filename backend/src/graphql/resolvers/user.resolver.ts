@@ -51,7 +51,7 @@ export default {
       context: Icontext
     ): Promise<Partial<IUser>> {
       if (!context?.user?.id) throw new UnauthorizedError();
-      const user: IUser = await Users.findById(context?.user?.id, {
+      const user: IUser | null = await Users.findById(context.user.id, {
         _id: 1,
         firstname: 1,
         lastname: 1,
