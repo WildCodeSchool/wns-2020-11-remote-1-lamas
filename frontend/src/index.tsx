@@ -4,7 +4,6 @@ import './index.css';
 import {
   ApolloProvider,
   ApolloClient,
-  InMemoryCache,
   createHttpLink,
   ApolloLink,
 } from '@apollo/client';
@@ -12,6 +11,7 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UseCache } from './cache';
 
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_LAMAS_BACK}/graphql`,
@@ -20,8 +20,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
-  // eslint-disable-next-line no-console
-  console.log('token set context', token);
   return {
     headers: {
       ...headers,
@@ -39,11 +37,13 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
-const link = ApolloLink.from([errorLink, authLink.concat(httpLink)]);
+export const link = ApolloLink.from([errorLink, authLink.concat(httpLink)]);
+
+const cache = UseCache();
 
 const client = new ApolloClient({
   link,
-  cache: new InMemoryCache(),
+  cache,
 });
 
 ReactDOM.render(

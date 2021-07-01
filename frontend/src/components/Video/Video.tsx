@@ -1,10 +1,9 @@
 /* eslint-disable no-console */
+import './Video.css';
 import { Container, Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
-import './Video.css';
 
 interface IVideo {
   yourId: string;
