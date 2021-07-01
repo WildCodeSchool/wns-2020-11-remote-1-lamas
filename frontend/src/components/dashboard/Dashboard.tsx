@@ -39,7 +39,9 @@ const Dashboard = (): JSX.Element => {
     variables: { userId: id },
   });
 
-  const getRoom = useQuery(GET_ROOMS);
+  const getRoom = useQuery(GET_ROOMS, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const handleModalClose = () => {
     setOpenModal('');

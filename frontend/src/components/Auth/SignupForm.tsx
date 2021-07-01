@@ -69,7 +69,7 @@ const SignupForm = (): JSX.Element => {
 
   useEffect(() => {
     if (user) {
-      history.push(`/dashboard/${user?.getUserConnected?._id}`);
+      history.push(`/dashboard/${user?._id}`);
     }
   }, [history, user]);
 

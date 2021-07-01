@@ -204,6 +204,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
           height: '25%',
           width: '25%',
           borderRadius: '10px',
+          objectFit: 'cover',
         }}
       />
       {/* {getVideoIcon()}
