@@ -1,9 +1,34 @@
 /* eslint-disable no-console */
-import { Button, Container } from '@material-ui/core';
+import { Button, Container, makeStyles } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
+import VideocamRoundedIcon from '@material-ui/icons/VideocamRounded';
+import VideocamOffRoundedIcon from '@material-ui/icons/VideocamOffRounded';
+import MicRoundedIcon from '@material-ui/icons/MicRounded';
+import MicOffRoundedIcon from '@material-ui/icons/MicOffRounded';
 import socket from '../../socket/socket';
 import './VideoGroup.css';
+
+const useStyles = makeStyles({
+  button: {
+    '&:hover': {
+      background: 'none',
+    },
+  },
+  video: {
+    color: 'white',
+    padding: '10px',
+    borderRadius: '40px',
+    width: '60px',
+    height: '60px',
+  },
+  videoOn: {
+    backgroundColor: 'green',
+  },
+  videoOff: {
+    backgroundColor: 'red',
+  },
+});
 
 interface IVideoProps {
   roomId: string;
@@ -51,12 +76,17 @@ const Video = ({ peer }: IPeer) => {
 };
 
 const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
+  const classes = useStyles();
   const [peers, setPeers] = useState<Peer.Instance[]>([]);
+  const [isVideo, setIsVideo] = useState(true);
+  const [isAudio, setIsAudio] = useState(true);
+
   const peersRef = useRef<IPeerWithId[]>([]);
   const roomID = roomId;
   const userVideo = useRef<HTMLVideoElement>(null);
 
   function createPeer(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     userToSignal: any,
     callerID: string,
     stream: MediaStream
@@ -104,12 +134,14 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
   };
 
   const toggleUserVideo = () => {
+    setIsVideo(!isVideo);
     (userVideo.current
       ?.srcObject as MediaStream).getVideoTracks()[0].enabled = !(userVideo
       .current?.srcObject as MediaStream).getVideoTracks()[0].enabled;
   };
 
   const toggleUserAudio = () => {
+    setIsAudio(!isAudio);
     (userVideo.current
       ?.srcObject as MediaStream).getAudioTracks()[0].enabled = !(userVideo
       .current?.srcObject as MediaStream).getAudioTracks()[0].enabled;
@@ -161,12 +193,39 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
   }, [roomID]);
 
+  const getVideoIcon = () => {
+    return (
+      <Button
+        className={classes.button}
+        onClick={toggleUserVideo}
+        disableRipple
+      >
+        {isVideo ? (
+          <VideocamRoundedIcon
+            className={`${classes.video} ${classes.videoOn}`}
+          />
+        ) : (
+          <VideocamOffRoundedIcon
+            className={`${classes.video} ${classes.videoOff}`}
+          />
+        )}
+      </Button>
+    );
+  };
+
+  const getAudioIcon = () => {
+    return (
+      <Button onClick={toggleUserAudio} disableRipple>
+        {isAudio ? <MicRoundedIcon /> : <MicOffRoundedIcon />}
+      </Button>
+    );
+  };
+
   return (
     <Container>
       <video muted ref={userVideo} autoPlay playsInline />
-      <Button onClick={toggleUserVideo}>Toggle video</Button>
-      <Button onClick={toggleUserAudio}>Toggle audio</Button>
-
+      {getVideoIcon()}
+      {getAudioIcon()}
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;
