@@ -70,7 +70,8 @@ const LoginForm = (): JSX.Element => {
     if (user) {
       history.push(`/dashboard/${user?._id}`);
     }
-  }, [history, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history]);
 
   const [loginUser, { data, error }] = useMutation(LOGIN_USER, {
     onCompleted: (res) => {
