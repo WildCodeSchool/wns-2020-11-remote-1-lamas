@@ -64,12 +64,11 @@ const SocketIo = (httpServer: http.Server) => {
     socket.on('createMessage', async (roomId, userId, message) => {
       await createRoomMessage(socket.id, roomId, userId, message);
       const messages = await getRoomMessages(roomId);
-      console.log('roomId', roomId);
-
       io.in(roomId).emit('getMessagesList', messages);
     });
 
     socket.on('getMessages', async (roomId) => {
+      socket.join(roomId);
       const messages = await getRoomMessages(roomId);
       socket.emit('getMessagesList', messages);
     });
