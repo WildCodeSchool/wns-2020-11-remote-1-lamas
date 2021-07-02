@@ -16,8 +16,6 @@ services:
     environment:
       - NODE_ENV=production
       - REACT_APP_LAMAS_BACK=//staging.lamas.wns.wilders.dev
-      - SKIP_PREFLIGHT_CHECK=true
-      - ESLINT_NO_DEV_ERRORS=true
 
   nginx:
     image: nginx:1.19.10

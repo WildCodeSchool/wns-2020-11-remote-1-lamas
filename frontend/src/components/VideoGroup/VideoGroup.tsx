@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* eslint-disable no-console */
 import { Button, Container } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
@@ -119,23 +118,20 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
 
   const toggleUserVideo = () => {
     setIsVideo(!isVideo);
-    if(userVideo?.current
-      ?.srcObject ) {
-          (userVideo.current
-      .srcObject as MediaStream).getVideoTracks()[0].enabled = !(userVideo
-      .current.srcObject as MediaStream).getVideoTracks()[0].enabled;
+    if (userVideo?.current?.srcObject) {
+      (userVideo.current
+        .srcObject as MediaStream).getVideoTracks()[0].enabled = !(userVideo
+        .current.srcObject as MediaStream).getVideoTracks()[0].enabled;
     }
-
   };
 
   const toggleUserAudio = () => {
     setIsAudio(!isAudio);
-     if(userVideo?.current
-      ?.srcObject ) {
-    (userVideo.current
-      .srcObject as MediaStream).getAudioTracks()[0].enabled = !(userVideo
-      .current.srcObject as MediaStream).getAudioTracks()[0].enabled;
-     }
+    if (userVideo?.current?.srcObject) {
+      (userVideo.current
+        .srcObject as MediaStream).getAudioTracks()[0].enabled = !(userVideo
+        .current.srcObject as MediaStream).getAudioTracks()[0].enabled;
+    }
   };
 
   // HELP: useEffect called when a new user join session
