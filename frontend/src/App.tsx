@@ -12,7 +12,10 @@ const App = (): JSX.Element => {
   // compil
   const connectedUser = useQuery(GET_CONNECTED_USER);
 
-  if (connectedUser?.data?.getUserConnected) {
+  if (
+    connectedUser?.data?.getUserConnected?.firstname &&
+    connectedUser?.data?.getUserConnected?.lastname
+  ) {
     currentUser(connectedUser.data.getUserConnected);
   }
   return (
