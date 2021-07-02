@@ -9,6 +9,7 @@ import { GET_CONNECTED_USER } from './graphql/queries/getConnectedUser';
 import { currentUser } from './cache';
 
 const App = (): JSX.Element => {
+  // compil
   const connectedUser = useQuery(GET_CONNECTED_USER);
 
   if (connectedUser?.data?.getUserConnected) {
