@@ -67,8 +67,6 @@ const LoginForm = (): JSX.Element => {
   const user = currentUser();
 
   useEffect(() => {
-    console.log(user);
-
     if (user) {
       history.push(`/dashboard/${user?._id}`);
     }
@@ -78,6 +76,11 @@ const LoginForm = (): JSX.Element => {
     onCompleted: (res) => {
       const token = res?.loginUser?.token;
       if (token) {
+        currentUser({
+          _id: res?.loginUser?.user?._id,
+          firstname: res?.loginUser?.user?.firstname,
+          lastname: res?.loginUser?.user?.lastname,
+        });
         localStorage.setItem('token', token);
         history.push(`/dashboard/${res.loginUser.user._id}`);
       }

@@ -64,7 +64,6 @@ const SignupForm = (): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
-
   const user = currentUser();
 
   useEffect(() => {
@@ -77,9 +76,16 @@ const SignupForm = (): JSX.Element => {
     onCompleted: (res) => {
       const token = res?.createUser?.token;
       if (token) {
+        localStorage.setItem('token', token);
+
+        currentUser({
+          _id: res?.createUser?.user?._id,
+          firstname: res?.createUser?.user?.firstname,
+          lastname: res?.createUser?.user?.lastname,
+        });
+
         // eslint-disable-next-line no-underscore-dangle
         history.push(`/dashboard/${res.createUser.user._id}`);
-        localStorage.setItem('token', token);
       }
     },
   });
