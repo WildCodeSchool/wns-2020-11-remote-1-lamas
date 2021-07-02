@@ -26,8 +26,6 @@ const SocketIo = (httpServer: http.Server) => {
       connectedUser = JSON.parse(currentUser.connectedUser);
     }
 
-    console.log(connectedUser);
-
     if (!!connectedUser && !!connectedUser?.roomId) {
       addUser(
         connectedUser.roomId,
@@ -64,8 +62,11 @@ const SocketIo = (httpServer: http.Server) => {
     });
 
     socket.on('createMessage', async (roomId, userId, message) => {
+      console.log('entering', roomId, userId, message);
       await createRoomMessage(socket.id, roomId, userId, message);
       const messages = await getRoomMessages(roomId);
+      console.log('messages', messages);
+
       io.in(roomId).emit('getMessagesList', messages);
     });
 

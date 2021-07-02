@@ -142,6 +142,8 @@ const createRoomMessage = async (
   asyncSadd(`${roomId}-messageKeys`, messageId);
   // créer member rajouter les données du message
 
+  console.log('check', firstname, lastname);
+
   asyncHmset(
     `${roomId}-message-${messageId}`,
     `lastname`,
@@ -165,6 +167,8 @@ const getRoomMessages = async (roomId: number) => {
 
   // map et récupérer les données, les push ds un tableau
   const listMessage = [];
+
+  console.log('messagesRoomId', messagesRoomId);
 
   for await (const messageId of messagesRoomId) {
     const firstname = await asyncHget(
@@ -192,6 +196,8 @@ const getRoomMessages = async (roomId: number) => {
   }
 
   listMessage.sort((a, b) => a.date.localeCompare(b.date));
+
+  console.log('listMessage', listMessage);
 
   return listMessage;
 };
