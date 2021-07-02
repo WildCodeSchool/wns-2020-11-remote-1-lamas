@@ -21,10 +21,12 @@ const SocketIo = (httpServer: http.Server) => {
 
   io.on('connect', (socket: Socket) => {
     const currentUser = socket.handshake.query as any;
-    let connectedUser
-    if(currentUser.connectedUser){
+    let connectedUser;
+    if (currentUser.connectedUser) {
       connectedUser = JSON.parse(currentUser.connectedUser);
     }
+
+    console.log(connectedUser);
 
     if (!!connectedUser && !!connectedUser?.roomId) {
       addUser(
