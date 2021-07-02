@@ -6,7 +6,6 @@ import { FIND_USER } from '../../../graphql/queries/getUser';
 import { User } from '../../../shared/Users';
 import socket from '../../../socket/socket';
 import Emojis from '../../Emojis/Emojis';
-import VideoRoom from '../../videoRoom/videoRoom';
 import IconCalls from '../../IconCalls/IconCalls';
 import Message from '../Message/Message';
 import VideoGroup from '../../VideoGroup/VideoGroup';
@@ -22,7 +21,9 @@ const Student = (): JSX.Element => {
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
 
   useEffect(() => {
-    socket.emit('studentJoinTheRoom', roomId);
+    if (roomId) {
+      socket.emit('studentJoinTheRoom', roomId);
+    }
     socket.on('userInfos', (user: User) => {
       setStudentInfos(user);
     });
