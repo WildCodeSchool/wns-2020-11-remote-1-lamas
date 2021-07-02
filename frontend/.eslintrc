@@ -47,7 +47,7 @@
     "jsx-a11y/mouse-events-have-key-events":"off",
     "no-underscore-dangle": "off",
     "prettier/prettier": [
-      "error",
+      "warn",
       {
         "endOfLine": "auto"
       }
