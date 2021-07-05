@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Dashboard from './components/dashboard/Dashboard';
@@ -12,7 +13,10 @@ const App = (): JSX.Element => {
   // compil
   const connectedUser = useQuery(GET_CONNECTED_USER);
 
-  if (connectedUser?.data?.getUserConnected) {
+  if (
+    connectedUser?.data?.getUserConnected?.firstname &&
+    connectedUser?.data?.getUserConnected?.lastname
+  ) {
     currentUser(connectedUser.data.getUserConnected);
   }
   return (
