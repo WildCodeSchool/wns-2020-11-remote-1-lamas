@@ -1,3 +1,6 @@
+import { Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
+import { Socket } from 'socket.io';
 import {
   asyncgetLength,
   asyncHmset,
@@ -11,14 +14,20 @@ import {
 } from './database/redis';
 import { MoodCounter } from './shared/utils';
 import Users from './database/models/User';
-import { Types } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
-import { Socket } from 'socket.io';
 
 interface User {
   id: string;
   mood: string;
   actions: string[];
+}
+
+interface Message {
+  id: string;
+  firstname: string;
+  lastname: string;
+  userId: string;
+  message: string;
+  date: string;
 }
 
 const addUser = (
@@ -59,6 +68,8 @@ const deleteMessages = async (
       const messagesRoomId: string[] = await asyncSMembers(
         `${roomId}-messageKeys`
       );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line no-restricted-syntax
       for await (const messageId of messagesRoomId) {
         asyncHdel(
           `users-${socketId}`,
@@ -114,12 +125,15 @@ const getUserInfos = async (roomId: string, id: string): Promise<User> => {
   };
 };
 
-const getUsersInfosEmojis = async (emoji: string, roomId: number) => {
+const getUsersInfosEmojis = async (
+  emoji: string,
+  roomId: number
+): Promise<User> => {
   const userListPerEmojis: string[] = await asyncSMembers(`${emoji}-${roomId}`);
   const objectIds = userListPerEmojis.map((id) => Types.ObjectId(id));
 
   // récupérer que le nom/prénom
-  const user = await Users.find(
+  const user: User = await Users.find(
     { _id: { $in: objectIds } },
     { _id: 1, firstname: 1, lastname: 1 }
   );
@@ -132,7 +146,7 @@ const createRoomMessage = async (
   roomId: string,
   userId: string,
   message: string
-) => {
+): Promise<void> => {
   // récup info user firstname lastname
   const firstname = await asyncHget(`users-${socketId}`, 'firstname');
   const lastname = await asyncHget(`users-${socketId}`, 'lastname');
@@ -159,13 +173,14 @@ const createRoomMessage = async (
   );
 };
 
-const getRoomMessages = async (roomId: number) => {
+const getRoomMessages = async (roomId: number): Promise<Message[]> => {
   // récup les clés
   const messagesRoomId: string[] = await asyncSMembers(`${roomId}-messageKeys`);
 
   // map et récupérer les données, les push ds un tableau
-  const listMessage = [];
+  const listMessage: Message[] = [];
 
+  // eslint-disable-next-line no-restricted-syntax
   for await (const messageId of messagesRoomId) {
     const firstname = await asyncHget(
       `${roomId}-message-${messageId}`,

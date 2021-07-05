@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
+import React, { useEffect, useRef, useState } from 'react';
 import './Video.css';
 import { Container, Button } from '@material-ui/core';
-import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Container } from '@material-ui/core';
-import { useEffect, useRef, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
 import VideocamRoundedIcon from '@material-ui/icons/VideocamRounded';
 import VideocamOffRoundedIcon from '@material-ui/icons/VideocamOffRounded';

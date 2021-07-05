@@ -1,9 +1,8 @@
 import { useQuery } from '@apollo/client';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 import { useParams } from 'react-router';
 import { GET_CONNECTED_USER } from '../../graphql/queries/getConnectedUser';
 import { GET_ROOM } from '../../graphql/queries/getRoom';
-import socket from '../../socket/socket';
 import { IParams } from '../../types/type';
 import Student from './Student/Student';
 import Teacher from './Teacher/Teacher';
