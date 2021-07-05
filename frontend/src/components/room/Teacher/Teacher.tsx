@@ -7,7 +7,6 @@ import socket from '../../../socket/socket';
 import Emojis from '../../Emojis/Emojis';
 import getColorByMood from '../../Methods/getColorByMood';
 import './Teacher.css';
-import VideoRoom from '../../videoRoom/videoRoom';
 import IconCalls from '../../IconCalls/IconCalls';
 import { FIND_USER } from '../../../graphql/queries/getUser';
 import Message from '../Message/Message';
@@ -15,7 +14,8 @@ import VideoGroup from '../../VideoGroup/VideoGroup';
 
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
-
+  const [videoStatus, setVideoStatus] = useState(true);
+  const [microStatus, setMicroStatus] = useState(true);
   const [emojisCounts, setEmojisCounts] = useState<MoodCounter>({
     happy: 0,
     dead: 0,
@@ -40,21 +40,15 @@ const Teacher = (): JSX.Element => {
     });
   }, [roomId]);
 
-  const temporaryArray = [{ name: 'emeline' }];
-
   return (
     <div className="teacher">
       <div className="teacher__left">
         <div className="teacher_visio">
-          <VideoGroup roomId={roomId} />
-          {/* {temporaryArray &&
-            temporaryArray.map((item) => {
-              return (
-                <div key={item.name}>
-                  <VideoRoom key={item.name} name={item.name} />
-                </div>
-              );
-            })} */}
+          <VideoGroup
+            roomId={roomId}
+            videoStatus={videoStatus}
+            microStatus={microStatus}
+          />
         </div>
         <div className="teacher_infos">
           <div
@@ -73,7 +67,13 @@ const Teacher = (): JSX.Element => {
               </div>
             </div>
           </div>
-          <IconCalls id={id} />
+          <IconCalls
+            id={id}
+            isVideo={videoStatus}
+            isMicro={microStatus}
+            sendVideoStatus={(video) => setVideoStatus(video)}
+            sendMicroStatus={(micro) => setMicroStatus(micro)}
+          />
         </div>
       </div>
       <Message />

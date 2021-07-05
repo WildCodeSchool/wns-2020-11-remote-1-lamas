@@ -30,11 +30,21 @@ const useStyles = makeStyles({
   },
 });
 
-const IconCalls = ({ id }: { id: string }) => {
+const IconCalls = ({
+  id,
+  isVideo,
+  isMicro,
+  sendVideoStatus,
+  sendMicroStatus,
+}: {
+  id: string;
+  isVideo: boolean;
+  isMicro: boolean;
+  sendVideoStatus: (videoOn: boolean) => void;
+  sendMicroStatus: (microOn: boolean) => void;
+}): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
-  const [micOn, setMicOn] = useState(true);
-  const [videoOn, setVideoOn] = useState(true);
   const [screenOn, setScreenOn] = useState(false);
 
   return (
@@ -42,9 +52,9 @@ const IconCalls = ({ id }: { id: string }) => {
       <IconButton
         className={classes.iconButton}
         aria-label="mic-on"
-        onClick={() => setMicOn(!micOn)}
+        onClick={() => sendMicroStatus(!isMicro)}
       >
-        {!micOn ? <MicIcon /> : <MicOffIcon />}
+        {isMicro ? <MicIcon /> : <MicOffIcon />}
       </IconButton>
       <IconButton
         className={`${classes.iconButton} ${classes.iconButtonCallEnd}`}
@@ -56,16 +66,16 @@ const IconCalls = ({ id }: { id: string }) => {
       <IconButton
         className={classes.iconButton}
         aria-label="video-on"
-        onClick={() => setVideoOn(!videoOn)}
+        onClick={() => sendVideoStatus(!isVideo)}
       >
-        {!videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
+        {isVideo ? <VideocamIcon /> : <VideocamOffIcon />}
       </IconButton>
       <IconButton
         className={classes.iconButton}
         aria-label="screen-on"
         onClick={() => setScreenOn(!screenOn)}
       >
-        {!screenOn ? <ScreenShareIcon /> : <StopScreenShareIcon />}
+        {screenOn ? <ScreenShareIcon /> : <StopScreenShareIcon />}
       </IconButton>
     </div>
   );

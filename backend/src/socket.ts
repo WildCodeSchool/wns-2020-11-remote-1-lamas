@@ -1,3 +1,5 @@
+import { Socket, Server } from 'socket.io';
+import http from 'http';
 import {
   addUser,
   updateEmojisCount,
@@ -10,10 +12,8 @@ import {
   createRoomMessage,
   deleteMessages,
 } from './user';
-import { Socket, Server } from 'socket.io';
-import http from 'http';
 
-const SocketIo = (httpServer: http.Server) => {
+const SocketIo = (httpServer: http.Server): void => {
   const io = new Server(httpServer);
   const users: Record<string, string> = {};
   const usersInTheRoom: Record<string, string[]> = {};
@@ -127,4 +127,4 @@ const SocketIo = (httpServer: http.Server) => {
   });
 };
 
-export { SocketIo };
+export default SocketIo;
