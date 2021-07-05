@@ -50,7 +50,7 @@ const SocketIo = (httpServer: http.Server): void => {
 
     socket.on('getListUsersPerEmoji', async (roomId, emoji) => {
       const userList = await getUsersInfosEmojis(emoji, roomId);
-      socket.emit('userListPerEmoji', userList);
+      socket.emit(`userListPerEmoji-${emoji}`, userList);
     });
 
     socket.on('changeMood', async (roomId, userId, name, category) => {

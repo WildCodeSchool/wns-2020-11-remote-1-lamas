@@ -8,6 +8,7 @@ import MicRoundedIcon from '@material-ui/icons/MicRounded';
 import MicOffRoundedIcon from '@material-ui/icons/MicOffRounded';
 import socket from '../../socket/socket';
 import './VideoGroup.css';
+import { currentUser } from '../../cache';
 
 interface IVideoProps {
   roomId: string;
@@ -67,49 +68,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
   const peersRef = useRef<IPeerWithId[]>([]);
   const roomID = roomId;
   const userVideo = useRef<HTMLVideoElement>(null);
-
-  function createPeer(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    userToSignal: any,
-    callerID: string,
-    stream: MediaStream
-  ) {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    });
-
-    peer.on('signal', (signal) => {
-      socket.emit('sending signal', {
-        userToSignal,
-        callerID,
-        signal,
-      });
-    });
-
-    return peer;
-  }
-
-  function addPeer(
-    incomingSignal: string | SignalData,
-    callerID: string,
-    stream: undefined | MediaStream
-  ) {
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream,
-    });
-
-    peer.on('signal', (signal) => {
-      socket.emit('returning signal', { signal, callerID });
-    });
-
-    peer.signal(incomingSignal);
-
-    return peer;
-  }
+  const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
@@ -136,6 +95,51 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
+    function createPeer(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      userToSignal: any,
+      callerID: string,
+      stream: MediaStream
+    ) {
+      const peer = new Peer({
+        initiator: true,
+        trickle: false,
+        stream,
+      });
+
+      peer.on('signal', (signal) => {
+        socket({ ...user.connectedUser, roomId }).emit('sending signal', {
+          userToSignal,
+          callerID,
+          signal,
+        });
+      });
+
+      return peer;
+    }
+
+    function addPeer(
+      incomingSignal: string | SignalData,
+      callerID: string,
+      stream: undefined | MediaStream
+    ) {
+      const peer = new Peer({
+        initiator: false,
+        trickle: false,
+        stream,
+      });
+
+      peer.on('signal', (signal) => {
+        socket({ ...user.connectedUser, roomId }).emit('returning signal', {
+          signal,
+          callerID,
+        });
+      });
+
+      peer.signal(incomingSignal);
+
+      return peer;
+    }
     // notification to activate video and audio in the browser
     navigator.mediaDevices
       .getUserMedia({ video: videoConstraints, audio: true })
@@ -144,41 +148,59 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
         // si le user a accepté la video
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
-          socket.emit('join room', roomID);
-          socket.on('all users', (users: string[]) => {
-            const usersPeers: Peer.Instance[] = [];
-            users.forEach((userID: string) => {
-              const peer = createPeer(userID, socket.id, stream);
+          socket({ ...user.connectedUser, roomId }).emit('join room', roomID);
+          socket({ ...user.connectedUser, roomId }).on(
+            'all users',
+            (users: string[]) => {
+              const usersPeers: Peer.Instance[] = [];
+              users.forEach((userID: string) => {
+                const peer = createPeer(
+                  userID,
+                  socket({ ...user.connectedUser, roomId }).id,
+                  stream
+                );
+                peersRef.current.push({
+                  peerID: userID,
+                  peer,
+                });
+                usersPeers.push(peer);
+              });
+              setPeers(usersPeers);
+            }
+          );
+
+          socket({ ...user.connectedUser, roomId }).on(
+            'user joined',
+            (payload: IPayload) => {
+              const peer = addPeer(payload.signal, payload.callerID, stream);
               peersRef.current.push({
-                peerID: userID,
+                peerID: payload.callerID,
                 peer,
               });
-              usersPeers.push(peer);
-            });
-            setPeers(usersPeers);
-          });
+              setPeers((users) => [...users, peer]);
+            }
+          );
 
-          socket.on('user joined', (payload: IPayload) => {
-            const peer = addPeer(payload.signal, payload.callerID, stream);
-            peersRef.current.push({
-              peerID: payload.callerID,
-              peer,
-            });
-            setPeers((users) => [...users, peer]);
-          });
+          socket({ ...user.connectedUser, roomId }).on(
+            'receiving returned signal',
+            (payload: IPayload) => {
+              const item = peersRef.current.find(
+                (p) => p.peerID === payload.id
+              );
+              item?.peer.signal(payload.signal);
+            }
+          );
 
-          socket.on('receiving returned signal', (payload: IPayload) => {
-            const item = peersRef.current.find((p) => p.peerID === payload.id);
-            item?.peer.signal(payload.signal);
-          });
-
-          socket.on('removeUserVideo', (socketId: string) => {
-            removeUserLeavingRoomVideo(socketId);
-          });
+          socket({ ...user.connectedUser, roomId }).on(
+            'removeUserVideo',
+            (socketId: string) => {
+              removeUserLeavingRoomVideo(socketId);
+            }
+          );
         }
       })
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
-  }, [roomID]);
+  }, [roomID, roomId, user?.connectedUser]);
 
   const getVideoIcon = () => {
     return (

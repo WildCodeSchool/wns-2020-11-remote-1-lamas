@@ -1,4 +1,5 @@
 import React, { ReactElement, useState, useEffect } from 'react';
+import { currentUser } from '../../../cache';
 import { Emoji, MoodCounter } from '../../../shared/Emojis';
 import socket from '../../../socket/socket';
 import './EmojiIcon.css';
@@ -22,15 +23,26 @@ const EmojiIcon = ({
 }: EmojiIconProps): ReactElement => {
   const [isPopinOpen, setIsPopinOpen] = useState(false);
   const [userList, setUserList] = useState<IUserList[]>([]);
+  const user = currentUser();
+
   useEffect(() => {
-    socket.on('userListPerEmoji', (list: any) => {
-      setUserList(list);
-    });
-  }, [isPopinOpen]);
+    if (user?.connectedUser) {
+      socket({ ...user.connectedUser, roomId }).on(
+        `userListPerEmoji-${emoji.name}`,
+        (list: IUserList[]) => {
+          setUserList(list);
+        }
+      );
+    }
+  }, [emoji.name, roomId, user?.connectedUser]);
 
   const handlePopin = (name: string) => {
+    socket({ ...user.connectedUser, roomId }).emit(
+      'getListUsersPerEmoji',
+      roomId,
+      name
+    );
     setIsPopinOpen(true);
-    socket.emit('getListUsersPerEmoji', roomId, name);
   };
 
   return (
@@ -42,15 +54,13 @@ const EmojiIcon = ({
         'teacher_emoji_headband--none'
       }`}
       onMouseEnter={() => handlePopin(emoji.name)}
-      onMouseOver={() => handlePopin(emoji.name)}
-      onFocus={() => handlePopin(emoji.name)}
       onMouseLeave={() => setIsPopinOpen(false)}
     >
       {isPopinOpen && userList?.length > 0 && (
         <div className="popin">
-          {userList.map((user) => (
-            <p key={user._id}>
-              {user.firstname} {user.lastname}
+          {userList.map((userFromList) => (
+            <p key={userFromList._id}>
+              {userFromList.firstname} {userFromList.lastname}
             </p>
           ))}
         </div>

@@ -12,6 +12,7 @@ import IconCalls from '../../IconCalls/IconCalls';
 import { FIND_USER } from '../../../graphql/queries/getUser';
 import Message from '../Message/Message';
 import VideoGroup from '../../VideoGroup/VideoGroup';
+import { currentUser } from '../../../cache';
 
 const Teacher = (): JSX.Element => {
   const [totalStudents, setTotalStudents] = useState(0);
@@ -26,35 +27,40 @@ const Teacher = (): JSX.Element => {
   });
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
+  const user = currentUser();
 
   useEffect(() => {
-    socket.emit('teacherJoinTheRoom', roomId);
-    socket.on('sendUserCount', (userCount: number) => {
-      setTotalStudents(userCount);
-    });
-    socket.on('updateEmojisCount', (moodCounter: MoodCounter) => {
-      setEmojisCounts(moodCounter);
-    });
-    socket.on('getDecrement', (moodCounter: MoodCounter) => {
-      setEmojisCounts(moodCounter);
-    });
-  }, [roomId]);
-
-  const temporaryArray = [{ name: 'emeline' }];
+    if (user?.connectedUser) {
+      socket({ ...user.connectedUser, roomId }).emit(
+        'teacherJoinTheRoom',
+        roomId
+      );
+      socket({ ...user.connectedUser, roomId }).on(
+        'sendUserCount',
+        (userCount: number) => {
+          setTotalStudents(userCount);
+        }
+      );
+      socket({ ...user.connectedUser, roomId }).on(
+        'updateEmojisCount',
+        (moodCounter: MoodCounter) => {
+          setEmojisCounts(moodCounter);
+        }
+      );
+      socket({ ...user.connectedUser, roomId }).on(
+        'getDecrement',
+        (moodCounter: MoodCounter) => {
+          setEmojisCounts(moodCounter);
+        }
+      );
+    }
+  }, [roomId, user?.connectedUser]);
 
   return (
     <div className="teacher">
       <div className="teacher__left">
         <div className="teacher_visio">
           <VideoGroup roomId={roomId} />
-          {/* {temporaryArray &&
-            temporaryArray.map((item) => {
-              return (
-                <div key={item.name}>
-                  <VideoRoom key={item.name} name={item.name} />
-                </div>
-              );
-            })} */}
         </div>
         <div className="teacher_infos">
           <div

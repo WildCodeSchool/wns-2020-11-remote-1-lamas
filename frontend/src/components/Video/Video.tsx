@@ -3,7 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import './Video.css';
 import { Container, Button } from '@material-ui/core';
 import Peer, { SignalData } from 'simple-peer';
+import { useParams } from 'react-router';
 import socket from '../../socket/socket';
+import { currentUser } from '../../cache';
 
 interface IVideo {
   yourId: string;
@@ -29,6 +31,9 @@ const Video = (): JSX.Element => {
 
   const userVideo = useRef<HTMLVideoElement>(null);
   const partnerVideo = useRef<HTMLVideoElement>(null);
+  const user = currentUser();
+  const { roomId } = useParams<{ roomId: string }>();
+
   // const actualSocket = useRef()
 
   // HELP: useEffect called when a new user join session
@@ -49,16 +54,19 @@ const Video = (): JSX.Element => {
       })
       .catch((err) => console.log('erreur dans getUserMedia : ', err));
 
-    socket.on('yourId', (id: string) => {
+    socket({ ...user.connectedUser, roomId }).on('yourId', (id: string) => {
       setVideo({ ...video, yourId: id });
     });
 
-    socket.on('allUsers', (allUsers: any) => {
-      setUsers(allUsers);
-    });
+    socket({ ...user.connectedUser, roomId }).on(
+      'allUsers',
+      (allUsers: any) => {
+        setUsers(allUsers);
+      }
+    );
 
     // socket reçue du back, de la personne qui nous appel avec son id (from) + son signal
-    socket.on(
+    socket({ ...user.connectedUser, roomId }).on(
       'userCallingMe',
       (data: { from: string; signal: string | SignalData }) => {
         setVideo({
@@ -81,7 +89,7 @@ const Video = (): JSX.Element => {
 
     // capte le signal
     peer.on('signal', (data: unknown) => {
-      socket.emit('callUser', {
+      socket({ ...user.connectedUser, roomId }).emit('callUser', {
         userToCall: id,
         signalData: data,
         from: video.yourId,
@@ -96,10 +104,13 @@ const Video = (): JSX.Element => {
     });
 
     // la connexion se fait entre les deux car l'appel est accepté
-    socket.on('callAccepted', (signal: string | SignalData) => {
-      setVideo({ ...video, callAccepted: true });
-      peer.signal(signal);
-    });
+    socket({ ...user.connectedUser, roomId }).on(
+      'callAccepted',
+      (signal: string | SignalData) => {
+        setVideo({ ...video, callAccepted: true });
+        peer.signal(signal);
+      }
+    );
   };
 
   const acceptCall = () => {
@@ -117,7 +128,10 @@ const Video = (): JSX.Element => {
     });
 
     peer.on('signal', (data) => {
-      socket.emit('acceptCall', { signal: data, to: video.caller });
+      socket({ ...user.connectedUser, roomId }).emit('acceptCall', {
+        signal: data,
+        to: video.caller,
+      });
     });
 
     peer.on('stream', (stream) => {

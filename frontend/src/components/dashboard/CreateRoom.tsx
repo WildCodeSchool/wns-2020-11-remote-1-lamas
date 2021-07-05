@@ -1,13 +1,14 @@
 import React, { ReactElement, useState } from 'react';
 import { useMutation } from '@apollo/client/react/hooks/useMutation';
 import { useQuery } from '@apollo/client/react/hooks/useQuery';
+import { useParams } from 'react-router';
 import { CREATE_ROOM } from '../../graphql/mutations/createRoom';
 import TextInput from '../component/Input';
 import ButtonDashboard from '../component/ButtonDashboard';
 import '../component/modalLayout.css';
 import './createRoom.css';
 import { GET_ROOMS } from '../../graphql/queries/getRooms';
-import { IRoom } from '../../types/type';
+import { IParams, IRoom } from '../../types/type';
 
 interface CreationModalProps {
   handleModalClose: () => void;
@@ -16,6 +17,8 @@ interface CreationModalProps {
 const CreateRoom = ({ handleModalClose }: CreationModalProps): ReactElement => {
   const [name, setName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const params = useParams<IParams>();
+  const userId = params?.id ?? '';
 
   const [createRoom] = useMutation(CREATE_ROOM);
 
@@ -28,7 +31,11 @@ const CreateRoom = ({ handleModalClose }: CreationModalProps): ReactElement => {
   const { loading, error, data } = useQuery(GET_ROOMS);
 
   const handleClick = () => {
-    const roomExist = data.getRooms.find((room: IRoom) => room.name === name);
+    const roomsUser = data?.getRooms?.filter(
+      (room: IRoom) => room.owner === userId
+    );
+
+    const roomExist = roomsUser.find((room: IRoom) => room.name === name);
     if (roomExist) {
       setErrorMessage('La salle existe déjà');
     } else if (name !== '') {

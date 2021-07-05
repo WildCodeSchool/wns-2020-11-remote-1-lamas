@@ -47,27 +47,39 @@ const Message = (): JSX.Element => {
 
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
+  const user = currentUser();
   useEffect(() => {
-    socket.emit('getMessages', roomId);
-    socket.on('getMessagesList', (listMessage: IMessageList[]) => {
-      setMessageList(listMessage);
-    });
-  }, [roomId]);
+    if (user?.connectedUser) {
+      socket({ ...user.connectedUser, roomId }).emit('getMessages', roomId);
+      socket({ ...user.connectedUser, roomId }).on(
+        'getMessagesList',
+        (listMessage: IMessageList[]) => {
+          setMessageList(listMessage);
+        }
+      );
+    }
+  }, [roomId, user?.connectedUser]);
 
   const handleMessage = (): void => {
-    socket.emit('createMessage', roomId, id, message);
-    setMessage('');
+    console.log(user);
+    if (user?.connectedUser) {
+      socket({ ...user.connectedUser, roomId }).emit(
+        'createMessage',
+        roomId,
+        id,
+        message
+      );
+      setMessage('');
+    }
   };
-
-  const connectedUser = currentUser();
 
   return (
     <div className="message">
       <h3 className="message__title">Messages</h3>
       <div className="message__chat">
-        {connectedUser?._id &&
+        {user?._id &&
           messageList.map((messageItem) => {
-            const isUser = messageItem.userId === connectedUser?._id;
+            const isUser = messageItem.userId === user?._id;
             return (
               <div
                 key={messageItem.id}

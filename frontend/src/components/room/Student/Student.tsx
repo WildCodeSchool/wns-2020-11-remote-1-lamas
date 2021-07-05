@@ -9,6 +9,7 @@ import Emojis from '../../Emojis/Emojis';
 import IconCalls from '../../IconCalls/IconCalls';
 import Message from '../Message/Message';
 import VideoGroup from '../../VideoGroup/VideoGroup';
+import { currentUser } from '../../../cache';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -19,36 +20,38 @@ const Student = (): JSX.Element => {
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
+  const user = currentUser();
 
   useEffect(() => {
     if (roomId) {
-      socket.emit('studentJoinTheRoom', roomId);
+      socket({ ...user.connectedUser, roomId }).emit(
+        'studentJoinTheRoom',
+        roomId
+      );
     }
-    socket.on('userInfos', (user: User) => {
-      setStudentInfos(user);
-    });
-  }, [roomId]);
+    socket({ ...user.connectedUser, roomId }).on(
+      'userInfos',
+      (userInfo: User) => {
+        setStudentInfos(userInfo);
+      }
+    );
+  }, [roomId, user.connectedUser]);
 
   const handleClick = (name: string, category: string): void => {
-    socket.emit('changeMood', roomId, id, name, category);
+    socket({ ...user.connectedUser, roomId }).emit(
+      'changeMood',
+      roomId,
+      id,
+      name,
+      category
+    );
   };
-
-  const temporaryArray = [{ name: 'emeline' }];
 
   return (
     <div role="heading" aria-level={2} className="student">
       <div className="student__left">
         <div className="student_visio">
           <VideoGroup roomId={roomId} />
-
-          {/* {temporaryArray &&
-            temporaryArray.map((item) => {
-              return (
-                <>
-                  <VideoRoom key={item.name} name={item.name} />
-                </>
-              );
-            })} */}
         </div>
         <div className="student_infos">
           <div className="student_lateral_panel">
