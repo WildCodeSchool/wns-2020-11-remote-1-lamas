@@ -64,22 +64,29 @@ const SignupForm = (): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
-
   const user = currentUser();
 
   useEffect(() => {
     if (user) {
       history.push(`/dashboard/${user?._id}`);
     }
-  }, [history, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history]);
 
   const [createUser, { data, error }] = useMutation(CREATE_USER, {
     onCompleted: (res) => {
       const token = res?.createUser?.token;
       if (token) {
+        localStorage.setItem('token', token);
+
+        currentUser({
+          _id: res?.createUser?.user?._id,
+          firstname: res?.createUser?.user?.firstname,
+          lastname: res?.createUser?.user?.lastname,
+        });
+
         // eslint-disable-next-line no-underscore-dangle
         history.push(`/dashboard/${res.createUser.user._id}`);
-        localStorage.setItem('token', token);
       }
     },
   });

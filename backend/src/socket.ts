@@ -21,7 +21,10 @@ const SocketIo = (httpServer: http.Server) => {
 
   io.on('connect', (socket: Socket) => {
     const currentUser = socket.handshake.query as any;
-    const connectedUser = JSON.parse(currentUser.connectedUser);
+    let connectedUser;
+    if (currentUser.connectedUser) {
+      connectedUser = JSON.parse(currentUser.connectedUser);
+    }
 
     if (!!connectedUser && !!connectedUser?.roomId) {
       addUser(
@@ -65,6 +68,7 @@ const SocketIo = (httpServer: http.Server) => {
     });
 
     socket.on('getMessages', async (roomId) => {
+      socket.join(roomId);
       const messages = await getRoomMessages(roomId);
       socket.emit('getMessagesList', messages);
     });
