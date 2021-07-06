@@ -128,12 +128,12 @@ const getUserInfos = async (roomId: string, id: string): Promise<User> => {
 const getUsersInfosEmojis = async (
   emoji: string,
   roomId: number
-): Promise<User> => {
+): Promise<User[]> => {
   const userListPerEmojis: string[] = await asyncSMembers(`${emoji}-${roomId}`);
   const objectIds = userListPerEmojis.map((id) => Types.ObjectId(id));
 
   // récupérer que le nom/prénom
-  const user: User = await Users.find(
+  const user: User[] = await Users.find(
     { _id: { $in: objectIds } },
     { _id: 1, firstname: 1, lastname: 1 }
   );
