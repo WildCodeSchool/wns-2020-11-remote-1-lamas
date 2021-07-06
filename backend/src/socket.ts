@@ -81,7 +81,7 @@ const SocketIo = (httpServer: http.Server): void => {
     socket.on('getMessages', async (roomId) => {
       socket.join(roomId);
       const messages = await getRoomMessages(roomId);
-      socket.emit('getMessagesList', messages);
+      io.in(roomId).emit('getMessagesList', messages);
     });
 
     if (!users[socket.id]) {
@@ -98,7 +98,7 @@ const SocketIo = (httpServer: http.Server): void => {
       const usersTotalInRoom = usersInTheRoom[roomID].filter(
         (id) => id !== socket.id
       );
-      socket.emit('all users', usersTotalInRoom);
+      io.in(roomID).emit('all users', usersTotalInRoom);
     });
 
     socket.on('sending signal', (payload) => {
@@ -132,6 +132,7 @@ const SocketIo = (httpServer: http.Server): void => {
       if (room) {
         room = room.filter((id) => id !== socket.id);
         usersInTheRoom[roomID] = room;
+        console.log('socket id', socket.id);
         socket.broadcast.emit('removeUserVideo', socket.id);
       }
     });

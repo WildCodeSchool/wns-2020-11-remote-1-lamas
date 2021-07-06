@@ -26,15 +26,10 @@ const Teacher = (): JSX.Element => {
     question: 0,
   });
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
-  const { data } = useQuery(FIND_USER, { variables: { userId: id } });
   const user = currentUser();
 
   useEffect(() => {
-    console.log('TEACHER.TSX');
-
     if (user && roomId) {
-      console.log(user);
-
       socket.emit('teacherJoinTheRoom', roomId);
       socket.on('sendUserCount', (userCount: number) => {
         setTotalStudents(userCount);

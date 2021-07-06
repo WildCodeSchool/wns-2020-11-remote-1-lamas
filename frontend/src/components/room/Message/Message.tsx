@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
@@ -44,6 +44,7 @@ const Message = (): JSX.Element => {
   const classes = useStyles();
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState<IMessageList[]>([]);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
@@ -64,10 +65,17 @@ const Message = (): JSX.Element => {
     }
   };
 
+  useEffect(() => {
+    if (chatRef?.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      // chatRef.current.scrollIntoView();
+    }
+  }, []);
+
   return (
     <div className="message">
       <h3 className="message__title">Messages</h3>
-      <div className="message__chat">
+      <div ref={chatRef} className="message__chat">
         {user?._id &&
           messageList.map((messageItem) => {
             const isUser = messageItem.userId === user?._id;
