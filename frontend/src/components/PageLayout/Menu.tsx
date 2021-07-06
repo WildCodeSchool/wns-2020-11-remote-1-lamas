@@ -1,13 +1,16 @@
+import { useMutation } from '@apollo/client';
 import React, { useEffect, useState, ReactElement } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import Logo from '../../asset/logo-white-lamas_logo.svg';
 import { currentUser } from '../../cache';
+import { REMOVE_COOKIE } from '../../graphql/mutations/cookie';
 import './Menu.css';
 
 const Menu = (): ReactElement => {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
+  const [update] = useMutation(REMOVE_COOKIE);
 
   const [activeTab, setActiveTab] = useState<string>(`/dashboard/${id}`);
   useEffect(() => {
@@ -16,6 +19,7 @@ const Menu = (): ReactElement => {
 
   const handleDisconnect = () => {
     currentUser(null);
+    update();
     localStorage.removeItem('token');
     history.push('/');
   };

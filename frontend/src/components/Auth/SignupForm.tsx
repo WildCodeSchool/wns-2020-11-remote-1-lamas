@@ -15,6 +15,7 @@ import logo from '../../asset/logo-white-lamas_logo.svg';
 import signUpValidationSchema from './signUpValidationSchema';
 import CREATE_USER from '../../graphql/mutations/createUser';
 import { currentUser } from '../../cache';
+import { SET_COOKIE } from '../../graphql/mutations/cookie';
 
 // Specific styles for MUI components
 const useStyles = makeStyles({
@@ -65,6 +66,7 @@ const SignupForm = (): JSX.Element => {
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
   const user = currentUser();
+  const [update] = useMutation(SET_COOKIE);
 
   useEffect(() => {
     if (user) {
@@ -83,6 +85,10 @@ const SignupForm = (): JSX.Element => {
           _id: res?.createUser?.user?._id,
           firstname: res?.createUser?.user?.firstname,
           lastname: res?.createUser?.user?.lastname,
+        });
+
+        update({
+          variables: { _id: res?.loginUser?.user?._id },
         });
 
         // eslint-disable-next-line no-underscore-dangle

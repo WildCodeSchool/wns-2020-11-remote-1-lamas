@@ -60,12 +60,6 @@ export default {
         throw new NotFoundError();
       }
 
-      context.res.cookie('user', JSON.stringify(user || '{}'), {
-        httpOnly: process.env.NODE_ENV === 'production',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge,
-      });
-
       return user;
     },
   },
@@ -151,6 +145,38 @@ export default {
       const token = createToken({ id: findUserPerEmail._id });
 
       return { token, user: findUserPerEmail };
+    },
+    async setCookie(
+      _: void,
+      data: { _id: string },
+      context: Icontext
+    ): Promise<string> {
+      const user: IUser | null = await Users.findById(data._id, {
+        _id: 1,
+        firstname: 1,
+        lastname: 1,
+      });
+
+      context.res.cookie('user', JSON.stringify(user || '{}'), {
+        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge,
+      });
+
+      return data._id;
+    },
+    async removeCookie(
+      _: void,
+      data: ILoginUser,
+      context: Icontext
+    ): Promise<string> {
+      context.res.cookie('user', '', {
+        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 0,
+      });
+
+      return 'SUCCESS';
     },
   },
 };

@@ -15,6 +15,7 @@ import logo from '../../asset/logo-white-lamas_logo.svg';
 import loginValidationSchema from './loginValidationSchema';
 import { LOGIN_USER } from '../../graphql/mutations/loginUser';
 import { currentUser } from '../../cache';
+import { SET_COOKIE } from '../../graphql/mutations/cookie';
 
 // Specific styles for MUI components
 const useStyles = makeStyles({
@@ -65,6 +66,7 @@ const LoginForm = (): JSX.Element => {
   const history = useHistory();
   const [passwordVisibility, setpasswordVisibility] = useState(false);
   const user = currentUser();
+  const [update] = useMutation(SET_COOKIE);
 
   useEffect(() => {
     if (user) {
@@ -81,6 +83,9 @@ const LoginForm = (): JSX.Element => {
           _id: res?.loginUser?.user?._id,
           firstname: res?.loginUser?.user?.firstname,
           lastname: res?.loginUser?.user?.lastname,
+        });
+        update({
+          variables: { _id: res?.loginUser?.user?._id },
         });
         localStorage.setItem('token', token);
         history.push(`/dashboard/${res.loginUser.user._id}`);

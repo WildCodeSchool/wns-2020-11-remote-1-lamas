@@ -36,6 +36,8 @@ const UserType = gql`
       email: String
       password: String
     ): UserWithToken
+    setCookie(_id: ID!): String
+    removeCookie: String
   }
 `;
 
