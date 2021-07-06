@@ -22,13 +22,13 @@ const App = (): JSX.Element => {
     currentUser(connectedUser.data.getUserConnected);
   }
 
-  // useEffect(() => {
-  //   if (connectedUser?.data?.getUserConnected?._id) {
-  //     update({
-  //       variables: { _id: connectedUser?.data?.getUserConnected?._id },
-  //     });
-  //   }
-  // }, [connectedUser?.data?.getUserConnected?._id, update]);
+  useEffect(() => {
+    if (connectedUser?.data?.getUserConnected?._id) {
+      update({
+        variables: { _id: connectedUser?.data?.getUserConnected?._id },
+      });
+    }
+  }, [connectedUser?.data?.getUserConnected?._id, update]);
   return (
     <>
       <Router>
