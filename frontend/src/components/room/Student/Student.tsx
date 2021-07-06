@@ -16,6 +16,9 @@ const Student = (): JSX.Element => {
     mood: '',
     actions: [],
   });
+  const [videoStatus, setVideoStatus] = useState(true);
+  const [microStatus, setMicroStatus] = useState(true);
+
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
@@ -40,7 +43,11 @@ const Student = (): JSX.Element => {
     <div role="heading" aria-level={2} className="student">
       <div className="student__left">
         <div className="student_visio">
-          <VideoGroup roomId={roomId} />
+          <VideoGroup
+            roomId={roomId}
+            videoStatus={videoStatus}
+            microStatus={microStatus}
+          />
         </div>
         <div className="student_infos">
           <div className="student_lateral_panel">
@@ -54,7 +61,13 @@ const Student = (): JSX.Element => {
               </div>
             </div>
           </div>
-          <IconCalls id={id} />
+          <IconCalls
+            id={id}
+            isVideo={videoStatus}
+            isMicro={microStatus}
+            sendVideoStatus={(video) => setVideoStatus(video)}
+            sendMicroStatus={(micro) => setMicroStatus(micro)}
+          />
         </div>
       </div>
       <Message />

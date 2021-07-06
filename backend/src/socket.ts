@@ -14,8 +14,6 @@ import {
   deleteMessages,
 } from './user';
 
-//
-
 const SocketIo = (httpServer: http.Server): void => {
   const io = new Server(httpServer);
   const users: Record<string, string> = {};
@@ -140,4 +138,4 @@ const SocketIo = (httpServer: http.Server): void => {
   });
 };
 
-export { SocketIo };
+export default SocketIo;

@@ -2,16 +2,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Container } from '@material-ui/core';
 import Peer, { SignalData } from 'simple-peer';
-import VideocamRoundedIcon from '@material-ui/icons/VideocamRounded';
-import VideocamOffRoundedIcon from '@material-ui/icons/VideocamOffRounded';
-import MicRoundedIcon from '@material-ui/icons/MicRounded';
-import MicOffRoundedIcon from '@material-ui/icons/MicOffRounded';
 import socket from '../../socket/socket';
 import './VideoGroup.css';
 import { currentUser } from '../../cache';
 
 interface IVideoProps {
   roomId: string;
+  videoStatus: boolean;
+  microStatus: boolean;
 }
 
 interface IPayload {
@@ -28,11 +26,6 @@ interface IPeerWithId {
 interface IPeer {
   peer: Peer.Instance;
 }
-
-const videoConstraints = {
-  height: window.innerHeight / 2,
-  width: window.innerWidth / 2,
-};
 
 const Video = ({ peer }: IPeer) => {
   const ref = useRef<HTMLVideoElement>(null);
@@ -53,6 +46,7 @@ const Video = ({ peer }: IPeer) => {
         height: '25%',
         width: '25%',
         borderRadius: '10px',
+        objectFit: 'cover',
       }}
       playsInline
       autoPlay
@@ -61,11 +55,12 @@ const Video = ({ peer }: IPeer) => {
   );
 };
 
-const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
+const VideoGroup = ({
+  roomId,
+  videoStatus,
+  microStatus,
+}: IVideoProps): JSX.Element => {
   const [peers, setPeers] = useState<Peer.Instance[]>([]);
-  const [isVideo, setIsVideo] = useState(true);
-  const [isAudio, setIsAudio] = useState(true);
-
   const peersRef = useRef<IPeerWithId[]>([]);
   const roomID = roomId;
   const userVideo = useRef<HTMLVideoElement>(null);
@@ -76,23 +71,19 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
     setPeers(peersRef.current.map((el) => el.peer));
   };
 
-  const toggleUserVideo = () => {
-    setIsVideo(!isVideo);
+  useEffect(() => {
     if (userVideo?.current?.srcObject) {
       (userVideo.current
-        .srcObject as MediaStream).getVideoTracks()[0].enabled = !(userVideo
-        .current.srcObject as MediaStream).getVideoTracks()[0].enabled;
+        .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
     }
-  };
+  }, [videoStatus]);
 
-  const toggleUserAudio = () => {
-    setIsAudio(!isAudio);
+  useEffect(() => {
     if (userVideo?.current?.srcObject) {
       (userVideo.current
-        .srcObject as MediaStream).getAudioTracks()[0].enabled = !(userVideo
-        .current.srcObject as MediaStream).getAudioTracks()[0].enabled;
+        .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
     }
-  };
+  }, [microStatus]);
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
@@ -145,7 +136,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
 
       // notification to activate video and audio in the browser
       navigator.mediaDevices
-        .getUserMedia({ video: videoConstraints, audio: true })
+        .getUserMedia({ video: true, audio: true })
         // demarre le stream une fois que c'est accepté
         .then((stream: MediaStream) => {
           // si le user a accepté la video
@@ -198,7 +189,7 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
         autoPlay
         playsInline
         style={{
-          margin: '1%',
+          margin: '2%',
           height: '25%',
           width: '25%',
           borderRadius: '10px',

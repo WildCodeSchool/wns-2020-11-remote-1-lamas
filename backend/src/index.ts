@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import mongodbStart from './database/db';
 import serverApollo from './graphql/graphqlServer';
 import NotFoundError from './errors/NotFoundError';
-import { SocketIo } from './socket';
+import SocketIo from './socket';
 
 dotenv.config();
 
