@@ -30,31 +30,23 @@ const Teacher = (): JSX.Element => {
   const user = currentUser();
 
   useEffect(() => {
-    if (user?.connectedUser) {
-      socket({ ...user.connectedUser, roomId }).emit(
-        'teacherJoinTheRoom',
-        roomId
-      );
-      socket({ ...user.connectedUser, roomId }).on(
-        'sendUserCount',
-        (userCount: number) => {
-          setTotalStudents(userCount);
-        }
-      );
-      socket({ ...user.connectedUser, roomId }).on(
-        'updateEmojisCount',
-        (moodCounter: MoodCounter) => {
-          setEmojisCounts(moodCounter);
-        }
-      );
-      socket({ ...user.connectedUser, roomId }).on(
-        'getDecrement',
-        (moodCounter: MoodCounter) => {
-          setEmojisCounts(moodCounter);
-        }
-      );
+    console.log('TEACHER.TSX');
+
+    if (user && roomId) {
+      console.log(user);
+
+      socket.emit('teacherJoinTheRoom', roomId);
+      socket.on('sendUserCount', (userCount: number) => {
+        setTotalStudents(userCount);
+      });
+      socket.on('updateEmojisCount', (moodCounter: MoodCounter) => {
+        setEmojisCounts(moodCounter);
+      });
+      socket.on('getDecrement', (moodCounter: MoodCounter) => {
+        setEmojisCounts(moodCounter);
+      });
     }
-  }, [roomId, user?.connectedUser]);
+  }, [roomId, user]);
 
   return (
     <div className="teacher">

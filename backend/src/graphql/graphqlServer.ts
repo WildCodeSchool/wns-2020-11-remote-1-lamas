@@ -11,12 +11,12 @@ const schema = makeExecutableSchema({
 
 const serverApollo = new ApolloServer({
   schema,
-    introspection: true,
+  introspection: true,
   playground: true,
   context: ({ req, res }) => {
     const token = req.get('Authorization') || '';
 
-    return { res, user: verifyToken(token.replace('Bearer ', '')) };
+    return { res, req, user: verifyToken(token.replace('Bearer ', '')) };
   },
 });
 

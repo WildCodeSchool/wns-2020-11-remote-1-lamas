@@ -9,7 +9,6 @@ import Emojis from '../../Emojis/Emojis';
 import IconCalls from '../../IconCalls/IconCalls';
 import Message from '../Message/Message';
 import VideoGroup from '../../VideoGroup/VideoGroup';
-import { currentUser } from '../../../cache';
 
 const Student = (): JSX.Element => {
   const [studentInfos, setStudentInfos] = useState<User>({
@@ -20,31 +19,21 @@ const Student = (): JSX.Element => {
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
-  const user = currentUser();
 
   useEffect(() => {
     if (roomId) {
-      socket({ ...user.connectedUser, roomId }).emit(
-        'studentJoinTheRoom',
-        roomId
-      );
-    }
-    socket({ ...user.connectedUser, roomId }).on(
-      'userInfos',
-      (userInfo: User) => {
+      socket.emit('studentJoinTheRoom', roomId);
+
+      socket.on('userInfos', (userInfo: User) => {
         setStudentInfos(userInfo);
-      }
-    );
-  }, [roomId, user.connectedUser]);
+      });
+    }
+  }, [roomId]);
 
   const handleClick = (name: string, category: string): void => {
-    socket({ ...user.connectedUser, roomId }).emit(
-      'changeMood',
-      roomId,
-      id,
-      name,
-      category
-    );
+    if (roomId) {
+      socket.emit('changeMood', roomId, id, name, category);
+    }
   };
 
   return (

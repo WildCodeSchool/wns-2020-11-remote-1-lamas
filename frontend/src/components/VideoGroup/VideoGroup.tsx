@@ -38,6 +38,7 @@ const Video = ({ peer }: IPeer) => {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    console.log('useEffect peer on stream');
     peer.on('stream', (stream: MediaStream) => {
       if (ref && ref.current) {
         ref.current.srcObject = stream;
@@ -95,70 +96,66 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
-    function createPeer(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      userToSignal: any,
-      callerID: string,
-      stream: MediaStream
-    ) {
-      const peer = new Peer({
-        initiator: true,
-        trickle: false,
-        stream,
-      });
-
-      peer.on('signal', (signal) => {
-        socket({ ...user.connectedUser, roomId }).emit('sending signal', {
-          userToSignal,
-          callerID,
-          signal,
+    if (user && roomId) {
+      console.log(user);
+      const createPeer = (
+        userToSignal: any,
+        callerID: string,
+        stream: MediaStream
+      ) => {
+        const peer = new Peer({
+          initiator: true,
+          trickle: false,
+          stream,
         });
-      });
 
-      return peer;
-    }
-
-    function addPeer(
-      incomingSignal: string | SignalData,
-      callerID: string,
-      stream: undefined | MediaStream
-    ) {
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream,
-      });
-
-      peer.on('signal', (signal) => {
-        socket({ ...user.connectedUser, roomId }).emit('returning signal', {
-          signal,
-          callerID,
+        peer.on('signal', (signal) => {
+          socket.emit('sending signal', {
+            userToSignal,
+            callerID,
+            signal,
+          });
         });
-      });
 
-      peer.signal(incomingSignal);
+        return peer;
+      };
 
-      return peer;
-    }
-    // notification to activate video and audio in the browser
-    navigator.mediaDevices
-      .getUserMedia({ video: videoConstraints, audio: true })
-      // demarre le stream une fois que c'est accepté
-      .then((stream: MediaStream) => {
-        // si le user a accepté la video
-        if (userVideo.current) {
-          userVideo.current.srcObject = stream;
-          socket({ ...user.connectedUser, roomId }).emit('join room', roomID);
-          socket({ ...user.connectedUser, roomId }).on(
-            'all users',
-            (users: string[]) => {
+      const addPeer = (
+        incomingSignal: string | SignalData,
+        callerID: string,
+        stream: undefined | MediaStream
+      ) => {
+        const peer = new Peer({
+          initiator: false,
+          trickle: false,
+          stream,
+        });
+
+        peer.on('signal', (signal) => {
+          socket.emit('returning signal', {
+            signal,
+            callerID,
+          });
+        });
+
+        peer.signal(incomingSignal);
+
+        return peer;
+      };
+
+      // notification to activate video and audio in the browser
+      navigator.mediaDevices
+        .getUserMedia({ video: videoConstraints, audio: true })
+        // demarre le stream une fois que c'est accepté
+        .then((stream: MediaStream) => {
+          // si le user a accepté la video
+          if (userVideo.current) {
+            userVideo.current.srcObject = stream;
+            socket.emit('join room', roomID);
+            socket.on('all users', (users: string[]) => {
               const usersPeers: Peer.Instance[] = [];
               users.forEach((userID: string) => {
-                const peer = createPeer(
-                  userID,
-                  socket({ ...user.connectedUser, roomId }).id,
-                  stream
-                );
+                const peer = createPeer(userID, socket.id, stream);
                 peersRef.current.push({
                   peerID: userID,
                   peer,
@@ -166,57 +163,32 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
                 usersPeers.push(peer);
               });
               setPeers(usersPeers);
-            }
-          );
+            });
 
-          socket({ ...user.connectedUser, roomId }).on(
-            'user joined',
-            (payload: IPayload) => {
+            socket.on('user joined', (payload: IPayload) => {
               const peer = addPeer(payload.signal, payload.callerID, stream);
               peersRef.current.push({
                 peerID: payload.callerID,
                 peer,
               });
               setPeers((users) => [...users, peer]);
-            }
-          );
+            });
 
-          socket({ ...user.connectedUser, roomId }).on(
-            'receiving returned signal',
-            (payload: IPayload) => {
+            socket.on('receiving returned signal', (payload: IPayload) => {
               const item = peersRef.current.find(
                 (p) => p.peerID === payload.id
               );
               item?.peer.signal(payload.signal);
-            }
-          );
+            });
 
-          socket({ ...user.connectedUser, roomId }).on(
-            'removeUserVideo',
-            (socketId: string) => {
+            socket.on('removeUserVideo', (socketId: string) => {
               removeUserLeavingRoomVideo(socketId);
-            }
-          );
-        }
-      })
-      .catch((err) => console.log('erreur dans getUserMedia : ', err));
-  }, [roomID, roomId, user?.connectedUser]);
-
-  const getVideoIcon = () => {
-    return (
-      <Button onClick={toggleUserVideo} disableRipple>
-        {isVideo ? <VideocamRoundedIcon /> : <VideocamOffRoundedIcon />}
-      </Button>
-    );
-  };
-
-  const getAudioIcon = () => {
-    return (
-      <Button onClick={toggleUserAudio} disableRipple>
-        {isAudio ? <MicRoundedIcon /> : <MicOffRoundedIcon />}
-      </Button>
-    );
-  };
+            });
+          }
+        })
+        .catch((err) => console.log('erreur dans getUserMedia : ', err));
+    }
+  }, [roomID, roomId, user]);
 
   return (
     <Container style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -233,8 +205,6 @@ const VideoGroup = ({ roomId }: IVideoProps): JSX.Element => {
           objectFit: 'cover',
         }}
       />
-      {/* {getVideoIcon()}
-      {getAudioIcon()} */}
       {peers.map((peer, index) => {
         // eslint-disable-next-line react/no-array-index-key
         return <Video key={index} peer={peer} />;

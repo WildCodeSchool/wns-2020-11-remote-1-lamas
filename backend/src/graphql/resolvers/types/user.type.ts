@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import express from 'express';
 import { IUser } from '../../../database/models/User';
 
 type ID = Types.ObjectId;
@@ -29,4 +30,6 @@ export interface UserWithToken {
 export interface Icontext {
   user: Partial<IcreateUserData>;
   _extensionStack: unknown;
+  req: express.Request;
+  res: express.Response;
 }

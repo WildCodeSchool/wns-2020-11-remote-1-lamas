@@ -25,20 +25,4 @@ const CREATE_USER = gql`
   }
 `;
 
-// const SIGNUP_MUTATION = gql`
-//   mutation SignupMutation(
-//     $email: String!
-//     $password: String!
-//     $name: String!
-//   ) {
-//     signup(
-//       email: $email
-//       password: $password
-//       name: $name
-//     ) {
-//       token
-//     }
-//   }
-// `;
-
 export default CREATE_USER;

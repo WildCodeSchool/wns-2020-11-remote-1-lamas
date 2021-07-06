@@ -1,4 +1,5 @@
 import { Socket, Server } from 'socket.io';
+import cookie from 'cookie';
 import http from 'http';
 import {
   addUser,
@@ -13,6 +14,8 @@ import {
   deleteMessages,
 } from './user';
 
+//
+
 const SocketIo = (httpServer: http.Server): void => {
   const io = new Server(httpServer);
   const users: Record<string, string> = {};
@@ -20,21 +23,29 @@ const SocketIo = (httpServer: http.Server): void => {
   const socketToRoom: Record<string, string> = {};
 
   io.on('connect', (socket: Socket) => {
-    const currentUser = socket.handshake.query as any;
-    let connectedUser;
-    if (currentUser.connectedUser) {
-      connectedUser = JSON.parse(currentUser.connectedUser);
-    }
+    // const cookies = cookie.parse(socket.request.headers.cookie || '');
+    // const userCookie = JSON.parse(cookies.user);
+    // console.log('socket', userCookie);
 
-    if (!!connectedUser && !!connectedUser?.roomId) {
-      addUser(
-        connectedUser.roomId,
-        connectedUser._id,
-        connectedUser.firstname,
-        connectedUser.lastname,
-        socket
-      );
-    }
+    // const currentUser = socket.handshake.query as any;
+    // let connectedUser;
+    // if (currentUser.connectedUser) {
+    //   connectedUser = JSON.parse(currentUser.connectedUser);
+    // }
+
+    // if (!!connectedUser && !!connectedUser?.roomId) {
+    //   addUser(
+    //     connectedUser.roomId,
+    //     connectedUser._id,
+    //     connectedUser.firstname,
+    //     connectedUser.lastname,
+    //     socket
+    //   );
+    // }
+
+    socket.on('joinTheRoom', async (roomId, _id, firstname, lastname) => {
+      addUser(roomId, _id, firstname, lastname, socket);
+    });
 
     socket.on('studentJoinTheRoom', async (roomId) => {
       const userCount = await getUserCount(roomId);
@@ -62,7 +73,9 @@ const SocketIo = (httpServer: http.Server): void => {
     });
 
     socket.on('createMessage', async (roomId, userId, message) => {
-      await createRoomMessage(socket.id, roomId, userId, message);
+      const cookies = cookie.parse(socket.request.headers.cookie || '');
+      const userCookie = JSON.parse(cookies.user);
+      await createRoomMessage(socket.id, roomId, userId, message, userCookie);
       const messages = await getRoomMessages(roomId);
       io.in(roomId).emit('getMessagesList', messages);
     });

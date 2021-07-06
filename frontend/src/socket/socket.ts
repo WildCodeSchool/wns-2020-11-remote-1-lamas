@@ -1,21 +1,14 @@
 import { io, Socket } from 'socket.io-client';
 
-// const connectedUser = localStorage.getItem('user');
-// console.log('userLocalstorage', connectedUser);
-
+export interface ISocket {
+  _id: string;
+  firstname: string;
+  lastname: string;
+  roomId: string;
+}
 const ENDPOINT = `${process.env.REACT_APP_LAMAS_BACK}`;
-// const socket: Socket = io(ENDPOINT, {
-//   transports: ['websocket'],
-//   query: connectedUser ? { connectedUser } : {},
-// });
 
-const socket = (connectedUser: any): Socket => {
-  console.log(connectedUser);
-  const socketIo: Socket = io(ENDPOINT, {
-    transports: ['websocket'],
-    query: connectedUser ? { connectedUser } : {},
-  });
-  return socketIo;
-};
-
+const socket: Socket = io(ENDPOINT, {
+  transports: ['websocket'],
+});
 export default socket;

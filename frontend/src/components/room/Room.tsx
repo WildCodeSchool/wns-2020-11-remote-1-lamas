@@ -1,8 +1,9 @@
 import { useQuery } from '@apollo/client';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { GET_CONNECTED_USER } from '../../graphql/queries/getConnectedUser';
 import { GET_ROOM } from '../../graphql/queries/getRoom';
+import socket from '../../socket/socket';
 import { IParams } from '../../types/type';
 import Student from './Student/Student';
 import Teacher from './Teacher/Teacher';
@@ -23,6 +24,14 @@ const Room = (): ReactElement => {
     };
     localStorage.setItem('user', JSON.stringify(connectedUserCopy));
   }
+
+  useEffect(() => {
+    if (connectedUser?.data?.getUserConnected) {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { _id, firstname, lastname } = connectedUser.data.getUserConnected;
+      socket.emit('joinTheRoom', roomId, _id, firstname, lastname);
+    }
+  }, [connectedUser, roomId]);
 
   return (
     <>

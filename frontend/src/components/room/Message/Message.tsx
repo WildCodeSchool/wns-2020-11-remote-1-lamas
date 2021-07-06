@@ -49,26 +49,17 @@ const Message = (): JSX.Element => {
 
   const user = currentUser();
   useEffect(() => {
-    if (user?.connectedUser) {
-      socket({ ...user.connectedUser, roomId }).emit('getMessages', roomId);
-      socket({ ...user.connectedUser, roomId }).on(
-        'getMessagesList',
-        (listMessage: IMessageList[]) => {
-          setMessageList(listMessage);
-        }
-      );
+    if (user) {
+      socket.emit('getMessages', roomId);
+      socket.on('getMessagesList', (listMessage: IMessageList[]) => {
+        setMessageList(listMessage);
+      });
     }
-  }, [roomId, user?.connectedUser]);
+  }, [roomId, user]);
 
   const handleMessage = (): void => {
-    console.log(user);
-    if (user?.connectedUser) {
-      socket({ ...user.connectedUser, roomId }).emit(
-        'createMessage',
-        roomId,
-        id,
-        message
-      );
+    if (user) {
+      socket.emit('createMessage', roomId, id, message);
       setMessage('');
     }
   };

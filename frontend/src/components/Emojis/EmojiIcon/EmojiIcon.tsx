@@ -26,23 +26,18 @@ const EmojiIcon = ({
   const user = currentUser();
 
   useEffect(() => {
-    if (user?.connectedUser) {
-      socket({ ...user.connectedUser, roomId }).on(
-        `userListPerEmoji-${emoji.name}`,
-        (list: IUserList[]) => {
-          setUserList(list);
-        }
-      );
+    if (user) {
+      socket.on(`userListPerEmoji-${emoji.name}`, (list: IUserList[]) => {
+        setUserList(list);
+      });
     }
-  }, [emoji.name, roomId, user?.connectedUser]);
+  }, [emoji.name, roomId, user]);
 
   const handlePopin = (name: string) => {
-    socket({ ...user.connectedUser, roomId }).emit(
-      'getListUsersPerEmoji',
-      roomId,
-      name
-    );
-    setIsPopinOpen(true);
+    if (user && roomId) {
+      socket.emit('getListUsersPerEmoji', roomId, name);
+      setIsPopinOpen(true);
+    }
   };
 
   return (

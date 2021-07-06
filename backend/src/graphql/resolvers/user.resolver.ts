@@ -1,5 +1,5 @@
 import validator from 'validator';
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import Users, { IUser } from '../../database/models/User';
 
@@ -16,9 +16,8 @@ import {
   UserWithToken,
   ILoginUser,
 } from './types/user.type';
-import User from '../../database/models/User';
 
-type ID = Types.ObjectId;
+const maxAge = 365 * 24 * 60 * 60 * 1000;
 
 export default {
   Query: {
@@ -56,11 +55,16 @@ export default {
         firstname: 1,
         lastname: 1,
       });
-        
-      if(!user) {
+
+      if (!user) {
         throw new NotFoundError();
       }
 
+      context.res.cookie('user', JSON.stringify(user || '{}'), {
+        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge,
+      });
 
       return user;
     },

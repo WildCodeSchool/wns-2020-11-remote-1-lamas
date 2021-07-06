@@ -145,23 +145,22 @@ const createRoomMessage = async (
   socketId: string,
   roomId: string,
   userId: string,
-  message: string
+  message: string,
+  userCookie: any
 ): Promise<void> => {
-  // récup info user firstname lastname
-  const firstname = await asyncHget(`users-${socketId}`, 'firstname');
-  const lastname = await asyncHget(`users-${socketId}`, 'lastname');
-
   // créer member list messageId avec uuid
   const messageId = uuidv4();
   asyncSadd(`${roomId}-messageKeys`, messageId);
   // créer member rajouter les données du message
 
+  console.log('userCookie', userCookie);
+
   asyncHmset(
     `${roomId}-message-${messageId}`,
     `lastname`,
-    lastname,
+    userCookie.lastname,
     'firstname',
-    firstname,
+    userCookie.firstname,
     'roomId',
     roomId,
     'userId',
