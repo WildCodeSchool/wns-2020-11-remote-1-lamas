@@ -16,6 +16,9 @@ const Student = (): JSX.Element => {
     mood: '',
     actions: [],
   });
+  const [videoStatus, setVideoStatus] = useState(true);
+  const [microStatus, setMicroStatus] = useState(true);
+
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
   const { data } = useQuery(FIND_USER, { variables: { userId: id } });
@@ -23,32 +26,28 @@ const Student = (): JSX.Element => {
   useEffect(() => {
     if (roomId) {
       socket.emit('studentJoinTheRoom', roomId);
+
+      socket.on('userInfos', (userInfo: User) => {
+        setStudentInfos(userInfo);
+      });
     }
-    socket.on('userInfos', (user: User) => {
-      setStudentInfos(user);
-    });
   }, [roomId]);
 
   const handleClick = (name: string, category: string): void => {
-    socket.emit('changeMood', roomId, id, name, category);
+    if (roomId) {
+      socket.emit('changeMood', roomId, id, name, category);
+    }
   };
-
-  const temporaryArray = [{ name: 'emeline' }];
 
   return (
     <div role="heading" aria-level={2} className="student">
       <div className="student__left">
         <div className="student_visio">
-          <VideoGroup roomId={roomId} />
-
-          {/* {temporaryArray &&
-            temporaryArray.map((item) => {
-              return (
-                <>
-                  <VideoRoom key={item.name} name={item.name} />
-                </>
-              );
-            })} */}
+          <VideoGroup
+            roomId={roomId}
+            videoStatus={videoStatus}
+            microStatus={microStatus}
+          />
         </div>
         <div className="student_infos">
           <div className="student_lateral_panel">
@@ -62,7 +61,13 @@ const Student = (): JSX.Element => {
               </div>
             </div>
           </div>
-          <IconCalls id={id} />
+          <IconCalls
+            id={id}
+            isVideo={videoStatus}
+            isMicro={microStatus}
+            sendVideoStatus={(video) => setVideoStatus(video)}
+            sendMicroStatus={(micro) => setMicroStatus(micro)}
+          />
         </div>
       </div>
       <Message />

@@ -15,7 +15,7 @@ import { UseCache } from './cache';
 
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_LAMAS_BACK}/graphql`,
-  credentials: 'same-origin',
+  credentials: 'include',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -24,6 +24,7 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       Authorization: token ? `Bearer ${token}` : '',
+      AccessControlAllowOrigin: `${process.env.REACT_APP_LAMAS_BACK}`,
     },
   };
 });

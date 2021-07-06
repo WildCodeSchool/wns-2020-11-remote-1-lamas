@@ -8,6 +8,7 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
+      - LAMAS_FRONT=//staging.lamas.wns.wilders.dev
 
   lamas-frontend:
     command: sh -c "npm run build"

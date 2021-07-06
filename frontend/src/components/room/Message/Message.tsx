@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
@@ -44,30 +44,41 @@ const Message = (): JSX.Element => {
   const classes = useStyles();
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState<IMessageList[]>([]);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   const { id, roomId } = useParams<{ id: string; roomId: string }>();
 
+  const user = currentUser();
   useEffect(() => {
-    socket.emit('getMessages', roomId);
-    socket.on('getMessagesList', (listMessage: IMessageList[]) => {
-      setMessageList(listMessage);
-    });
-  }, [roomId]);
+    if (user) {
+      socket.emit('getMessages', roomId);
+      socket.on('getMessagesList', (listMessage: IMessageList[]) => {
+        setMessageList(listMessage);
+      });
+    }
+  }, [roomId, user]);
 
   const handleMessage = (): void => {
-    socket.emit('createMessage', roomId, id, message);
-    setMessage('');
+    if (user) {
+      socket.emit('createMessage', roomId, id, message);
+      setMessage('');
+    }
   };
 
-  const connectedUser = currentUser();
+  useEffect(() => {
+    if (chatRef?.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      // chatRef.current.scrollIntoView();
+    }
+  }, []);
 
   return (
     <div className="message">
       <h3 className="message__title">Messages</h3>
-      <div className="message__chat">
-        {connectedUser?._id &&
+      <div ref={chatRef} className="message__chat">
+        {user?._id &&
           messageList.map((messageItem) => {
-            const isUser = messageItem.userId === connectedUser?._id;
+            const isUser = messageItem.userId === user?._id;
             return (
               <div
                 key={messageItem.id}

@@ -2,6 +2,7 @@ import React, { useEffect, useState, ReactElement } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import Logo from '../../asset/logo-white-lamas_logo.svg';
+import { currentUser } from '../../cache';
 import './Menu.css';
 
 const Menu = (): ReactElement => {
@@ -14,7 +15,8 @@ const Menu = (): ReactElement => {
   }, [history.location.pathname]);
 
   const handleDisconnect = () => {
-    localStorage.setItem('token', '');
+    currentUser(null);
+    localStorage.removeItem('token');
     history.push('/');
   };
 

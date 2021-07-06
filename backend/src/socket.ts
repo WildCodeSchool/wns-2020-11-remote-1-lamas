@@ -1,3 +1,6 @@
+import { Socket, Server } from 'socket.io';
+import cookie from 'cookie';
+import http from 'http';
 import {
   addUser,
   updateEmojisCount,
@@ -10,31 +13,37 @@ import {
   createRoomMessage,
   deleteMessages,
 } from './user';
-import { Socket, Server } from 'socket.io';
-import http from 'http';
 
-const SocketIo = (httpServer: http.Server) => {
+const SocketIo = (httpServer: http.Server): void => {
   const io = new Server(httpServer);
   const users: Record<string, string> = {};
   const usersInTheRoom: Record<string, string[]> = {};
   const socketToRoom: Record<string, string> = {};
 
   io.on('connect', (socket: Socket) => {
-    const currentUser = socket.handshake.query as any;
-    let connectedUser;
-    if (currentUser.connectedUser) {
-      connectedUser = JSON.parse(currentUser.connectedUser);
-    }
+    // const cookies = cookie.parse(socket.request.headers.cookie || '');
+    // const userCookie = JSON.parse(cookies.user);
+    // console.log('socket', userCookie);
 
-    if (!!connectedUser && !!connectedUser?.roomId) {
-      addUser(
-        connectedUser.roomId,
-        connectedUser._id,
-        connectedUser.firstname,
-        connectedUser.lastname,
-        socket
-      );
-    }
+    // const currentUser = socket.handshake.query as any;
+    // let connectedUser;
+    // if (currentUser.connectedUser) {
+    //   connectedUser = JSON.parse(currentUser.connectedUser);
+    // }
+
+    // if (!!connectedUser && !!connectedUser?.roomId) {
+    //   addUser(
+    //     connectedUser.roomId,
+    //     connectedUser._id,
+    //     connectedUser.firstname,
+    //     connectedUser.lastname,
+    //     socket
+    //   );
+    // }
+
+    socket.on('joinTheRoom', async (roomId, _id, firstname, lastname) => {
+      addUser(roomId, _id, firstname, lastname, socket);
+    });
 
     socket.on('studentJoinTheRoom', async (roomId) => {
       const userCount = await getUserCount(roomId);
@@ -50,7 +59,7 @@ const SocketIo = (httpServer: http.Server) => {
 
     socket.on('getListUsersPerEmoji', async (roomId, emoji) => {
       const userList = await getUsersInfosEmojis(emoji, roomId);
-      socket.emit('userListPerEmoji', userList);
+      socket.emit(`userListPerEmoji-${emoji}`, userList);
     });
 
     socket.on('changeMood', async (roomId, userId, name, category) => {
@@ -62,7 +71,9 @@ const SocketIo = (httpServer: http.Server) => {
     });
 
     socket.on('createMessage', async (roomId, userId, message) => {
-      await createRoomMessage(socket.id, roomId, userId, message);
+      const cookies = cookie.parse(socket.request.headers.cookie || '');
+      const userCookie = JSON.parse(cookies.user);
+      await createRoomMessage(socket.id, roomId, userId, message, userCookie);
       const messages = await getRoomMessages(roomId);
       io.in(roomId).emit('getMessagesList', messages);
     });
@@ -70,7 +81,7 @@ const SocketIo = (httpServer: http.Server) => {
     socket.on('getMessages', async (roomId) => {
       socket.join(roomId);
       const messages = await getRoomMessages(roomId);
-      socket.emit('getMessagesList', messages);
+      io.in(roomId).emit('getMessagesList', messages);
     });
 
     if (!users[socket.id]) {
@@ -87,7 +98,7 @@ const SocketIo = (httpServer: http.Server) => {
       const usersTotalInRoom = usersInTheRoom[roomID].filter(
         (id) => id !== socket.id
       );
-      socket.emit('all users', usersTotalInRoom);
+      io.in(roomID).emit('all users', usersTotalInRoom);
     });
 
     socket.on('sending signal', (payload) => {
@@ -121,10 +132,11 @@ const SocketIo = (httpServer: http.Server) => {
       if (room) {
         room = room.filter((id) => id !== socket.id);
         usersInTheRoom[roomID] = room;
+        console.log('socket id', socket.id);
         socket.broadcast.emit('removeUserVideo', socket.id);
       }
     });
   });
 };
 
-export { SocketIo };
+export default SocketIo;

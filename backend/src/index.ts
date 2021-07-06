@@ -6,14 +6,18 @@ import cookieParser from 'cookie-parser';
 import mongodbStart from './database/db';
 import serverApollo from './graphql/graphqlServer';
 import NotFoundError from './errors/NotFoundError';
-import { SocketIo } from './socket';
+import SocketIo from './socket';
 
 dotenv.config();
 
 mongodbStart();
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: process.env.LAMAS_FRONT,
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 serverApollo.applyMiddleware({
   app,
@@ -21,6 +25,7 @@ serverApollo.applyMiddleware({
 });
 const httpServer = new http.Server(app);
 
+app.use(express.json());
 app.use(cookieParser());
 
 app.get('*', () => {

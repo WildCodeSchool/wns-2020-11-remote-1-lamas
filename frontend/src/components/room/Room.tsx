@@ -25,6 +25,14 @@ const Room = (): ReactElement => {
     localStorage.setItem('user', JSON.stringify(connectedUserCopy));
   }
 
+  useEffect(() => {
+    if (connectedUser?.data?.getUserConnected) {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { _id, firstname, lastname } = connectedUser.data.getUserConnected;
+      socket.emit('joinTheRoom', roomId, _id, firstname, lastname);
+    }
+  }, [connectedUser, roomId]);
+
   return (
     <>
       {!loading && !connectedUser?.loading && (

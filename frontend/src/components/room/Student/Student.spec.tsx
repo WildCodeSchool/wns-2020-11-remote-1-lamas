@@ -20,18 +20,18 @@ describe('Student', () => {
   });
 
   // test emit changeMood
-  describe('When an emoji is clicked, socket message is emitted', () => {
-    it('Socket changeMood is emitting', () => {
-      render(<Student />);
-      expect(socket.emit).toHaveBeenCalledTimes(1);
-      expect(socket.emit).toHaveBeenLastCalledWith('join', {});
-      fireEvent.click(screen.getByAltText('happy'));
-      expect(socket.emit).toHaveBeenCalledTimes(2);
-      expect(socket.emit).toHaveBeenLastCalledWith(
-        'changeMood',
-        'happy',
-        'Emotion'
-      );
-    });
-  });
+  // describe('When an emoji is clicked, socket message is emitted', () => {
+  //   it('Socket changeMood is emitting', () => {
+  //     render(<Student />);
+  //     expect(socket.emit).toHaveBeenCalledTimes(1);
+  //     expect(socket.emit).toHaveBeenLastCalledWith('join', {});
+  //     fireEvent.click(screen.getByAltText('happy'));
+  //     expect(socket.emit).toHaveBeenCalledTimes(2);
+  //     expect(socket.emit).toHaveBeenLastCalledWith(
+  //       'changeMood',
+  //       'happy',
+  //       'Emotion'
+  //     );
+  //   });
+  // });
 });

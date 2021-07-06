@@ -71,7 +71,7 @@ const SignupForm = (): JSX.Element => {
       history.push(`/dashboard/${user?._id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history]);
+  }, [history, user]);
 
   const [createUser, { data, error }] = useMutation(CREATE_USER, {
     onCompleted: (res) => {
