@@ -19,6 +19,10 @@ import {
 
 const maxAge = 365 * 24 * 60 * 60 * 1000;
 
+interface ICookie {
+  _id: string;
+}
+
 export default {
   Query: {
     async getUser(
@@ -148,7 +152,7 @@ export default {
     },
     async setCookie(
       _: void,
-      data: { _id: string },
+      data: ICookie,
       context: Icontext
     ): Promise<string> {
       const user: IUser | null = await Users.findById(data._id, {
