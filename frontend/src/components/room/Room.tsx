@@ -29,6 +29,7 @@ const Room = (): ReactElement => {
     if (connectedUser?.data?.getUserConnected) {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const { _id, firstname, lastname } = connectedUser.data.getUserConnected;
+      console.log('socket emit joinTheRoom');
       socket.emit('joinTheRoom', roomId, _id, firstname, lastname);
     }
   }, [connectedUser, roomId]);

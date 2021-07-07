@@ -70,6 +70,9 @@ const LoginForm = (): JSX.Element => {
 
   useEffect(() => {
     if (user) {
+      update({
+        variables: { _id: user?._id },
+      });
       history.push(`/dashboard/${user?._id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

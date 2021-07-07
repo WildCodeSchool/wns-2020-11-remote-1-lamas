@@ -89,19 +89,23 @@ const SocketIo = (httpServer: http.Server): void => {
     }
 
     socket.on('join room', (roomID: string) => {
+      console.log('JOIN ROOM');
       if (usersInTheRoom[roomID]) {
         usersInTheRoom[roomID].push(socket.id);
       } else {
         usersInTheRoom[roomID] = [socket.id];
       }
       socketToRoom[socket.id] = roomID;
-      const usersTotalInRoom = usersInTheRoom[roomID].filter(
-        (id) => id !== socket.id
-      );
-      io.in(roomID).emit('all users', usersTotalInRoom);
+      const usersTotalInRoom = usersInTheRoom[roomID];
+
+      console.log('usersTotalInRoom', usersTotalInRoom);
+
+      socket.emit('all users', usersTotalInRoom);
     });
 
     socket.on('sending signal', (payload) => {
+      console.log('sending signal');
+
       io.to(payload.userToSignal).emit('user joined', {
         signal: payload.signal,
         callerID: payload.callerID,
@@ -109,6 +113,8 @@ const SocketIo = (httpServer: http.Server): void => {
     });
 
     socket.on('returning signal', (payload) => {
+      console.log('returning signal');
+
       io.to(payload.callerID).emit('receiving returned signal', {
         signal: payload.signal,
         id: socket.id,

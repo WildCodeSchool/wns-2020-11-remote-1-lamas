@@ -31,7 +31,7 @@ const Video = ({ peer }: IPeer) => {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    console.log('useEffect peer on stream');
+    console.log('VIDEO COMPONENT => useEffect peer on stream');
     peer.on('stream', (stream: MediaStream) => {
       if (ref && ref.current) {
         ref.current.srcObject = stream;
@@ -66,10 +66,7 @@ const VideoGroup = ({
   const userVideo = useRef<HTMLVideoElement>(null);
   const user = currentUser();
 
-  console.log('peers', peers);
-
   const removeUserLeavingRoomVideo = (socketId: string) => {
-    console.log('peersRef', peersRef.current);
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
     setPeers(peersRef.current.map((el) => el.peer));
   };
@@ -100,13 +97,14 @@ const VideoGroup = ({
     });
 
     peer.on('signal', (signal) => {
+      console.log('CREATE PEER => peer on signal');
       socket.emit('sending signal', {
         userToSignal,
         callerID,
         signal,
       });
     });
-
+    console.log('CREATE PEER => new peer', peer);
     return peer;
   };
 
@@ -120,8 +118,9 @@ const VideoGroup = ({
       trickle: false,
       stream,
     });
-
     peer.on('signal', (signal) => {
+      console.log('ADD PEER => SIGNAL');
+
       socket.emit('returning signal', {
         signal,
         callerID,
@@ -136,7 +135,7 @@ const VideoGroup = ({
   // HELP: useEffect called when a new user join session
   useEffect(() => {
     if (user && roomId) {
-      console.log(user);
+      console.log('useEffect => user', user);
       // notification to activate video and audio in the browser
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
@@ -145,8 +144,13 @@ const VideoGroup = ({
           // si le user a accepté la video
           if (userVideo.current) {
             userVideo.current.srcObject = stream;
+
+            console.log('useEffect => join room');
             socket.emit('join room', roomID);
+
+            console.log('useEffect => all users');
             socket.on('all users', (users: string[]) => {
+              console.log('useEffect => response all users', users);
               const usersPeers: Peer.Instance[] = [];
               users.forEach((userID: string) => {
                 const peer = createPeer(userID, socket.id, stream);
@@ -157,19 +161,24 @@ const VideoGroup = ({
                 });
                 usersPeers.push(peer);
               });
+              console.log('update peers after createPeer', usersPeers);
               setPeers(usersPeers);
             });
 
+            console.log('useEffect => user joined');
             socket.on('user joined', (payload: IPayload) => {
               const peer = addPeer(payload.signal, payload.callerID, stream);
+              console.log('USER JOINED');
               peersRef.current.push({
                 peerID: payload.callerID,
                 peer,
               });
-              setPeers((users) => [...users, peer]);
+              console.log('update peers after addPeer');
+              setPeers([...peers, peer]);
             });
 
             socket.on('receiving returned signal', (payload: IPayload) => {
+              console.log('useEffect => receiving returned signal');
               const item = peersRef?.current?.find(
                 (p) => p.peerID === payload.id
               );
@@ -177,6 +186,7 @@ const VideoGroup = ({
             });
 
             socket.on('removeUserVideo', (socketId: string) => {
+              console.log('useEffect => removeUserVideo');
               removeUserLeavingRoomVideo(socketId);
             });
           }

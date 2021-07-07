@@ -15,6 +15,8 @@ const App = (): JSX.Element => {
   const connectedUser = useQuery(GET_CONNECTED_USER);
   const [update] = useMutation(SET_COOKIE);
 
+  console.log('v0.1');
+
   if (
     connectedUser?.data?.getUserConnected?.firstname &&
     connectedUser?.data?.getUserConnected?.lastname
