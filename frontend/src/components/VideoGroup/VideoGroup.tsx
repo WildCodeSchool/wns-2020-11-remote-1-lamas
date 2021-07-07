@@ -153,12 +153,15 @@ const VideoGroup = ({
             console.log('useEffect => response all users', users);
             const usersPeers: Peer.Instance[] = [];
             users.forEach((userID: string) => {
+              console.log(userID, socket.id);
               const peer = createPeer(userID, socket.id, stream);
               console.log('createPeer', peer);
-              peersRef.current.push({
-                peerID: userID,
-                peer,
-              });
+              if (peersRef?.current?.find((video) => userID !== video.peerID)) {
+                peersRef.current.push({
+                  peerID: userID,
+                  peer,
+                });
+              }
               usersPeers.push(peer);
             });
             console.log('update peers after createPeer', usersPeers);
