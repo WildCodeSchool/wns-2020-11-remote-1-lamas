@@ -156,7 +156,7 @@ const VideoGroup = ({
               console.log(userID, socket.id);
               const peer = createPeer(userID, socket.id, stream);
               console.log('createPeer', peer);
-              if (peersRef?.current?.find((video) => userID !== video.peerID)) {
+              if (peersRef?.current?.find((video) => userID === video.peerID)) {
                 peersRef.current.push({
                   peerID: userID,
                   peer,
