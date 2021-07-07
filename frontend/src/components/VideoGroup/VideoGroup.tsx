@@ -142,54 +142,60 @@ const VideoGroup = ({
         // demarre le stream une fois que c'est accepté
         .then((stream: MediaStream) => {
           // si le user a accepté la video
-          if (userVideo.current) {
-            userVideo.current.srcObject = stream;
+          // if (userVideo.current) {
+          // userVideo.current.srcObject = stream;
 
-            console.log('useEffect => join room');
-            socket.emit('join room', roomID);
+          console.log('useEffect => join room');
+          socket.emit('join room', roomID);
 
-            console.log('useEffect => all users');
-            socket.on('all users', (users: string[]) => {
-              console.log('useEffect => response all users', users);
-              const usersPeers: Peer.Instance[] = [];
-              users.forEach((userID: string) => {
-                const peer = createPeer(userID, socket.id, stream);
-                console.log('createPeer', peer);
-                peersRef.current.push({
-                  peerID: userID,
-                  peer,
-                });
-                usersPeers.push(peer);
+          console.log('useEffect => all users');
+          socket.on('all users', (users: string[]) => {
+            console.log('useEffect => response all users', users);
+            const usersPeers: Peer.Instance[] = [];
+            users.forEach((userID: string) => {
+              const peer = createPeer(userID, socket.id, stream);
+              console.log('createPeer', peer);
+              peersRef.current.push({
+                peerID: userID,
+                peer,
               });
-              console.log('update peers after createPeer', usersPeers);
-              setPeers(usersPeers);
+              usersPeers.push(peer);
             });
+            console.log('update peers after createPeer', usersPeers);
+            setPeers(usersPeers);
+          });
 
-            console.log('useEffect => user joined');
-            socket.on('user joined', (payload: IPayload) => {
-              const peer = addPeer(payload.signal, payload.callerID, stream);
-              console.log('USER JOINED');
+          console.log('useEffect => user joined');
+          socket.on('user joined', (payload: IPayload) => {
+            const peer = addPeer(payload.signal, payload.callerID, stream);
+            console.log('USER JOINED');
+            if (
+              peersRef?.current?.find(
+                (video) => payload.callerID !== video.peerID
+              )
+            ) {
               peersRef.current.push({
                 peerID: payload.callerID,
                 peer,
               });
-              console.log('update peers after addPeer');
-              setPeers([...peers, peer]);
-            });
+            }
 
-            socket.on('receiving returned signal', (payload: IPayload) => {
-              console.log('useEffect => receiving returned signal');
-              const item = peersRef?.current?.find(
-                (p) => p.peerID === payload.id
-              );
-              item?.peer?.signal(payload.signal);
-            });
+            console.log('update peers after addPeer');
+            setPeers([...peers, peer]);
+          });
 
-            socket.on('removeUserVideo', (socketId: string) => {
-              console.log('useEffect => removeUserVideo');
-              removeUserLeavingRoomVideo(socketId);
-            });
-          }
+          socket.on('receiving returned signal', (payload: IPayload) => {
+            console.log('useEffect => receiving returned signal');
+            const item = peersRef?.current?.find(
+              (p) => p.peerID === payload.id
+            );
+            item?.peer?.signal(payload.signal);
+          });
+
+          socket.on('removeUserVideo', (socketId: string) => {
+            console.log('useEffect => removeUserVideo');
+            removeUserLeavingRoomVideo(socketId);
+          });
         })
         .catch((err) => console.log('erreur dans getUserMedia : ', err));
     }
@@ -198,7 +204,7 @@ const VideoGroup = ({
 
   return (
     <Container style={{ display: 'flex', flexWrap: 'wrap' }}>
-      <video
+      {/* <video
         muted
         ref={userVideo}
         autoPlay
@@ -210,10 +216,10 @@ const VideoGroup = ({
           borderRadius: '10px',
           objectFit: 'cover',
         }}
-      />
-      {peers.map((peer, index) => {
+      /> */}
+      {peersRef?.current.map((peer: IPeerWithId, index: any) => {
         // eslint-disable-next-line react/no-array-index-key
-        return <Video key={index} peer={peer} />;
+        return <Video key={index} peer={peer.peer} />;
       })}
     </Container>
   );
