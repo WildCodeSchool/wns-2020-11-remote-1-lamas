@@ -61,6 +61,7 @@ const Video = ({
     console.log('VIDEO COMPONENT => useEffect peer on stream');
     peer.on('stream', (stream: MediaStream) => {
       if (ref && ref.current) {
+        console.log('SRC STREAM');
         ref.current.srcObject = stream;
       }
     });
