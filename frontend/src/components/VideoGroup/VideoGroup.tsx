@@ -47,6 +47,8 @@ const Video = ({
     if (ref?.current?.srcObject && isUser) {
       (ref.current
         .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
+
+      // socket envoie le boolean et le peer id
     }
   }, [videoStatus, isUser, videoPeerId]);
 
@@ -56,6 +58,56 @@ const Video = ({
         .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
     }
   }, [microStatus, isUser, videoPeerId]);
+
+  // useEffect(() => {
+  //   if (ref?.current?.srcObject && isUser) {
+  //     (ref.current.srcObject as MediaStream)
+  //       .getTracks()
+  //       .forEach(function (track) {
+  //         console.log('getTracks', track);
+  //         if (
+  //           track.readyState === 'live' &&
+  //           track.kind === 'video' &&
+  //           !videoStatus
+  //         ) {
+  //           track.stop();
+  //         } else {
+  //           peer.addTrack(track, ref?.current?.srcObject as MediaStream);
+  //         }
+  //       });
+  //     console.log('remove track video');
+  //     // peer.removeTrack(
+  //     //   (ref.current.srcObject as MediaStream).getVideoTracks()[0],
+  //     //   ref.current.srcObject as MediaStream
+  //     // );
+  //     // (ref.current
+  //     //   .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
+  //   }
+  // }, [videoStatus, isUser, videoPeerId, peer]);
+
+  // useEffect(() => {
+  //   if (ref?.current?.srcObject && isUser) {
+  //     (ref.current.srcObject as MediaStream)
+  //       .getTracks()
+  //       .forEach(function (track) {
+  //         console.log('getTracks', track);
+  //         if (
+  //           track.readyState === 'live' &&
+  //           track.kind === 'audio' &&
+  //           !microStatus
+  //         ) {
+  //           track.stop();
+  //         }
+  //       });
+  //     // peer.removeTrack(
+  //     //   (ref.current.srcObject as MediaStream).getAudioTracks()[0],
+  //     //   ref.current.srcObject as MediaStream
+  //     // );
+
+  //     // (ref.current
+  //     //   .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
+  //   }
+  // }, [microStatus, isUser, videoPeerId]);
 
   useEffect(() => {
     console.log('VIDEO COMPONENT => useEffect peer on stream');
@@ -89,18 +141,13 @@ const VideoGroup = ({
 }: IVideoProps): JSX.Element => {
   const [peerId, setPeerId] = useState<string>('');
   const peersRef = useRef<IPeerWithId[]>([]);
-  // const userVideo = useRef<HTMLVideoElement>(null);
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
   };
 
-  const createPeer = (
-    userToSignal: any,
-    callerID: string,
-    stream: MediaStream
-  ) => {
+  const createPeer = (callerID: string, stream: MediaStream) => {
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -110,7 +157,6 @@ const VideoGroup = ({
     peer.on('signal', (signal) => {
       console.log('CREATE PEER => peer on signal');
       socket.emit('sending signal', {
-        userToSignal,
         callerID,
         signal,
       });
@@ -152,10 +198,6 @@ const VideoGroup = ({
         .getUserMedia({ video: true, audio: true })
         // demarre le stream une fois que c'est accepté
         .then((stream: MediaStream) => {
-          // si le user a accepté la video
-          // if (userVideo.current) {
-          // userVideo.current.srcObject = stream;
-
           console.log('useEffect => join room');
           socket.emit('join room', roomId);
 
@@ -163,8 +205,8 @@ const VideoGroup = ({
           socket.on('all users', (users: string[]) => {
             console.log('useEffect => response all users', users);
             users.forEach((userID: string) => {
-              console.log(userID, socket.id);
-              const peer = createPeer(userID, socket.id, stream);
+              console.log(socket.id);
+              const peer = createPeer(socket.id, stream);
               console.log('createPeer', peer);
               if (
                 !peersRef.current.find(
@@ -195,7 +237,7 @@ const VideoGroup = ({
                 peerID: payload.callerID,
                 peer,
                 micro: true,
-                video: false,
+                video: true,
               });
             }
           });
@@ -215,6 +257,7 @@ const VideoGroup = ({
         })
         .catch((err) => console.log('erreur dans getUserMedia : ', err));
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
