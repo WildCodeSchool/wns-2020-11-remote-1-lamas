@@ -64,7 +64,7 @@ const Video = ({
         ref.current.srcObject = stream;
       }
     });
-  }, [peer]);
+  }, [peer, ref]);
 
   return (
     <video
