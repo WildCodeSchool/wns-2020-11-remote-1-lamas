@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Container } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
 import './VideoGroup.css';
 import { currentUser } from '../../cache';
+import Video from '../Video/Video';
+import { createPeer, addPeer } from './utils';
 
 interface IVideoProps {
   roomId: string;
@@ -25,64 +27,6 @@ interface IPeerWithId {
   video: boolean;
 }
 
-interface IPeer {
-  peer: Peer.Instance;
-  microStatus: boolean;
-  videoStatus: boolean;
-  peerId: string;
-  videoPeerId: string;
-}
-
-const Video = ({
-  peer,
-  microStatus,
-  videoStatus,
-  peerId,
-  videoPeerId,
-}: IPeer) => {
-  const ref = useRef<HTMLVideoElement>(null);
-  const isUser = peerId === videoPeerId;
-
-  useEffect(() => {
-    console.log('VIDEO COMPONENT => useEffect peer on stream');
-    peer.on('stream', (stream: MediaStream) => {
-      if (ref && ref.current) {
-        console.log('SRC STREAM');
-        ref.current.srcObject = stream;
-      }
-    });
-  }, [peer, ref]);
-
-  // useEffect(() => {
-  //   if (ref?.current?.srcObject && isUser) {
-  //     (ref.current
-  //       .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
-  //   }
-  // }, [videoStatus, isUser, videoPeerId]);
-
-  // useEffect(() => {
-  //   if (ref?.current?.srcObject && isUser) {
-  //     (ref.current
-  //       .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
-  //   }
-  // }, [microStatus, isUser, videoPeerId]);
-
-  return (
-    <video
-      style={{
-        margin: '2%',
-        height: '25%',
-        width: '25%',
-        borderRadius: '10px',
-        objectFit: 'cover',
-      }}
-      playsInline
-      autoPlay
-      ref={ref}
-    />
-  );
-};
-
 const VideoGroup = ({
   roomId,
   videoStatus,
@@ -90,83 +34,65 @@ const VideoGroup = ({
 }: IVideoProps): JSX.Element => {
   const [peerId, setPeerId] = useState<string>('');
   const peersRef = useRef<IPeerWithId[]>([]);
-  // const userVideo = useRef<HTMLVideoElement>(null);
+  const [mount, forceMount] = useState('');
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
   };
 
-  const createPeer = (
-    userToSignal: any,
-    callerID: string,
-    stream: MediaStream
-  ) => {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    });
+  // const createPeer = (callerID: string, stream: MediaStream) => {
+  //   const peer = new Peer({
+  //     initiator: true,
+  //     trickle: false,
+  //     stream,
+  //   });
 
-    peer.on('signal', (signal) => {
-      console.log('CREATE PEER => peer on signal');
-      socket.emit('sending signal', {
-        userToSignal,
-        callerID,
-        signal,
-      });
-    });
-    console.log('CREATE PEER => new peer', peer);
-    return peer;
-  };
+  //   peer.on('signal', (signal) => {
+  //     socket.emit('sending signal', {
+  //       callerID,
+  //       signal,
+  //     });
+  //   });
 
-  const addPeer = (
-    incomingSignal: string | SignalData,
-    callerID: string,
-    stream: undefined | MediaStream
-  ) => {
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream,
-    });
-    peer.on('signal', (signal) => {
-      console.log('ADD PEER => SIGNAL');
+  //   return peer;
+  // };
 
-      socket.emit('returning signal', {
-        signal,
-        callerID,
-      });
-    });
+  // const addPeer = (
+  //   incomingSignal: string | SignalData,
+  //   callerID: string,
+  //   stream: undefined | MediaStream
+  // ) => {
+  //   const peer = new Peer({
+  //     initiator: false,
+  //     trickle: false,
+  //     stream,
+  //   });
+  //   peer.on('signal', (signal) => {
+  //     socket.emit('returning signal', {
+  //       signal,
+  //       callerID,
+  //     });
+  //   });
 
-    peer.signal(incomingSignal);
+  //   peer.signal(incomingSignal);
 
-    return peer;
-  };
+  //   return peer;
+  // };
 
-  // HELP: useEffect called when a new user join session
+  // useEffect called when a new user join session
   useEffect(() => {
     if (user && roomId) {
-      console.log('useEffect => user', user);
       // notification to activate video and audio in the browser
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         // demarre le stream une fois que c'est accepté
         .then((stream: MediaStream) => {
-          // si le user a accepté la video
-          // if (userVideo.current) {
-          // userVideo.current.srcObject = stream;
-
-          console.log('useEffect => join room');
           socket.emit('join room', roomId);
-
-          console.log('useEffect => all users');
           socket.on('all users', (users: string[]) => {
-            console.log('useEffect => response all users', users);
             users.forEach((userID: string) => {
-              console.log(userID, socket.id);
-              const peer = createPeer(userID, socket.id, stream);
-              console.log('createPeer', peer);
+              const peer = createPeer(socket.id, stream);
+
               if (
                 !peersRef.current.find(
                   (peerWithId) => userID === peerWithId.peerID
@@ -180,13 +106,13 @@ const VideoGroup = ({
                 });
                 setPeerId(userID);
               }
+
+              forceMount('reforce');
             });
           });
 
-          console.log('useEffect => user joined');
           socket.on('user joined', (payload: IPayload) => {
             const peer = addPeer(payload.signal, payload.callerID, stream);
-            console.log('USER JOINED');
             if (
               !peersRef?.current?.find(
                 (video) => payload.callerID === video.peerID
@@ -199,10 +125,11 @@ const VideoGroup = ({
                 video: true,
               });
             }
+
+            forceMount('force');
           });
 
           socket.on('receiving returned signal', (payload: IPayload) => {
-            console.log('useEffect => receiving returned signal');
             const item = peersRef?.current?.find(
               (p) => p.peerID === payload.id
             );
@@ -210,7 +137,6 @@ const VideoGroup = ({
           });
 
           socket.on('removeUserVideo', (socketId: string) => {
-            console.log('useEffect => removeUserVideo');
             removeUserLeavingRoomVideo(socketId);
           });
         })
@@ -221,21 +147,7 @@ const VideoGroup = ({
 
   return (
     <Container style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {/* <video
-        muted
-        ref={userVideo}
-        autoPlay
-        playsInline
-        style={{
-          margin: '2%',
-          height: '25%',
-          width: '25%',
-          borderRadius: '10px',
-          objectFit: 'cover',
-        }}
-      /> */}
       {peersRef?.current.map((peer: IPeerWithId) => {
-        // eslint-disable-next-line react/no-array-index-key
         return (
           <Video
             key={peer.peerID}
