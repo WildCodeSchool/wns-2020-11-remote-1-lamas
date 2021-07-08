@@ -156,12 +156,16 @@ const VideoGroup = ({
               console.log(userID, socket.id);
               const peer = createPeer(userID, socket.id, stream);
               console.log('createPeer', peer);
-              // if (peersRef?.current?.find((video) => userID === video.peerID)) {
-              peersRef.current.push({
-                peerID: userID,
-                peer,
-              });
-              // }
+              if (
+                !peersRef.current.find(
+                  (peerWithId) => userID === peerWithId.peerID
+                )
+              ) {
+                peersRef.current.push({
+                  peerID: userID,
+                  peer,
+                });
+              }
               usersPeers.push(peer);
             });
             console.log('update peers after createPeer', usersPeers);
@@ -173,8 +177,8 @@ const VideoGroup = ({
             const peer = addPeer(payload.signal, payload.callerID, stream);
             console.log('USER JOINED');
             if (
-              peersRef?.current?.find(
-                (video) => payload.callerID !== video.peerID
+              !peersRef?.current?.find(
+                (video) => payload.callerID === video.peerID
               )
             ) {
               peersRef.current.push({
