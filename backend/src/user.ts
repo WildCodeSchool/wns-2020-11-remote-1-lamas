@@ -148,28 +148,30 @@ const createRoomMessage = async (
   message: string,
   userCookie: any
 ): Promise<void> => {
-  // créer member list messageId avec uuid
-  const messageId = uuidv4();
-  asyncSadd(`${roomId}-messageKeys`, messageId);
-  // créer member rajouter les données du message
+  if (roomId && userId && message.length > 0 && !!userCookie) {
+    // créer member list messageId avec uuid
+    const messageId = uuidv4();
+    asyncSadd(`${roomId}-messageKeys`, messageId);
+    // créer member rajouter les données du message
 
-  console.log('userCookie', userCookie);
+    console.log('userCookie', userCookie);
 
-  asyncHmset(
-    `${roomId}-message-${messageId}`,
-    `lastname`,
-    userCookie.lastname,
-    'firstname',
-    userCookie.firstname,
-    'roomId',
-    roomId,
-    'userId',
-    userId,
-    'message',
-    message,
-    'date',
-    `${new Date()}`
-  );
+    asyncHmset(
+      `${roomId}-message-${messageId}`,
+      `lastname`,
+      userCookie.lastname,
+      'firstname',
+      userCookie.firstname,
+      'roomId',
+      roomId,
+      'userId',
+      userId,
+      'message',
+      message,
+      'date',
+      `${new Date()}`
+    );
+  }
 };
 
 const getRoomMessages = async (roomId: number): Promise<Message[]> => {
@@ -204,6 +206,8 @@ const getRoomMessages = async (roomId: number): Promise<Message[]> => {
       date,
     });
   }
+
+  console.log('listMessage', listMessage);
 
   listMessage.sort((a, b) => a.date.localeCompare(b.date));
 

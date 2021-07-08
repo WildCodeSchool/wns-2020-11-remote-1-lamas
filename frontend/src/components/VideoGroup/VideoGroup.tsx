@@ -21,14 +21,41 @@ interface IPayload {
 interface IPeerWithId {
   peerID: string;
   peer: Peer.Instance;
+  micro: boolean;
+  video: boolean;
 }
 
 interface IPeer {
   peer: Peer.Instance;
+  microStatus: boolean;
+  videoStatus: boolean;
+  peerId: string;
+  videoPeerId: string;
 }
 
-const Video = ({ peer }: IPeer) => {
+const Video = ({
+  peer,
+  microStatus,
+  videoStatus,
+  peerId,
+  videoPeerId,
+}: IPeer) => {
   const ref = useRef<HTMLVideoElement>(null);
+  const isUser = peerId === videoPeerId;
+
+  useEffect(() => {
+    if (ref?.current?.srcObject && isUser) {
+      (ref.current
+        .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
+    }
+  }, [videoStatus, isUser, videoPeerId]);
+
+  useEffect(() => {
+    if (ref?.current?.srcObject && isUser) {
+      (ref.current
+        .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
+    }
+  }, [microStatus, isUser, videoPeerId]);
 
   useEffect(() => {
     console.log('VIDEO COMPONENT => useEffect peer on stream');
@@ -60,30 +87,14 @@ const VideoGroup = ({
   videoStatus,
   microStatus,
 }: IVideoProps): JSX.Element => {
-  const [peers, setPeers] = useState<Peer.Instance[]>([]);
+  const [peerId, setPeerId] = useState<string>('');
   const peersRef = useRef<IPeerWithId[]>([]);
-  const roomID = roomId;
-  const userVideo = useRef<HTMLVideoElement>(null);
+  // const userVideo = useRef<HTMLVideoElement>(null);
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
-    setPeers(peersRef.current.map((el) => el.peer));
   };
-
-  useEffect(() => {
-    if (userVideo?.current?.srcObject) {
-      (userVideo.current
-        .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
-    }
-  }, [videoStatus]);
-
-  useEffect(() => {
-    if (userVideo?.current?.srcObject) {
-      (userVideo.current
-        .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
-    }
-  }, [microStatus]);
 
   const createPeer = (
     userToSignal: any,
@@ -146,12 +157,11 @@ const VideoGroup = ({
           // userVideo.current.srcObject = stream;
 
           console.log('useEffect => join room');
-          socket.emit('join room', roomID);
+          socket.emit('join room', roomId);
 
           console.log('useEffect => all users');
           socket.on('all users', (users: string[]) => {
             console.log('useEffect => response all users', users);
-            const usersPeers: Peer.Instance[] = [];
             users.forEach((userID: string) => {
               console.log(userID, socket.id);
               const peer = createPeer(userID, socket.id, stream);
@@ -164,12 +174,12 @@ const VideoGroup = ({
                 peersRef.current.push({
                   peerID: userID,
                   peer,
+                  micro: true,
+                  video: true,
                 });
+                setPeerId(userID);
               }
-              usersPeers.push(peer);
             });
-            console.log('update peers after createPeer', usersPeers);
-            setPeers(usersPeers);
           });
 
           console.log('useEffect => user joined');
@@ -184,11 +194,10 @@ const VideoGroup = ({
               peersRef.current.push({
                 peerID: payload.callerID,
                 peer,
+                micro: true,
+                video: false,
               });
             }
-
-            console.log('update peers after addPeer');
-            setPeers([...peers, peer]);
           });
 
           socket.on('receiving returned signal', (payload: IPayload) => {
@@ -224,9 +233,18 @@ const VideoGroup = ({
           objectFit: 'cover',
         }}
       /> */}
-      {peersRef?.current.map((peer: IPeerWithId, index: any) => {
+      {peersRef?.current.map((peer: IPeerWithId) => {
         // eslint-disable-next-line react/no-array-index-key
-        return <Video key={index} peer={peer.peer} />;
+        return (
+          <Video
+            key={peer.peerID}
+            peer={peer.peer}
+            microStatus={microStatus}
+            videoStatus={videoStatus}
+            peerId={peerId}
+            videoPeerId={peer.peerID}
+          />
+        );
       })}
     </Container>
   );
