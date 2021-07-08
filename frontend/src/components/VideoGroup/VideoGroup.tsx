@@ -53,19 +53,19 @@ const Video = ({
     });
   }, [peer, ref]);
 
-  useEffect(() => {
-    if (ref?.current?.srcObject && isUser) {
-      (ref.current
-        .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
-    }
-  }, [videoStatus, isUser, videoPeerId]);
+  // useEffect(() => {
+  //   if (ref?.current?.srcObject && isUser) {
+  //     (ref.current
+  //       .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
+  //   }
+  // }, [videoStatus, isUser, videoPeerId]);
 
-  useEffect(() => {
-    if (ref?.current?.srcObject && isUser) {
-      (ref.current
-        .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
-    }
-  }, [microStatus, isUser, videoPeerId]);
+  // useEffect(() => {
+  //   if (ref?.current?.srcObject && isUser) {
+  //     (ref.current
+  //       .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
+  //   }
+  // }, [microStatus, isUser, videoPeerId]);
 
   return (
     <video
