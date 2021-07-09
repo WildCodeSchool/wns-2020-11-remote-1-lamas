@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Peer from 'simple-peer';
+import socket from '../../socket/socket';
 
 export interface IPeer {
   peer: Peer.Instance;
@@ -33,6 +34,19 @@ const Video = ({
         .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
     }
   }, [videoStatus, isUser, videoPeerId]);
+
+  useEffect(() => {
+    socket.emit('switch Video', { peerId, videoStatus });
+  }, [videoStatus, peerId]);
+
+  useEffect(() => {
+    socket.on('receive change video', (newVideoChange: any) => {
+      if (videoPeerId === newVideoChange.peerId && ref && ref.current) {
+        (ref.current.srcObject as MediaStream).getVideoTracks()[0].enabled =
+          newVideoChange.videoStatus;
+      }
+    });
+  }, [videoStatus, peerId, videoPeerId]);
 
   useEffect(() => {
     if (ref?.current?.srcObject && isUser) {

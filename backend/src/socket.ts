@@ -98,6 +98,10 @@ const SocketIo = (httpServer: http.Server): void => {
       socket.broadcast.emit('removeUserVideo', socket.id);
     });
 
+    socket.on('switch Video', (payload) => {
+      socket.broadcast.emit('receive change video', payload);
+    });
+
     socket.on('disconnect', async () => {
       delete users[socket.id];
       const roomId = await removeUser(socket.id);
