@@ -33,6 +33,7 @@ const VideoGroup = ({
   microStatus,
 }: IVideoProps): JSX.Element => {
   const [peers, setPeers] = useState<Peer.Instance[]>([]);
+  const [peerId, setPeerId] = useState<string>('');
   const peersRef = useRef<IPeerWithId[]>([]);
   const roomID = roomId;
   const userVideo = useRef<HTMLVideoElement>(null);
@@ -86,6 +87,7 @@ const VideoGroup = ({
                   peerID: userID,
                   peer,
                 });
+                setPeerId(userID);
               }
               usersPeers.push(peer);
             });
@@ -133,7 +135,16 @@ const VideoGroup = ({
   return (
     <Container style={{ display: 'flex', flexWrap: 'wrap' }}>
       {peersRef?.current.map((peer: IPeerWithId) => {
-        return <Video key={peer.peerID} peer={peer.peer} />;
+        return (
+          <Video
+            key={peer.peerID}
+            peer={peer.peer}
+            microStatus={microStatus}
+            videoStatus={videoStatus}
+            peerId={peerId}
+            videoPeerId={peer.peerID}
+          />
+        );
       })}
     </Container>
   );

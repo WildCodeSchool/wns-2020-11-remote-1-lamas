@@ -3,10 +3,21 @@ import Peer from 'simple-peer';
 
 export interface IPeer {
   peer: Peer.Instance;
+  microStatus: boolean;
+  videoStatus: boolean;
+  peerId: string;
+  videoPeerId: string;
 }
 
-const Video = ({ peer }: IPeer): JSX.Element => {
+const Video = ({
+  peer,
+  microStatus,
+  videoStatus,
+  peerId,
+  videoPeerId,
+}: IPeer): JSX.Element => {
   const ref = useRef<HTMLVideoElement>(null);
+  const isUser = peerId === videoPeerId;
 
   useEffect(() => {
     peer.on('stream', (stream: MediaStream) => {
@@ -15,6 +26,20 @@ const Video = ({ peer }: IPeer): JSX.Element => {
       }
     });
   }, [peer]);
+
+  useEffect(() => {
+    if (ref?.current?.srcObject && isUser) {
+      (ref.current
+        .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
+    }
+  }, [videoStatus, isUser, videoPeerId]);
+
+  useEffect(() => {
+    if (ref?.current?.srcObject && isUser) {
+      (ref.current
+        .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
+    }
+  }, [microStatus, isUser, videoPeerId]);
 
   return (
     <video
