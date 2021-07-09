@@ -21,26 +21,6 @@ const SocketIo = (httpServer: http.Server): void => {
   const socketToRoom: Record<string, string> = {};
 
   io.on('connect', (socket: Socket) => {
-    // const cookies = cookie.parse(socket.request.headers.cookie || '');
-    // const userCookie = JSON.parse(cookies.user);
-    // console.log('socket', userCookie);
-
-    // const currentUser = socket.handshake.query as any;
-    // let connectedUser;
-    // if (currentUser.connectedUser) {
-    //   connectedUser = JSON.parse(currentUser.connectedUser);
-    // }
-
-    // if (!!connectedUser && !!connectedUser?.roomId) {
-    //   addUser(
-    //     connectedUser.roomId,
-    //     connectedUser._id,
-    //     connectedUser.firstname,
-    //     connectedUser.lastname,
-    //     socket
-    //   );
-    // }
-
     socket.on('joinTheRoom', async (roomId, _id, firstname, lastname) => {
       addUser(roomId, _id, firstname, lastname, socket);
     });
@@ -89,7 +69,6 @@ const SocketIo = (httpServer: http.Server): void => {
     }
 
     socket.on('join room', (roomID: string) => {
-      console.log('JOIN ROOM');
       if (usersInTheRoom[roomID]) {
         usersInTheRoom[roomID].push(socket.id);
       } else {
@@ -98,14 +77,10 @@ const SocketIo = (httpServer: http.Server): void => {
       socketToRoom[socket.id] = roomID;
       const usersTotalInRoom = usersInTheRoom[roomID];
 
-      console.log('usersTotalInRoom', usersTotalInRoom);
-
       socket.emit('all users', usersTotalInRoom);
     });
 
     socket.on('sending signal', (payload) => {
-      console.log('sending signal');
-
       io.to(payload.callerID).emit('user joined', {
         signal: payload.signal,
         callerID: payload.callerID,
@@ -113,8 +88,6 @@ const SocketIo = (httpServer: http.Server): void => {
     });
 
     socket.on('returning signal', (payload) => {
-      console.log('returning signal');
-
       io.to(payload.callerID).emit('receiving returned signal', {
         signal: payload.signal,
         id: socket.id,
@@ -138,7 +111,6 @@ const SocketIo = (httpServer: http.Server): void => {
       if (room) {
         room = room.filter((id) => id !== socket.id);
         usersInTheRoom[roomID] = room;
-        console.log('socket id', socket.id);
         socket.broadcast.emit('removeUserVideo', socket.id);
       }
     });

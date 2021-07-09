@@ -21,13 +21,8 @@ const Video = ({
   const [reload, setReload] = useState('');
 
   useEffect(() => {
-    console.log('video component peer', peer);
     peer.on('stream', (stream: MediaStream) => {
-      console.log('"video component', ref.current);
-
       if (ref && ref.current) {
-        console.log('"video component', ref.current);
-
         ref.current.srcObject = stream;
       }
     });
@@ -35,8 +30,6 @@ const Video = ({
       setReload('sdfmllmfdlfd');
     }, 2000);
   }, [peer, videoPeerId]);
-
-  console.log(peer);
 
   useEffect(() => {
     if (ref?.current?.srcObject && isUser) {

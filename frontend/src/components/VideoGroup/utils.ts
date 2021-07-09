@@ -11,10 +11,7 @@ export const createPeer = (
     stream,
   });
 
-  console.log('createPeer');
   peer.on('signal', (signal) => {
-    console.log('createPeer > sending signal');
-
     socket.emit('sending signal', {
       callerID,
       signal,
@@ -34,9 +31,7 @@ export const addPeer = (
     trickle: false,
     stream,
   });
-  console.log('add peer');
   peer.on('signal', (signal) => {
-    console.log('add peer => returning signal');
     socket.emit('returning signal', {
       signal,
       callerID,
