@@ -1,3 +1,4 @@
+import './video.css';
 import React, { useRef, useEffect } from 'react';
 import Peer from 'simple-peer';
 import socket from '../../socket/socket';
@@ -8,6 +9,8 @@ export interface IPeer {
   videoStatus: boolean;
   peerId: string;
   videoPeerId: string;
+  firstname: string;
+  lastname: string;
 }
 
 const Video = ({
@@ -16,6 +19,8 @@ const Video = ({
   videoStatus,
   peerId,
   videoPeerId,
+  firstname,
+  lastname,
 }: IPeer): JSX.Element => {
   const ref = useRef<HTMLVideoElement>(null);
   const isUser = peerId === videoPeerId;
@@ -58,20 +63,21 @@ const Video = ({
     }
   }, [microStatus, isUser, videoPeerId]);
 
+  console.log(firstname, lastname);
+
   return (
-    <video
-      style={{
-        margin: '2%',
-        height: '25%',
-        width: '25%',
-        borderRadius: '10px',
-        objectFit: 'cover',
-      }}
-      playsInline
-      autoPlay
-      ref={ref}
-      muted={peerId === videoPeerId}
-    />
+    <div className="video">
+      <video
+        className="video-content"
+        playsInline
+        autoPlay
+        ref={ref}
+        muted={peerId === videoPeerId}
+      />
+      <span className="video-room-name">
+        {firstname} {lastname}
+      </span>
+    </div>
   );
 };
 

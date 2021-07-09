@@ -13,6 +13,7 @@ import {
   createRoomMessage,
   deleteMessages,
 } from './user';
+import { asyncHget } from './database/redis';
 
 const SocketIo = (httpServer: http.Server): void => {
   const io = new Server(httpServer);
@@ -68,22 +69,44 @@ const SocketIo = (httpServer: http.Server): void => {
       users[socket.id] = socket.id;
     }
 
-    socket.on('join room', (roomID: string) => {
+    socket.on('join room', async (roomID: string) => {
       if (usersInTheRoom[roomID]) {
         usersInTheRoom[roomID].push(socket.id);
       } else {
         usersInTheRoom[roomID] = [socket.id];
       }
       socketToRoom[socket.id] = roomID;
-      const usersTotalInRoom = usersInTheRoom[roomID];
+      const usersTotalInRoom = Array.from(new Set(usersInTheRoom[roomID]));
 
-      socket.emit('all users', usersTotalInRoom);
+      const infoUser = [];
+
+      // eslint-disable-next-line no-restricted-syntax
+      for await (const userId of usersTotalInRoom) {
+        const firstname = await asyncHget(`users-${userId}`, 'firstname');
+        const lastname = await asyncHget(`users-${userId}`, 'lastname');
+
+        infoUser.push({ userId, firstname, lastname });
+      }
+
+      // envoyer lastname, firstname ici
+      // socket.emit('all users', usersTotalInRoom);
+      console.log(infoUser, usersTotalInRoom);
+      socket.emit('all users', infoUser);
     });
 
-    socket.on('sending signal', (payload) => {
+    socket.on('sending signal', async (payload) => {
+      // envoyer lastname, firstname ici
+      const firstname = await asyncHget(
+        `users-${payload.callerID}`,
+        'firstname'
+      );
+      const lastname = await asyncHget(`users-${payload.callerID}`, 'lastname');
+
       io.to(payload.userToSignal).emit('user joined', {
         signal: payload.signal,
         callerID: payload.callerID,
+        firstname,
+        lastname,
       });
     });
 
