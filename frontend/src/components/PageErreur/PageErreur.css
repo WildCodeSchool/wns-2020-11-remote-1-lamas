@@ -1,0 +1,28 @@
+.page-erreur__contenu {
+    background-color: #F1F5F8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.page-erreur__contenu-titre {
+    color: #00396A;
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 32px;
+}
+
+.page-erreur__contenu-illustration {
+    width: 25vw;
+    margin-bottom: 32px;
+}
+
+.page-erreur__contenu-sous-titre {
+    color: #00396A;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 32px;
+}
