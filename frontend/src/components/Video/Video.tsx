@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Peer from 'simple-peer';
 
 export interface IPeer {
@@ -15,17 +15,28 @@ const Video = ({
   videoStatus,
   peerId,
   videoPeerId,
-}: IPeer) => {
+}: IPeer): JSX.Element => {
   const ref = useRef<HTMLVideoElement>(null);
   const isUser = peerId === videoPeerId;
+  const [reload, setReload] = useState('');
 
   useEffect(() => {
+    console.log('video component peer', peer);
     peer.on('stream', (stream: MediaStream) => {
+      console.log('"video component', ref.current);
+
       if (ref && ref.current) {
+        console.log('"video component', ref.current);
+
         ref.current.srcObject = stream;
       }
     });
-  }, [peer, ref]);
+    setTimeout(() => {
+      setReload('sdfmllmfdlfd');
+    }, 2000);
+  }, [peer, videoPeerId]);
+
+  console.log(peer);
 
   useEffect(() => {
     if (ref?.current?.srcObject && isUser) {

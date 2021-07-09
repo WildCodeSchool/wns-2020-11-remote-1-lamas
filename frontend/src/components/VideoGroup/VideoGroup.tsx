@@ -34,51 +34,11 @@ const VideoGroup = ({
 }: IVideoProps): JSX.Element => {
   const [peerId, setPeerId] = useState<string>('');
   const peersRef = useRef<IPeerWithId[]>([]);
-  const [mount, forceMount] = useState('');
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
   };
-
-  // const createPeer = (callerID: string, stream: MediaStream) => {
-  //   const peer = new Peer({
-  //     initiator: true,
-  //     trickle: false,
-  //     stream,
-  //   });
-
-  //   peer.on('signal', (signal) => {
-  //     socket.emit('sending signal', {
-  //       callerID,
-  //       signal,
-  //     });
-  //   });
-
-  //   return peer;
-  // };
-
-  // const addPeer = (
-  //   incomingSignal: string | SignalData,
-  //   callerID: string,
-  //   stream: undefined | MediaStream
-  // ) => {
-  //   const peer = new Peer({
-  //     initiator: false,
-  //     trickle: false,
-  //     stream,
-  //   });
-  //   peer.on('signal', (signal) => {
-  //     socket.emit('returning signal', {
-  //       signal,
-  //       callerID,
-  //     });
-  //   });
-
-  //   peer.signal(incomingSignal);
-
-  //   return peer;
-  // };
 
   // useEffect called when a new user join session
   useEffect(() => {
@@ -91,7 +51,7 @@ const VideoGroup = ({
           socket.emit('join room', roomId);
           socket.on('all users', (users: string[]) => {
             users.forEach((userID: string) => {
-              const peer = createPeer(socket.id, stream);
+              const peer = createPeer(userID, stream);
 
               if (
                 !peersRef.current.find(
@@ -106,8 +66,6 @@ const VideoGroup = ({
                 });
                 setPeerId(userID);
               }
-
-              forceMount('reforce');
             });
           });
 
@@ -125,8 +83,6 @@ const VideoGroup = ({
                 video: true,
               });
             }
-
-            forceMount('force');
           });
 
           socket.on('receiving returned signal', (payload: IPayload) => {
