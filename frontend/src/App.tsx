@@ -9,13 +9,12 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import { GET_CONNECTED_USER } from './graphql/queries/getConnectedUser';
 import { currentUser } from './cache';
 import { SET_COOKIE } from './graphql/mutations/cookie';
+import PageErreur from './components/PageErreur/PageErreur';
 
 const App = (): JSX.Element => {
   // compil
   const connectedUser = useQuery(GET_CONNECTED_USER);
   const [update] = useMutation(SET_COOKIE);
-
-  console.log('v0.1');
 
   if (
     connectedUser?.data?.getUserConnected?.firstname &&
@@ -37,8 +36,9 @@ const App = (): JSX.Element => {
         <Switch>
           <Route exact path="/signup" component={SignupForm} />
           <Route exact path="/" component={LoginForm} />
-          <PrivateRoute path="/dashboard/:id" component={Dashboard} />
-          <PrivateRoute path="/:id/room/:roomId" component={Room} />
+          <PrivateRoute exact path="/dashboard/:id" component={Dashboard} />
+          <PrivateRoute exact path="/:id/room/:roomId" component={Room} />
+          <Route component={PageErreur} />
         </Switch>
       </Router>
     </>
