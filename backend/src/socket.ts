@@ -81,7 +81,7 @@ const SocketIo = (httpServer: http.Server): void => {
     });
 
     socket.on('sending signal', (payload) => {
-      io.to(payload.callerID).emit('user joined', {
+      io.to(payload.userToSignal).emit('user joined', {
         signal: payload.signal,
         callerID: payload.callerID,
       });
