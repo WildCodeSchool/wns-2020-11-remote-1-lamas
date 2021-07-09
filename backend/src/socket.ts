@@ -98,8 +98,8 @@ const SocketIo = (httpServer: http.Server): void => {
       socket.broadcast.emit('removeUserVideo', socket.id);
     });
 
-    socket.on('switch Video', (payload) => {
-      socket.broadcast.emit('receive change video', payload);
+    socket.on('switch', (payload) => {
+      socket.broadcast.emit('receive change', payload);
     });
 
     socket.on('disconnect', async () => {
