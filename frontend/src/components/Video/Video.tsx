@@ -70,6 +70,7 @@ const Video = ({
       playsInline
       autoPlay
       ref={ref}
+      muted={peerId === videoPeerId}
     />
   );
 };
