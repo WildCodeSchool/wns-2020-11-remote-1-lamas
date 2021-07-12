@@ -5,8 +5,9 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { ColorSchemeName } from "react-native";
+import { ColorSchemeName, StyleSheet } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { Button } from "react-native-elements";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
 import { RootStackParamList } from "../types";
@@ -17,6 +18,7 @@ import LoginScreen from "../screens/LoginScreen";
 import LamasToolsScreen from "../screens/LamasToolsScreen";
 import LamojiScreen from "../screens/LamojiScreen";
 import LamodoroScreen from "../screens/LamodoroScreen";
+import { authReducer } from "./authReducer";
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -41,25 +43,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 export const AuthContext: any = React.createContext(null);
 
 function RootNavigator() {
-  const [state, dispatch] = React.useReducer(
-    (prevState: any, action: any) => {
-      switch (action.type) {
-        case "SIGN_IN":
-          return {
-            ...prevState,
-            isLoggedIn: true,
-          };
-        case "SIGN_OUT":
-          return {
-            ...prevState,
-            isLoggedIn: false,
-          };
-      }
-    },
-    {
-      isLoggedIn: true,
-    }
-  );
+  const [state, dispatch] = authReducer()
 
   React.useEffect(() => {
     const bootstrapAsync = async () => {
@@ -85,27 +69,48 @@ function RootNavigator() {
         dispatch({ type: "SIGN_IN" });
       },
       signOut: () => dispatch({ type: "SIGN_OUT" }),
-      // signUp: async (data) => {
-      //   dispatch({ type: "SIGN_IN" });
-      // },
     }),
     []
   );
 
   return (
     <AuthContext.Provider value={authContext}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{
+        headerShown: state.isLoggedIn,
+        headerTransparent: true,
+        headerBackTitle: 'Retour',
+        headerTintColor:'white',
+        headerBackTitleStyle:styles.title,
+        headerBackAccessibilityLabel:'Retour',
+        headerRight: (props) => {
+          if (state.isLoggedIn) {
+            return (
+              <Button 
+                title="Se déconnecter"
+                onPress={async() => {
+                  await SecureStore.deleteItemAsync("userToken");
+                  authContext.signOut();
+                }}
+                buttonStyle={styles.button}
+                titleStyle={styles.title}
+              />
+            )
+          }
+        },
+        headerTitle: () => null
+      }}>
         <Stack.Screen name="Root" component={LoginScreen} />
         <Stack.Screen
           name="BottomTabNavigator"
           component={BottomTabNavigator}
+          options={{headerBackTitleVisible: false, headerLeft: () => null}}
         />
-
         {state.isLoggedIn && (
           <>
             <Stack.Screen
               name="LamasToolsScreen"
               component={LamasToolsScreen}
+              options={{headerBackTitleVisible: false, headerLeft: () => null}}
             />
             <Stack.Screen
               name="LamaReminderScreen"
@@ -124,3 +129,16 @@ function RootNavigator() {
     </AuthContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#00396A",
+    borderRadius: 10,
+    marginTop:10,
+    marginRight:10
+  },
+  title: {
+    color: 'white',
+    fontSize: 12
+  }
+});

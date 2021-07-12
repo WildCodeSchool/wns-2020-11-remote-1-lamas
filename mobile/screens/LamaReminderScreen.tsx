@@ -129,10 +129,10 @@ export default function LamaReminderScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-      <Image
-        source={require("../assets/images/logowhite.png")}
-        style={styles.logo}
-      />
+        <Image
+          source={require("../assets/images/logowhite.png")}
+          style={styles.logo}
+        />
         <Text style={styles.headerText}>N'oublies pas, petit lama</Text>
       </View>
       <Content>
@@ -228,7 +228,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#00396A'
   },
   headerContainer: {
-    paddingBottom: 60,
+    paddingBottom: 50,
+    paddingTop: 50,
     backgroundColor: '#00396A',
     alignItems: 'center'
   },
@@ -236,16 +237,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 23,
-    paddingTop: 50
+    paddingTop: 20
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: "space-around",
   },
   text: {
     fontSize: 56,
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
     marginLeft: 260,
   },
   logo: {
-    height: 200,
+    height: 100,
     resizeMode: "contain",
   },
 });
