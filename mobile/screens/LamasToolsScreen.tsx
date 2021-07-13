@@ -32,12 +32,9 @@ export default function LamasToolsScreen({ route, navigation }: NavigationProps)
   const { data } = useQuery(GET_ROOMS);
 
   const handleSubmit = () => {
-    console.log("submit id room")
     const selectedRoom = data.getRooms.find(
       (item: IRoom) => item._id === roomId
     );
-    console.log('selectedRoom',selectedRoom)
-    console.log('roomId, userId',roomId, userId)
 
     if (!selectedRoom) {
       setErrorMessage("Cette salle n'existe pas");
