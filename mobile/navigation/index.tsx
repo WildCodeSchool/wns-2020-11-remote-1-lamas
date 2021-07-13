@@ -56,7 +56,7 @@ function RootNavigator() {
           dispatch({ type: "SIGN_IN" });
         }
       } catch (e) {
-        console.log(e);
+        console.log(e/*  */);
       }
     };
 
@@ -73,6 +73,7 @@ function RootNavigator() {
     []
   );
 
+  console.log(state)
   return (
     <AuthContext.Provider value={authContext}>
       <Stack.Navigator screenOptions={{
@@ -99,7 +100,7 @@ function RootNavigator() {
         },
         headerTitle: () => null
       }}>
-        <Stack.Screen name="Root" component={LoginScreen} />
+        <Stack.Screen name="Root" component={LoginScreen} options={{headerRight: () => null}} />
         <Stack.Screen
           name="BottomTabNavigator"
           component={BottomTabNavigator}
