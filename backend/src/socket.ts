@@ -44,6 +44,7 @@ const SocketIo = (httpServer: http.Server): void => {
     });
 
     socket.on('changeMood', async (roomId, userId, name, category) => {
+      console.log('lalala in change mood back');
       await updateEmojisCount(roomId, name, userId, category);
       const emojisCount = await getMoodCounter(roomId);
       socket.broadcast.emit('updateEmojisCount', emojisCount);
