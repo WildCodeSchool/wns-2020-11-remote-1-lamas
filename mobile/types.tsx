@@ -36,3 +36,9 @@ export type LamojiScreenParam = {
 export type LoginScreenParam = {
   userId: string
 }
+
+export interface IRoom {
+  _id: string;
+  name: string;
+  owner: string;
+}

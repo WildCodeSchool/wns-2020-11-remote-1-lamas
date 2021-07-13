@@ -16,7 +16,7 @@ import {
 import { Input } from "react-native-elements";
 import { useQuery } from "@apollo/client";
 import { GET_ROOMS } from "../graphql/getRooms";
-import { IRoom } from '../Types/type';
+import { IRoom } from '../types';
 import { RouteProp } from '@react-navigation/native';
 
 export type NavigationProps = {

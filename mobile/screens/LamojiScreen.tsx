@@ -22,7 +22,6 @@ export default function LamojiScreen({ route, navigation }: NavigationProps) {
   });
   
   const { roomId, userId } = route.params;
-  console.log('récupération de roomId, userId : ', roomId, userId)
 
   useEffect(() => {
     if (roomId) {
@@ -32,19 +31,15 @@ export default function LamojiScreen({ route, navigation }: NavigationProps) {
 
   socket.on('userInfos', (userInfo: User) => {
     setStudentInfos(userInfo);
-    console.log('student infos: ', studentInfos)
   });
 
-
   const handleClick = (name: string, category: string): void => {
-    console.log('received emotion & category : ', name, category)
     if (roomId) {
       socket.emit('changeMood', roomId, userId, name, category);
     }
   };
 
   const activeButton = (emojiName: string): any => {
-    console.log('in active button, received: ', emojiName)
     if (
       emojiName === studentInfos?.mood ||
       studentInfos?.actions?.includes(emojiName)
@@ -56,7 +51,7 @@ export default function LamojiScreen({ route, navigation }: NavigationProps) {
 
   return (
     <View style={styles.container}>
-      <HeaderContainer text="Lamoji blabla" />
+      <HeaderContainer text="Partages nous ton mood" />
       <List style={styles.list}>
         <View style={styles.imagesContainer}>
           <TouchableOpacity
@@ -85,10 +80,10 @@ export default function LamojiScreen({ route, navigation }: NavigationProps) {
           </TouchableOpacity>
         </View>
         <View style={styles.imagesContainer}>
-          <TouchableOpacity onPress={() => handleClick('slowdown', 'Action' )}>
+          <TouchableOpacity onPress={() => handleClick('slowDown', 'Action' )}>
             <Image
               source={require("../assets/images/icons_slowdown.png")}
-              style={[styles.logo, activeButton('slowdown')]}
+              style={[styles.logo, activeButton('slowDown')]}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleClick('question', 'Action' )}>
@@ -98,10 +93,10 @@ export default function LamojiScreen({ route, navigation }: NavigationProps) {
 
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleClick('break', 'Action' )}>
+          <TouchableOpacity onPress={() => handleClick('coffee', 'Action' )}>
             <Image
               source={require("../assets/images/icons_break.png")}
-              style={[styles.logo, activeButton('break')]}
+              style={[styles.logo, activeButton('coffee')]}
             />
           </TouchableOpacity>
         </View>
@@ -147,10 +142,11 @@ const styles = StyleSheet.create({
     marginBottom: "40%",
   },
   activeLogo: {
-    opacity: 0.8,
+    opacity: 0.6,
+    borderRadius:50,
     borderBottomWidth: 0,
     borderColor: "#fff",
-    borderWidth: 2,
-    padding: "0",
+    borderWidth: 55,
+    padding:0,
   }
 });
