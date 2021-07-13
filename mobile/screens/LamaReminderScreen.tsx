@@ -23,6 +23,7 @@ import {
   GET_TODOS,
   UPDATE_TODO,
 } from "../graphql/TodoGraph";
+import {HeaderContainer} from '../components/HeaderContainer';
 
 interface ItodoText {
   _id: string;
@@ -128,17 +129,10 @@ export default function LamaReminderScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Image
-          source={require("../assets/images/logowhite.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.headerText}>N'oublies pas, petit lama</Text>
-      </View>
+      <HeaderContainer text="N'oublies pas, petit lama" />
       <Content>
         <List>{todoList && renderTodoItems()}</List>
       </Content>
-
       <Fab
         style={styles.fab}
         direction="up"
@@ -204,7 +198,7 @@ export default function LamaReminderScreen() {
           onPress={() => handleSubmitEditing()}
           style={[styles.button, styles.buttonClose]}
         >
-          <Text>Update la todo</Text>
+          <Text>Mettre à jour la todo</Text>
         </Pressable>
         </View>
         </View>
@@ -213,7 +207,7 @@ export default function LamaReminderScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   editIcon: {
     marginRight: 20
   },
@@ -226,18 +220,6 @@ const styles = StyleSheet.create({
   },
   fab: {
     backgroundColor: '#00396A'
-  },
-  headerContainer: {
-    paddingBottom: 50,
-    paddingTop: 50,
-    backgroundColor: '#00396A',
-    alignItems: 'center'
-  },
-  headerText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 23,
-    paddingTop: 20
   },
   centeredView: {
     flex: 1,
@@ -294,9 +276,5 @@ const styles = StyleSheet.create({
   },
   iconModal: {
     marginLeft: 260,
-  },
-  logo: {
-    height: 100,
-    resizeMode: "contain",
   },
 });

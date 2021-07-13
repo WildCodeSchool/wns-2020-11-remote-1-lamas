@@ -73,7 +73,6 @@ function RootNavigator() {
     []
   );
 
-  console.log(state)
   return (
     <AuthContext.Provider value={authContext}>
       <Stack.Navigator screenOptions={{

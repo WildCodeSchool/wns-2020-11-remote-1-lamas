@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, Modal, Pressable, Image } from "react-native";
 import { Text, View } from "../components/Themed";
 import {
   StackNavigationProp,
@@ -10,12 +10,45 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import {
+  Icon,
+} from "native-base";
+import { Input } from "react-native-elements";
+import { useQuery } from "@apollo/client";
+import { GET_ROOMS } from "../graphql/getRooms";
+import { IRoom } from '../Types/type';
+import { RouteProp } from '@react-navigation/native';
 
 export type NavigationProps = {
   navigation: StackNavigationProp<RootStackParamList, "LamaReminderScreen">;
+  route: RouteProp<{ params: { userId: string, roomId?: string } }, 'params'>
 };
 
-export default function LamasToolsScreen({ navigation }: NavigationProps) {
+export default function LamasToolsScreen({ route, navigation }: NavigationProps) {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [roomId, setRoomId] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const { userId } = route.params;
+  const { data } = useQuery(GET_ROOMS);
+
+  const handleSubmit = () => {
+    console.log("submit id room")
+    const selectedRoom = data.getRooms.find(
+      (item: IRoom) => item._id === roomId
+    );
+    console.log('selectedRoom',selectedRoom)
+    console.log('roomId, userId',roomId, userId)
+
+    if (!selectedRoom) {
+      setErrorMessage("Cette salle n'existe pas");
+    } else {
+      navigation.navigate("LamojiScreen", {roomId, userId})
+      setRoomId('');
+      setErrorMessage('');
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <LinearGradient
       style={styles.container}
@@ -59,7 +92,7 @@ export default function LamasToolsScreen({ navigation }: NavigationProps) {
 
         <TouchableOpacity
           style={styles.buttonTool}
-          onPress={() => navigation.navigate("LamojiScreen")}
+          onPress={() => setIsModalOpen(true)}
         >
           <Image
             style={styles.iconImage}
@@ -69,6 +102,40 @@ export default function LamasToolsScreen({ navigation }: NavigationProps) {
             <Text style={styles.titleButton}>Lamoji</Text>
           </View>
         </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalOpen}
+          onRequestClose={() => {
+            setIsModalOpen(false);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Icon
+                style={styles.iconModal}
+                ios="close"
+                android="close"
+                onPress={() => setIsModalOpen(false)}
+              />
+              <View style={styles.containerInput}>
+                <Input
+                  placeholder="id de la salle"
+                  onChangeText={setRoomId}
+                  value={roomId}
+                  style={styles.input}
+                />
+                {errorMessage !== '' && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+              </View>
+              <Pressable
+                onPress={() => handleSubmit()}
+                style={[styles.button, styles.buttonClose]}
+              >
+                <Text>Rejoindre la salle</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       </View>
     </LinearGradient>
   );
@@ -92,7 +159,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
+    borderRadius: 20,
+    padding: 12,
+    elevation: 2,
     backgroundColor: "#00396A",
+    color: 'white'
   },
   buttonShape: {
     backgroundColor: "white",
@@ -136,4 +207,48 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: "contain",
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  containerInput: {
+    paddingHorizontal: 25,
+    width: 300,
+  },
+  input: {
+    fontSize: 11,
+  },
+  iconModal: {
+    marginLeft: 260,
+  },
+  errorMessage: {
+    color: 'red',
+    margin:0,
+    marginTop: 10,
+    marginLeft: 15,
+    fontSize:11,
+  }
 });

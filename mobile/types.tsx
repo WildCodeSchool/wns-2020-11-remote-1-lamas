@@ -2,11 +2,11 @@ export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
   LamaReminderScreen: undefined;
-  LamasToolsScreen: undefined;
+  LamasToolsScreen: LoginScreenParam;
   LoginScreen: undefined;
   BottomTabNavigator: undefined;
   LamadoroScreen: undefined;
-  LamojiScreen: undefined;
+  LamojiScreen: LamojiScreenParam;
 };
 
 export type BottomTabParamList = {
@@ -15,7 +15,7 @@ export type BottomTabParamList = {
 };
 
 export type LamasToolsParamList = {
-  LamasToolsScreen: undefined;
+  LamasToolsScreen: LoginScreenParam;
   LamaReminderScreen: undefined;
   LoginScreen: undefined;
 };
@@ -27,3 +27,12 @@ export type LamasReminderParamList = {
 export type ProfiLamaParamList = {
   ProfiLamaScreen: undefined;
 };
+
+export type LamojiScreenParam = {
+  roomId: string;
+  userId: string;
+}
+
+export type LoginScreenParam = {
+  userId: string
+}

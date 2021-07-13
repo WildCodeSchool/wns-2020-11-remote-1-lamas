@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       if (token) {
         await SecureStore.setItemAsync("userToken", data.loginUser.token);
         signIn();
-        navigation.navigate("LamasToolsScreen");
+        navigation.navigate("LamasToolsScreen", {userId: data?.loginUser?.user._id});
       }
     },
     errorPolicy: "all",
@@ -44,10 +44,10 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
   const [state, _dispatch] = authReducer()
   useEffect(() => {
-    if (state.isLoggedIn) {
-      navigation.navigate("LamasToolsScreen")
+    if (state.isLoggedIn && data?.loginUser?.user?._id) {
+      navigation.navigate("LamasToolsScreen", {userId: data?.loginUser?.user._id})
     }
-  }, [state])
+  }, [state, data?.loginUser?.user?._id])
 
   return (
     <LinearGradient
