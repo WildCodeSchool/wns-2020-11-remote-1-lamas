@@ -289,7 +289,7 @@ const getMoodCounter = async (roomId: string): Promise<MoodCounter> => {
   };
 };
 
-const removeUser = async (socketId: string): Promise<string> => {
+const removeUserEmoji = async (socketId: string): Promise<string> => {
   const userId = await asyncHget(`users-${socketId}`, 'userId');
   const roomId = await asyncHget(`users-${socketId}`, 'roomId');
 
@@ -313,7 +313,7 @@ const removeUser = async (socketId: string): Promise<string> => {
 export {
   addUser,
   updateEmojisCount,
-  removeUser,
+  removeUserEmoji,
   getUserCount,
   getMoodCounter,
   getUserInfos,

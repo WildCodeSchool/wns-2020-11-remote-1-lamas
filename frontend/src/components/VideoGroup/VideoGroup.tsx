@@ -65,8 +65,13 @@ const VideoGroup = ({
 
   const removeAllPeersConnections = () => {
     peersRef.current.map((el) => el.peer.destroy());
+    peersRef.current = [];
     console.log('removeAllPeersConnections');
   };
+
+  useEffect(() => {
+    peersRef.current = [];
+  }, []);
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {

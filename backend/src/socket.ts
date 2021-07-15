@@ -4,7 +4,7 @@ import http from 'http';
 import {
   addUser,
   updateEmojisCount,
-  removeUser,
+  removeUserEmoji,
   getUserCount,
   getMoodCounter,
   getUserInfos,
@@ -19,7 +19,6 @@ const SocketIo = (httpServer: http.Server): void => {
   const io = new Server(httpServer);
   const users: Record<string, string> = {};
   const usersInTheRoom: Record<string, string[]> = {};
-  const socketToRoom: Record<string, string> = {};
 
   io.on('connect', (socket: Socket) => {
     socket.on('joinTheRoom', async (roomId, _id, firstname, lastname) => {
@@ -69,14 +68,13 @@ const SocketIo = (httpServer: http.Server): void => {
       users[socket.id] = socket.id;
     }
 
-    socket.on('join room', async (roomID: string) => {
-      if (usersInTheRoom[roomID]) {
-        usersInTheRoom[roomID].push(socket.id);
+    socket.on('join room', async (roomId: string) => {
+      if (usersInTheRoom[roomId]) {
+        usersInTheRoom[roomId].push(socket.id);
       } else {
-        usersInTheRoom[roomID] = [socket.id];
+        usersInTheRoom[roomId] = [socket.id];
       }
-      socketToRoom[socket.id] = roomID;
-      const usersTotalInRoom = Array.from(new Set(usersInTheRoom[roomID]));
+      const usersTotalInRoom = Array.from(new Set(usersInTheRoom[roomId]));
 
       const infoUser = [];
 
@@ -124,17 +122,16 @@ const SocketIo = (httpServer: http.Server): void => {
 
     socket.on('disconnect', async () => {
       delete users[socket.id];
-      const roomId = await removeUser(socket.id);
+      const roomId = await removeUserEmoji(socket.id);
       const userCount = await getUserCount(roomId);
       const emojisDecremented = await getMoodCounter(roomId);
       await deleteMessages(roomId, socket.id);
       socket.broadcast.emit('sendUserCount', userCount);
       socket.broadcast.emit('getDecrement', emojisDecremented);
-      const roomID = socketToRoom[socket.id];
-      let room = usersInTheRoom[roomID];
+      let room = usersInTheRoom[roomId];
       if (room) {
-        room = room.filter((id) => id !== socket.id);
-        usersInTheRoom[roomID] = room;
+        roomWithoutUserDisconnected = room.filter((id) => id !== socket.id);
+        usersInTheRoom[roomId] = roomWithoutUserDisconnected;
         socket.broadcast.emit('removeUserVideo', socket.id);
       }
     });
