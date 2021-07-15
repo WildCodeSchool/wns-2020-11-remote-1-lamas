@@ -15,15 +15,15 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import { setContext } from "@apollo/client/link/context";
 import Constants from "expo-constants";
-
-const { manifest } = Constants;
+import { REACT_APP_LAMAS_BACK } from '@env';
 
 const App = () => {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
   const httpLink = createHttpLink({
-    uri: `http://${manifest?.debuggerHost?.split(":").shift()}:8000/graphql`,
+    uri: `${REACT_APP_LAMAS_BACK}/graphql`,
+    credentials: 'include',
   });
 
   const authLink = setContext(async (_, { headers }) => {
@@ -34,16 +34,6 @@ const App = () => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     };
-  });
-
-  const link = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
-        console.warn(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        )
-      );
-    if (networkError) console.warn(`[Network error]: ${networkError}`);
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {

@@ -63,8 +63,6 @@ const Video = ({
     }
   }, [microStatus, isUser, videoPeerId]);
 
-  console.log(firstname, lastname);
-
   return (
     <div className="video">
       <video

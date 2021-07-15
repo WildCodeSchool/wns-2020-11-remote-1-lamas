@@ -88,9 +88,6 @@ const SocketIo = (httpServer: http.Server): void => {
         infoUser.push({ userId, firstname, lastname });
       }
 
-      // envoyer lastname, firstname ici
-      // socket.emit('all users', usersTotalInRoom);
-      console.log(infoUser, usersTotalInRoom);
       socket.emit('all users', infoUser);
     });
 

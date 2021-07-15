@@ -14,6 +14,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList, LamasReminderParamList } from "../types";
 import * as SecureStore from "expo-secure-store";
 import { AuthContext } from "../navigation";
+import { useEffect } from "react";
+import { authReducer } from "../navigation/authReducer";
+import { StackActions } from '@react-navigation/native';
 
 export interface Login {
   email: string;
@@ -33,11 +36,18 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       if (token) {
         await SecureStore.setItemAsync("userToken", data.loginUser.token);
         signIn();
-        navigation.navigate("LamasToolsScreen");
+        navigation.navigate("LamasToolsScreen", {userId: data?.loginUser?.user._id});
       }
     },
     errorPolicy: "all",
   });
+
+  const [state, _dispatch] = authReducer()
+  useEffect(() => {
+    if (state.isLoggedIn && data?.loginUser?.user?._id) {
+      navigation.navigate("LamasToolsScreen", {userId: data?.loginUser?.user._id})
+    }
+  }, [state, data?.loginUser?.user?._id])
 
   return (
     <LinearGradient
@@ -172,24 +182,3 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
 });
-
-// onSubmit={async (values, actions) => {
-//   this.setState({ nouveauMail: values.nouveauMail });
-//   try {
-//     await AuthentificationApi.envoieMailModificationMail(values);
-//     actions.setSubmitting(false);
-
-//     this.props.addSnackbar(
-//       'ok',
-//       "L'email de confirmation de modification a bien été envoyé.",
-//       3000,
-//     );
-//     this.setState({ alertOpen: true });
-//   } catch (err) {
-//     this.props.addSnackbar(
-//       'warning',
-//       "Une erreur est survenue lors de l'envoi du email de confirmation.",
-//       3000,
-//     );
-//   }
-// }}
