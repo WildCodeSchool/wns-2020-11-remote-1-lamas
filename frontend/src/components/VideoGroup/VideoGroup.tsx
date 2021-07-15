@@ -69,9 +69,9 @@ const VideoGroup = ({
     console.log('removeAllPeersConnections');
   };
 
-  useEffect(() => {
-    peersRef.current = [];
-  }, []);
+  // useEffect(() => {
+  //   peersRef.current = [];
+  // }, []);
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
@@ -81,6 +81,7 @@ const VideoGroup = ({
         .getUserMedia({ video: true, audio: true })
         // demarre le stream une fois que c'est accepté
         .then((stream: MediaStream) => {
+          console.log('LAUNCHED');
           socket.emit('join room', roomID);
 
           socket.on('all users', (usersInfo: IAllUser[]) => {
