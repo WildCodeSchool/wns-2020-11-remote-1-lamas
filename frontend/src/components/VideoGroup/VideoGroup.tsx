@@ -46,31 +46,22 @@ const VideoGroup = ({
   const [peerId, setPeerId] = useState<string>('');
   const peersRef = useRef<IPeerWithId[]>([]);
   const roomID = roomId;
-  const userVideo = useRef<HTMLVideoElement>(null);
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
+    console.log('peerToDestroy', peerToDestroy);
     if (peerToDestroy) {
       peerToDestroy.peer.destroy();
     }
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
+    console.log(
+      'peers after destroy',
+      peersRef.current.filter((el) => el.peerID !== socketId)
+    );
+
     setPeers(peersRef.current.map((el) => el.peer));
   };
-
-  useEffect(() => {
-    if (userVideo?.current?.srcObject) {
-      (userVideo.current
-        .srcObject as MediaStream).getVideoTracks()[0].enabled = videoStatus;
-    }
-  }, [videoStatus]);
-
-  useEffect(() => {
-    if (userVideo?.current?.srcObject) {
-      (userVideo.current
-        .srcObject as MediaStream).getAudioTracks()[0].enabled = microStatus;
-    }
-  }, [microStatus]);
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
@@ -122,6 +113,8 @@ const VideoGroup = ({
           });
 
           socket.on('receiving returned signal', (payload: IPayload) => {
+            console.log('receiving returned signal', payload);
+
             const item = peersRef?.current?.find(
               (p) => p.peerID === payload.id
             );
@@ -129,6 +122,7 @@ const VideoGroup = ({
           });
 
           socket.on('removeUserVideo', (socketId: string) => {
+            console.log('removeUserVideo', socketId);
             removeUserLeavingRoomVideo(socketId);
           });
         })
