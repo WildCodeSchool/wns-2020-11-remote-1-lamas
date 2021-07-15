@@ -49,11 +49,11 @@ const VideoGroup = ({
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
-    // const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
-    // console.log('peerToDestroy', peerToDestroy);
-    // if (peerToDestroy) {
-    //   peerToDestroy.peer.destroy();
-    // }
+    const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
+    console.log('peerToDestroy', peerToDestroy);
+    if (peerToDestroy) {
+      peerToDestroy.peer.destroy();
+    }
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
     console.log(
       'peers after destroy',
@@ -93,7 +93,6 @@ const VideoGroup = ({
         .then((stream: MediaStream) => {
           console.log('LAUNCHED');
           socket.emit('join room', roomID);
-
           socket.on('all users', (usersInfo: IAllUser[]) => {
             const usersPeers: Peer.Instance[] = [];
             usersInfo.forEach((userInfo: IAllUser) => {
@@ -149,7 +148,6 @@ const VideoGroup = ({
         })
         .catch((err) => console.log('erreur dans getUserMedia : ', err));
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
