@@ -63,6 +63,11 @@ const VideoGroup = ({
     setPeers(peersRef.current.map((el) => el.peer));
   };
 
+  const removeAllPeersConnections = () => {
+    peersRef.current.map((el) => el.peer.destroy());
+    console.log('removeAllPeersConnections');
+  };
+
   // HELP: useEffect called when a new user join session
   useEffect(() => {
     if (user && roomId) {
@@ -130,8 +135,8 @@ const VideoGroup = ({
     }
     return () => {
       console.log('LEAVE');
-      // Suppression de son propre peer
-      removeUserLeavingRoomVideo(peerId);
+      // Suppression de tous les peers
+      removeAllPeersConnections();
       // Signaler aux autres de détruire le peer de celui qui est parti
       socket.emit('remove user', peerId);
     };
