@@ -49,11 +49,11 @@ const VideoGroup = ({
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
-    const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
-    console.log('peerToDestroy', peerToDestroy);
-    if (peerToDestroy) {
-      peerToDestroy.peer.destroy();
-    }
+    // const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
+    // console.log('peerToDestroy', peerToDestroy);
+    // if (peerToDestroy) {
+    //   peerToDestroy.peer.destroy();
+    // }
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
     console.log(
       'peers after destroy',
@@ -68,10 +68,6 @@ const VideoGroup = ({
     peersRef.current = [];
     console.log('removeAllPeersConnections');
   };
-
-  // useEffect(() => {
-  //   peersRef.current = [];
-  // }, []);
 
   // HELP: useEffect called when a new user join session
   useEffect(() => {
