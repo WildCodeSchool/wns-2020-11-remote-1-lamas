@@ -125,6 +125,14 @@ const VideoGroup = ({
             console.log('removeUserVideo', socketId);
             removeUserLeavingRoomVideo(socketId);
           });
+
+          return () => {
+            console.log('LEAVE');
+            // Suppression de son propre peer
+            removeUserLeavingRoomVideo(peerId);
+            // Signaler aux autres de détruire le peer de celui qui est parti
+            socket.emit('remove user', peerId);
+          };
         })
         .catch((err) => console.log('erreur dans getUserMedia : ', err));
     }

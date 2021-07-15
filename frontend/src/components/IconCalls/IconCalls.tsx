@@ -9,6 +9,7 @@ import StopScreenShareIcon from '@material-ui/icons/StopScreenShare';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import socket from '../../socket/socket';
 
 const useStyles = makeStyles({
   iconButton: {
@@ -47,6 +48,10 @@ const IconCalls = ({
   const history = useHistory();
   const [screenOn, setScreenOn] = useState(false);
 
+  const endCall = () => {
+    history.push(`/dashboard/${id}`);
+  };
+
   return (
     <div className="icons_call">
       <IconButton
@@ -59,7 +64,7 @@ const IconCalls = ({
       <IconButton
         className={`${classes.iconButton} ${classes.iconButtonCallEnd}`}
         aria-label="call-end"
-        onClick={() => history.push(`/dashboard/${id}`)}
+        onClick={() => endCall()}
       >
         <CallEndIcon />
       </IconButton>

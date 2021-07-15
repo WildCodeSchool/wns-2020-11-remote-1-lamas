@@ -114,12 +114,12 @@ const SocketIo = (httpServer: http.Server): void => {
       });
     });
 
-    socket.on('turnOffVideo', () => {
-      socket.broadcast.emit('removeUserVideo', socket.id);
-    });
-
     socket.on('switch', (payload) => {
       socket.broadcast.emit('receive change', payload);
+    });
+
+    socket.on('remove user', () => {
+      socket.broadcast.emit('removeUserVideo', socket.id);
     });
 
     socket.on('disconnect', async () => {
