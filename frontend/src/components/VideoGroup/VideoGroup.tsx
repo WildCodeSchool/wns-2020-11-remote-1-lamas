@@ -50,6 +50,10 @@ const VideoGroup = ({
   const user = currentUser();
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
+    const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
+    if (peerToDestroy) {
+      peerToDestroy.peer.destroy();
+    }
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
     setPeers(peersRef.current.map((el) => el.peer));
   };
