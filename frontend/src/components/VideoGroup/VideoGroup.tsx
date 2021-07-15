@@ -69,6 +69,20 @@ const VideoGroup = ({
     console.log('removeAllPeersConnections');
   };
 
+  useEffect(() => {
+    socket.connect();
+
+    return () => {
+      console.log('LEAVE');
+      // Suppression de tous les peers
+      removeAllPeersConnections();
+      // Signaler aux autres de détruire le peer de celui qui est parti
+      socket.emit('remove user', peerId);
+      socket.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // HELP: useEffect called when a new user join session
   useEffect(() => {
     if (user && roomId) {
@@ -135,14 +149,7 @@ const VideoGroup = ({
         })
         .catch((err) => console.log('erreur dans getUserMedia : ', err));
     }
-    return () => {
-      console.log('LEAVE');
-      // Suppression de tous les peers
-      removeAllPeersConnections();
-      // Signaler aux autres de détruire le peer de celui qui est parti
-      socket.emit('remove user', peerId);
-      socket.disconnect();
-    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
