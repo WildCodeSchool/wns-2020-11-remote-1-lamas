@@ -46,7 +46,7 @@ const Video = ({
 
   useEffect(() => {
     socket.on('receive change', (mediaChange: any) => {
-      if (videoPeerId === mediaChange.peerId && ref && ref.current) {
+      if (videoPeerId === mediaChange.peerId && ref?.current?.srcObject) {
         (ref.current.srcObject as MediaStream).getVideoTracks()[0].enabled =
           mediaChange.videoStatus;
 
@@ -54,7 +54,7 @@ const Video = ({
           mediaChange.microStatus;
       }
     });
-  }, [videoStatus, microStatus, peerId, videoPeerId]);
+  }, [videoStatus, microStatus, videoPeerId]);
 
   useEffect(() => {
     if (ref?.current?.srcObject && isUser) {
