@@ -128,9 +128,11 @@ const SocketIo = (httpServer: http.Server): void => {
       await deleteMessages(roomId, socket.id);
       socket.broadcast.emit('sendUserCount', userCount);
       socket.broadcast.emit('getDecrement', emojisDecremented);
-      let room = usersInTheRoom[roomId];
-      if (room) {
-        roomWithoutUserDisconnected = room.filter((id) => id !== socket.id);
+      let roomWithoutUserDisconnected = usersInTheRoom[roomId];
+      if (roomWithoutUserDisconnected) {
+        roomWithoutUserDisconnected = roomWithoutUserDisconnected.filter(
+          (id) => id !== socket.id
+        );
         usersInTheRoom[roomId] = roomWithoutUserDisconnected;
         socket.broadcast.emit('removeUserVideo', socket.id);
       }

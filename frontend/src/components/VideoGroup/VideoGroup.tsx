@@ -144,6 +144,7 @@ const VideoGroup = ({
       removeAllPeersConnections();
       // Signaler aux autres de détruire le peer de celui qui est parti
       socket.emit('remove user', peerId);
+      socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
