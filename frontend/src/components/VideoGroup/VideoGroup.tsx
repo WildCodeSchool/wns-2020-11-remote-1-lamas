@@ -151,8 +151,9 @@ const VideoGroup = ({
               ' item.peer ',
               item?.peer
             );
-            if (item?.peer) {
-              item.peer.signal(payload.signal);
+            if (!item?.peer?.destroyed) {
+              console.log('in condition : ', item?.peer);
+              item?.peer.signal(payload.signal);
             }
           });
 
