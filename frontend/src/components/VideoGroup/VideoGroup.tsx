@@ -102,6 +102,10 @@ const VideoGroup = ({
                   (peerWithId) => userInfo.userId === peerWithId.peerID
                 )
               ) {
+                console.log(
+                  'passé dans !peersRef.current, peer du user qui se connecte : ',
+                  peer
+                );
                 peersRef.current.push({
                   firstname: userInfo.firstname,
                   lastname: userInfo.lastname,
@@ -110,6 +114,9 @@ const VideoGroup = ({
                 });
                 setPeerId(userInfo.userId);
               }
+              peer.on('error', (err) => {
+                console.log('error connection create peer', err);
+              });
               usersPeers.push(peer);
             });
             setPeers(usersPeers);
@@ -129,6 +136,9 @@ const VideoGroup = ({
                 peer,
               });
             }
+            peer.on('error', (err) => {
+              console.log('error connection user joined', err);
+            });
             setPeers([...peers, peer]);
           });
 
