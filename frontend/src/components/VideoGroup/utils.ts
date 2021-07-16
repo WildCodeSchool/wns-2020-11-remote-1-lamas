@@ -19,7 +19,6 @@ export const createPeer = (
       signal,
     });
   });
-  console.log('peer in create peer : ', peer);
   return peer;
 };
 export const addPeer = (
@@ -38,7 +37,6 @@ export const addPeer = (
       callerID,
     });
   });
-  console.log('peer in addPeer : ', peer);
   peer.signal(incomingSignal);
 
   return peer;

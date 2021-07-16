@@ -50,30 +50,22 @@ const VideoGroup = ({
 
   const removeUserLeavingRoomVideo = (socketId: string) => {
     const peerToDestroy = peersRef.current.find((el) => el.peerID === socketId);
-    console.log('peerToDestroy', peerToDestroy);
     if (peerToDestroy) {
       peerToDestroy.peer.destroy();
     }
     peersRef.current = peersRef.current.filter((el) => el.peerID !== socketId);
-    console.log(
-      'peers after destroy',
-      peersRef.current.filter((el) => el.peerID !== socketId)
-    );
-
     setPeers(peersRef.current.map((el) => el.peer));
   };
 
   const removeAllPeersConnections = () => {
     peersRef.current.forEach((el) => el.peer.destroy());
     peersRef.current = [];
-    console.log('removeAllPeersConnections');
   };
 
   useEffect(() => {
     socket.connect();
 
     return () => {
-      console.log('LEAVE');
       // Suppression de tous les peers
       removeAllPeersConnections();
       // Signaler aux autres de détruire le peer de celui qui est parti
@@ -91,7 +83,6 @@ const VideoGroup = ({
         .getUserMedia({ video: true, audio: true })
         // demarre le stream une fois que c'est accepté
         .then((stream: MediaStream) => {
-          console.log('LAUNCHED');
           socket.emit('join room', roomID);
           socket.on('all users', (usersInfo: IAllUser[]) => {
             const usersPeers: Peer.Instance[] = [];
@@ -108,7 +99,6 @@ const VideoGroup = ({
                   peerID: userInfo.userId,
                   peer,
                 });
-                console.log('peersRef.current => ', peersRef.current);
                 setPeerId(userInfo.userId);
               }
               peer.on('error', (err) => {
@@ -140,25 +130,15 @@ const VideoGroup = ({
           });
 
           socket.on('receiving returned signal', (payload: IPayload) => {
-            console.log('receiving returned signal', payload);
-
             const item = peersRef?.current?.find(
               (p) => p.peerID === payload.id
             );
-            console.log(
-              'in receiving returned signal, item : ',
-              item,
-              ' item.peer ',
-              item?.peer
-            );
-            if (!item?.peer?.destroyed) {
-              console.log('in condition : ', item?.peer);
+            if (item?.peer) {
               item?.peer.signal(payload.signal);
             }
           });
 
           socket.on('removeUserVideo', (socketId: string) => {
-            console.log('removeUserVideo', socketId);
             removeUserLeavingRoomVideo(socketId);
           });
         })
