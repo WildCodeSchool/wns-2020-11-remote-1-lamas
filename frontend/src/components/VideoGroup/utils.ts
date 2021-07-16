@@ -2,13 +2,13 @@ import Peer, { SignalData } from 'simple-peer';
 import socket from '../../socket/socket';
 
 export const createPeer = (
-  userToSignal: any,
+  userToSignal: string,
   callerID: string,
   stream: MediaStream
-) => {
+): Peer.Instance => {
   const peer = new Peer({
     initiator: true,
-    trickle: false,
+    trickle: true,
     stream,
   });
 
@@ -28,7 +28,7 @@ export const addPeer = (
 ): Peer.Instance => {
   const peer = new Peer({
     initiator: false,
-    trickle: false,
+    trickle: true,
     stream,
   });
   peer.on('signal', (signal) => {
