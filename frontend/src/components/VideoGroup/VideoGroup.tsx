@@ -64,8 +64,8 @@ const VideoGroup = ({
   };
 
   const removeAllPeersConnections = () => {
-    peersRef.current.map((el) => el.peer.destroy());
-    peersRef.current = [];
+    peersRef.current.forEach((el) => el.peer.destroy());
+    // peersRef.current = [];
     console.log('removeAllPeersConnections');
   };
 
@@ -75,7 +75,7 @@ const VideoGroup = ({
     return () => {
       console.log('LEAVE');
       // Suppression de tous les peers
-      // removeAllPeersConnections();
+      removeAllPeersConnections();
       // Signaler aux autres de détruire le peer de celui qui est parti
       socket.emit('remove user', peerId);
       socket.disconnect();
