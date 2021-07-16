@@ -96,22 +96,27 @@ const VideoGroup = ({
           socket.on('all users', (usersInfo: IAllUser[]) => {
             const usersPeers: Peer.Instance[] = [];
             usersInfo.forEach((userInfo: IAllUser) => {
+              console.log(
+                'lalala userInfo.userId : ',
+                userInfo.userId,
+                ', socket.id : ',
+                socket.id,
+                ', stream : ',
+                stream
+              );
               const peer = createPeer(userInfo.userId, socket.id, stream);
               if (
                 !peersRef.current.find(
                   (peerWithId) => userInfo.userId === peerWithId.peerID
                 )
               ) {
-                console.log(
-                  'passé dans !peersRef.current, peer du user qui se connecte : ',
-                  peer
-                );
                 peersRef.current.push({
                   firstname: userInfo.firstname,
                   lastname: userInfo.lastname,
                   peerID: userInfo.userId,
                   peer,
                 });
+                console.log('peersRef.current => ', peersRef.current);
                 setPeerId(userInfo.userId);
               }
               peer.on('error', (err) => {
