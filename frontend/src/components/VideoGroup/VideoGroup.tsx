@@ -65,7 +65,7 @@ const VideoGroup = ({
 
   const removeAllPeersConnections = () => {
     peersRef.current.forEach((el) => el.peer.destroy());
-    // peersRef.current = [];
+    peersRef.current = [];
     console.log('removeAllPeersConnections');
   };
 
@@ -138,7 +138,15 @@ const VideoGroup = ({
             const item = peersRef?.current?.find(
               (p) => p.peerID === payload.id
             );
-            item?.peer?.signal(payload.signal);
+            console.log(
+              'in receiving returned signal, item : ',
+              item,
+              ' item.peer ',
+              item?.peer
+            );
+            if (item?.peer) {
+              item.peer.signal(payload.signal);
+            }
           });
 
           socket.on('removeUserVideo', (socketId: string) => {
