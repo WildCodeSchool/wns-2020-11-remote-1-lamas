@@ -96,14 +96,6 @@ const VideoGroup = ({
           socket.on('all users', (usersInfo: IAllUser[]) => {
             const usersPeers: Peer.Instance[] = [];
             usersInfo.forEach((userInfo: IAllUser) => {
-              console.log(
-                'lalala userInfo.userId : ',
-                userInfo.userId,
-                ', socket.id : ',
-                socket.id,
-                ', stream : ',
-                stream
-              );
               const peer = createPeer(userInfo.userId, socket.id, stream);
               if (
                 !peersRef.current.find(

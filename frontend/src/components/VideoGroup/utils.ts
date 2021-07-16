@@ -8,7 +8,7 @@ export const createPeer = (
 ): Peer.Instance => {
   const peer = new Peer({
     initiator: true,
-    trickle: true,
+    trickle: false,
     stream,
   });
 
@@ -19,6 +19,7 @@ export const createPeer = (
       signal,
     });
   });
+  console.log('peer in create peer : ', peer);
   return peer;
 };
 export const addPeer = (
@@ -28,7 +29,7 @@ export const addPeer = (
 ): Peer.Instance => {
   const peer = new Peer({
     initiator: false,
-    trickle: true,
+    trickle: false,
     stream,
   });
   peer.on('signal', (signal) => {
@@ -37,7 +38,7 @@ export const addPeer = (
       callerID,
     });
   });
-
+  console.log('peer in addPeer : ', peer);
   peer.signal(incomingSignal);
 
   return peer;
